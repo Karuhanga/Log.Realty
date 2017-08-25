@@ -1,12 +1,15 @@
-package ug.karuhanga.logrealty;
+package ug.karuhanga.logrealty.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+
+import ug.karuhanga.logrealty.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -116,6 +119,8 @@ public class SplashScreen extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
+        //TODO create splash screen delay
+        startActivity(new Intent(SplashScreen.this, MainActivity.class));
     }
 
     private void toggle() {
