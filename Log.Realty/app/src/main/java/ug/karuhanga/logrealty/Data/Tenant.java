@@ -1,16 +1,15 @@
-package ug.karuhanga.logrealty.data;
-
-import com.orm.SugarRecord;
+package ug.karuhanga.logrealty.Data;
 
 import java.util.Date;
 
 import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Record;
 
 /**
  * Created by karuhanga on 8/25/17.
  */
 
-public class Tenant extends SugarRecord {
+public class Tenant extends Record {
     private String fName;
     private String oNames;
     private String email;

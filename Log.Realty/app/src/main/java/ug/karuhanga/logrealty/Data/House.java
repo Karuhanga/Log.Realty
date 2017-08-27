@@ -1,41 +1,33 @@
-package ug.karuhanga.logrealty.data;
+package ug.karuhanga.logrealty.Data;
 
-import com.orm.SugarRecord;
+import ug.karuhanga.logrealty.Record;
 
 /**
  * Created by karuhanga on 8/25/17.
  */
 
-class House extends SugarRecord {
-    private int _id;
+public class House extends Record {
+    private int number;
     private int rent;
-    private String  description;
-
+    private String description;
 
     private Location location;
+    private Tenant tenant;
 
     public House(){}
 
-    public House(int _id, String description, Location location) {
-        this._id = _id;
+    public House(int number, String description, Location location) {
+        this.number = number;
         this.description = description;
         this.location = location;
         this.rent= location.getDefaultRent();
     }
 
-    public House(int _id, int rent, Location location, String description) {
-        this._id = _id;
+    public House(int number, int rent, Location location, String description) {
+        this.number = number;
         this.rent = rent;
         this.description= description;
         this.location = location;
-    }
-
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
     }
 
     public int getRent() {
@@ -60,5 +52,21 @@ class House extends SugarRecord {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 }

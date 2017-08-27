@@ -1,12 +1,12 @@
-package ug.karuhanga.logrealty.data;
+package ug.karuhanga.logrealty.Data;
 
-import com.orm.SugarRecord;
+import ug.karuhanga.logrealty.Record;
 
 /**
  * Created by karuhanga on 8/25/17.
  */
 
-public class Location extends SugarRecord {
+public class Location extends Record {
     private String name;
     private android.location.Location location;
     private int defaultRent;

@@ -1,14 +1,14 @@
-package ug.karuhanga.logrealty.data;
-
-import com.orm.SugarRecord;
+package ug.karuhanga.logrealty.Data;
 
 import java.util.Date;
+
+import ug.karuhanga.logrealty.Record;
 
 /**
  * Created by karuhanga on 8/25/17.
  */
 
-public class Payment extends SugarRecord {
+public class Payment extends Record {
     private Date date;
     private int amount;
 
