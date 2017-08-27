@@ -10,7 +10,8 @@ import java.util.Date;
 
 public class Helpers {
 
-    public static int RESULT_CODE_ADD_PAYMENT= 100;
+    public static final int DUE_PAYMENTS_FRAGMENT= 1001;
+    public static final int RESULT_CODE_ADD_PAYMENT= 100;
 
     public static Date dueUpdater(Date oldDue, int amount, int rate){
         int months= amount/rate;

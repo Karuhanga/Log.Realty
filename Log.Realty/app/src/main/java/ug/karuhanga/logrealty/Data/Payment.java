@@ -19,11 +19,16 @@ public class Payment extends Record {
     public Payment() {
     }
 
-    public Payment(Date date, int amount, Tenant tenant, House house) {
+    public Payment(Date date, int amount, Tenant tenant) {
         this.date = date;
         this.amount = amount;
         this.tenant = tenant;
-        this.house = house;
+        this.house = tenant.getHouse();
+    }
+
+    @Override
+    public String toString(){
+        return String.valueOf(amount)+", paid by"+ tenant.getfName()+" "+tenant.getoNames();
     }
 
     public Date getDate() {

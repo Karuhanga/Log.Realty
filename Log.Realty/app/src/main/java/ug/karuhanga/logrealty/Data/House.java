@@ -30,6 +30,11 @@ public class House extends Record {
         this.location = location;
     }
 
+    @Override
+    public String toString(){
+        return "House "+String.valueOf(number)+", "+description+", "+location+"/n"+String.valueOf(rent);
+    }
+
     public int getRent() {
         return rent;
     }

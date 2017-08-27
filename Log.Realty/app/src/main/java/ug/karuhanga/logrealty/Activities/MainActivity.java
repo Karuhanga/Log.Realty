@@ -17,15 +17,17 @@ import android.view.MenuItem;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private FloatingActionButton fab;
+    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -112,10 +114,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    protected void commenceAddition(){
+        switch (currentFragment){
+            case Helpers.DUE_PAYMENTS_FRAGMENT:
+                startActivityForResult(new Intent(MainActivity.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+            default:
+                startActivityForResult(new Intent(MainActivity.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         if (view.equals(fab)){
-            startActivityForResult(new Intent(MainActivity.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+            commenceAddition();
         }
     }
 }

@@ -45,6 +45,11 @@ public class Tenant extends Record {
         return true;
     }
 
+    @Override
+    public String toString(){
+        return this.fName+" "+this.oNames+"\n"+this.house.toString();
+    }
+
     public String getfName() {
         return fName;
     }
