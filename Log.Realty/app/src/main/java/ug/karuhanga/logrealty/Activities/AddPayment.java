@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import com.orm.SugarContext;
 import com.orm.query.Condition;
 import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.Calendar;
 import java.util.List;
@@ -43,17 +45,15 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab_add_payment);
         editTextTenant= (AutoCompleteTextView) findViewById(R.id.edit_text_add_payment_tenant);
         editTextAmount= (EditText) findViewById(R.id.edit_text_add_payment_amount);
         previousColor= editTextTenant.getCurrentTextColor();
         chosen= null;
-        adapter= new ArrayAdapter<Tenant>(this, R.layout.layout_list_item_dropdown, R.id.textView_listItem_dropDown, results);
+        adapter= null;
 
-        adapter.setNotifyOnChange(true);
-        adapter.clear();
-        editTextTenant.setAdapter(adapter);
         editTextTenant.setOnItemClickListener(this);
+        editTextTenant.addTextChangedListener(this);
 
 
         fab.setOnClickListener(this);
@@ -68,6 +68,14 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
             return;
         }
 
+        if (chosen==null){
+            onNoMatch();
+            Toast.makeText(this, "Please pick a Tenant", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //TODO Add Few Amounts Checking
+
         Payment payment= new Payment(Calendar.getInstance().getTime(), amount, chosen);
         payment.save();
         boolean successful= chosen.updateRentDue(payment);
@@ -78,7 +86,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         }
         chosen.save();
         Intent finisher= new Intent();
-        finisher.putExtra("details", "Added\n"+payment.toString());
+        finisher.putExtra("details", payment.toString());
         finish();
     }
     
@@ -91,11 +99,19 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     }
 
     protected void clearAutoCompleteOptions(){
-        adapter.clear();
         editTextTenant.dismissDropDown();
+        if (adapter==null){
+            return;
+        }
+        adapter.clear();
     }
 
     protected void populateOptions(){
+        if (adapter==null){
+            adapter= new ArrayAdapter<>(this, R.layout.layout_list_item_dropdown, R.id.textView_listItem_dropDown, results);
+            adapter.setNotifyOnChange(true);
+            editTextTenant.setAdapter(adapter);
+        }
         adapter.notifyDataSetChanged();
         editTextTenant.showDropDown();
     }
@@ -109,14 +125,16 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
             clearAutoCompleteOptions();
             return;
         }
-        while (! results.isEmpty()){
-            results.remove(0);
+        if (!(results==null)){
+            while (! results.isEmpty()){
+                results.remove(0);
+            }
         }
 
-        results= Select.from(Tenant.class).where(Condition.prop("fName").like(soFar+"%")).list();
-        results.addAll(Select.from(Tenant.class).where(Condition.prop("oNames").like(soFar+"%")).list());
+        results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("fName")).like(soFar+"%")).list();
+        results.addAll(Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("oNames")).like(soFar+"%")).list());
 
-        if (results.isEmpty()){
+        if ((results==null) || results.isEmpty()){
             onNoMatch();
             return;
         }
@@ -133,18 +151,18 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void afterTextChanged(Editable editable) {
+        editTextTenant.setTextColor(previousColor);
         String soFar= editable.toString();
         updateOptions(soFar);
     }
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        editTextTenant.setTextColor(previousColor);
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        editTextTenant.setTextColor(previousColor);
 
     }
 

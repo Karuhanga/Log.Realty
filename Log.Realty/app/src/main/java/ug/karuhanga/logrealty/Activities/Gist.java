@@ -14,11 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.orm.SugarContext;
+
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 
-public class MainActivity extends AppCompatActivity
+public class Gist extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private FloatingActionButton fab;
@@ -27,11 +29,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SugarContext.init(this);
         setContentView(R.layout.main_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
         fab.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -117,9 +120,9 @@ public class MainActivity extends AppCompatActivity
     protected void commenceAddition(){
         switch (currentFragment){
             case Helpers.DUE_PAYMENTS_FRAGMENT:
-                startActivityForResult(new Intent(MainActivity.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+                startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
             default:
-                startActivityForResult(new Intent(MainActivity.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+                startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
         }
     }
 

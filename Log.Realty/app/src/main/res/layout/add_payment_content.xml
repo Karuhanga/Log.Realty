@@ -22,8 +22,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:completionHint="Tenant/House"
-            android:text="AutoCompleteTextView" />
+            android:hint="Tenant/House" />
 
         <EditText
             android:id="@+id/edit_text_add_payment_amount"

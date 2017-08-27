@@ -120,7 +120,7 @@ public class SplashScreen extends AppCompatActivity {
         // are available.
         delayedHide(100);
         //TODO create splash screen delay
-        startActivity(new Intent(SplashScreen.this, MainActivity.class));
+        startActivity(new Intent(SplashScreen.this, Gist.class));
     }
 
     private void toggle() {
