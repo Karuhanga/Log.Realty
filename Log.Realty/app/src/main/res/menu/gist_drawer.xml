@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu_item_drawer_group"
+        android:checkableBehavior="none"
+        android:enabled="true"
+        android:visible="true">
+        <item
+            android:id="@+id/menu_item_rent_due"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Upcoming Payments" />
+        <item
+            android:id="@+id/menu_item_locations"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Locations" />
+        <item
+            android:id="@+id/menu_item_Houses"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Houses" />
+        <item
+            android:id="@+id/menu_item_tenants"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tenants" />
+    </group>
+
+    <item
+        android:title="Communicate"
+        android:visible="false">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

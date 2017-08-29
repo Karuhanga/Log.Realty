@@ -30,7 +30,7 @@ public class Gist extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SugarContext.init(this);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.gist_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -45,6 +45,9 @@ public class Gist extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        displayFragment(Helpers.FRAGMENT_DUE_PAYMENTS);
+        currentFragment= Helpers.FRAGMENT_DUE_PAYMENTS;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class Gist extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.gist, menu);
         return true;
     }
 
@@ -73,6 +76,7 @@ public class Gist extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivityForResult(new Intent(Gist.this, Settings.class), Helpers.RESULT_CODE_SETTINGS);
             return true;
         }
 
@@ -85,18 +89,14 @@ public class Gist extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.menu_item_rent_due) {
+            displayFragment(Helpers.FRAGMENT_DUE_PAYMENTS);
+        } else if (id == R.id.menu_item_locations) {
+            displayFragment(Helpers.FRAGMENT_LOCATIONS);
+        } else if (id == R.id.menu_item_Houses) {
+            displayFragment(Helpers.FRAGMENT_HOUSES);
+        } else if (id == R.id.menu_item_tenants) {
+            displayFragment(Helpers.FRAGMENT_TENANTS);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -107,23 +107,37 @@ public class Gist extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==Helpers.RESULT_CODE_ADD_PAYMENT){
+        switch (requestCode){
+            case Helpers.RESULT_CODE_ADD_PAYMENT:
+                if (resultCode==RESULT_OK){
+                    Snackbar.make(fab, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                }
+                else{
+                    Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                }
+        case Helpers.RESULT_CODE_SETTINGS:
             if (resultCode==RESULT_OK){
-                Snackbar.make(fab, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                Snackbar.make(fab, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
             }
             else{
                 Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
             }
         }
+
     }
 
     protected void commenceAddition(){
         switch (currentFragment){
-            case Helpers.DUE_PAYMENTS_FRAGMENT:
+            case Helpers.FRAGMENT_DUE_PAYMENTS:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
             default:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
         }
+    }
+
+    private void displayFragment(int fragment) {
+        //TODO Implement Fragment Transitions
+        return;
     }
 
     @Override
