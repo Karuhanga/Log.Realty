@@ -1,5 +1,7 @@
 package ug.karuhanga.logrealty;
 
+import android.support.annotation.NonNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +12,13 @@ import java.util.Date;
 
 public class Helpers {
 
-    public static final int DUE_PAYMENTS_FRAGMENT= 1001;
+    public static final int FRAGMENT_DUE_PAYMENTS= 1001;
+    public static final int FRAGMENT_LOCATIONS= 1002;
+    public static final int FRAGMENT_HOUSES= 1003;
+    public static final int FRAGMENT_TENANTS= 1004;
+
     public static final int RESULT_CODE_ADD_PAYMENT= 100;
+    public static final int RESULT_CODE_SETTINGS= 101;
 
     public static Date dueUpdater(Date oldDue, int amount, int rate){
         int months= amount/rate;
@@ -30,5 +37,18 @@ public class Helpers {
             return oldDue;
         }
         return newDue;
+    }
+
+    @NonNull
+    public static String toFirstsCapital(@NonNull String old){
+        String result= old.toLowerCase();
+        String[] words= result.split(" ");
+        result= "";
+        for (String word : words) {
+            String first= word.split("")[0].toUpperCase();
+            word= word.replaceFirst(word.substring(0, 1), first);
+            result+= (word+" ");
+        }
+        return result.substring(0,result.length());
     }
 }
