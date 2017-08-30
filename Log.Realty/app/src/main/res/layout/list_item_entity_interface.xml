@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_parent_list_item_entity_interface"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_list_item_entity_interface"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        app:cardBackgroundColor="@color/cardview_shadow_end_color"
+        app:cardElevation="3dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_inner_list_item_entity_interface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView_list_item_entity_interface"
+                android:layout_width="368dp"
+                android:layout_height="49dp"
+                android:gravity="center_vertical"
+                android:text="Entity"
+                android:textAlignment="gravity"
+                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="8dp" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -13,10 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
-import com.orm.SugarContext;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.orm.util.NamingHelper;
@@ -108,7 +106,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
 
     protected void populateOptions(){
         if (adapter==null){
-            adapter= new ArrayAdapter<>(this, R.layout.layout_list_item_dropdown, R.id.textView_listItem_dropDown, results);
+            adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
             adapter.setNotifyOnChange(true);
             editTextTenant.setAdapter(adapter);
         }

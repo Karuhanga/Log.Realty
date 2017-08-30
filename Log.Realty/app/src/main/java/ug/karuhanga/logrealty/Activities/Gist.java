@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 
 import com.orm.SugarContext;
 
+import ug.karuhanga.logrealty.Fragments.EntityInterface;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
@@ -33,6 +36,7 @@ public class Gist extends AppCompatActivity
         setContentView(R.layout.gist_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        currentFragment= Helpers.FRAGMENT_NONE;
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
         fab.setOnClickListener(this);
@@ -135,8 +139,27 @@ public class Gist extends AppCompatActivity
         }
     }
 
-    private void displayFragment(int fragment) {
-        //TODO Implement Fragment Transitions
+    private void displayFragment(int entity) {
+        //TODO Test Fragment Transitions
+        EntityInterface fragment;
+        FragmentManager fragmentManager= getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
+
+        EntityInterface storedFragment= (EntityInterface) fragmentManager.findFragmentByTag(String.valueOf(entity));
+        fragment= (storedFragment==null)? EntityInterface.newInstance(entity) : storedFragment;
+
+        if (currentFragment==Helpers.FRAGMENT_NONE){
+            fragmentTransaction.add(R.id.layout_fragment_holder, fragment);
+        }
+        else{
+            if (fragmentManager.findFragmentByTag(String.valueOf(currentFragment))==null){
+                fragmentTransaction.addToBackStack(String.valueOf(currentFragment));
+            }
+            fragmentTransaction.replace(R.id.layout_fragment_holder, fragment);
+        }
+
+        fragmentTransaction.commit();
+
         return;
     }
 

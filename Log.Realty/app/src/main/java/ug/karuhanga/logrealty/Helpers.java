@@ -16,6 +16,7 @@ public class Helpers {
     public static final int FRAGMENT_LOCATIONS= 1002;
     public static final int FRAGMENT_HOUSES= 1003;
     public static final int FRAGMENT_TENANTS= 1004;
+    public static final int FRAGMENT_NONE= -1000;
 
     public static final int RESULT_CODE_ADD_PAYMENT= 100;
     public static final int RESULT_CODE_SETTINGS= 101;
