@@ -4,10 +4,10 @@
     <!--TODO Change Search Icon-->
     <item
         android:id="@+id/menu_item_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:actionViewClass="android.widget.SearchView"></item>
+        app:showAsAction="ifRoom|collapseActionView"></item>
     <item
         android:id="@+id/menu_item_sync"
         android:title="Sync"
@@ -17,7 +17,7 @@
         android:title="Backup"
         android:visible="false"></item>
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_item_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />

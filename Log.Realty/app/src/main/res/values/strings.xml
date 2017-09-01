@@ -26,7 +26,7 @@
     </string>
 
     <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_default_display_name">Sam Kagwisagye</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
@@ -88,4 +88,10 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="search_hint">Search Hint</string>
     <string name="title_activity_search">Search</string>
+
+    <string name="fragment_label_1001">Upcoming Payments</string>
+    <string name="fragment_label_1002">Locations</string>
+    <string name="fragment_label_1003">Houses</string>
+    <string name="fragment_label_1004">Tenants</string>
+    <string name="fragment_label_1005">Payments</string>
 </resources>

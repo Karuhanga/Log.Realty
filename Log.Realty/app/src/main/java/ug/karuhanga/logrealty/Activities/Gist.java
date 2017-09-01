@@ -1,6 +1,7 @@
 package ug.karuhanga.logrealty.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.orm.SugarContext;
 
@@ -24,17 +26,18 @@ import ug.karuhanga.logrealty.R;
 
 
 public class Gist extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EntityInterface.OnFragmentInteractionListener {
 
     private FloatingActionButton fab;
     private int currentFragment;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SugarContext.init(this);
         setContentView(R.layout.gist_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         currentFragment= Helpers.FRAGMENT_NONE;
 
@@ -51,7 +54,6 @@ public class Gist extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         displayFragment(Helpers.FRAGMENT_DUE_PAYMENTS);
-        currentFragment= Helpers.FRAGMENT_DUE_PAYMENTS;
     }
 
     @Override
@@ -79,9 +81,11 @@ public class Gist extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_item_settings) {
             startActivityForResult(new Intent(Gist.this, Settings.class), Helpers.RESULT_CODE_SETTINGS);
-            return true;
+        }
+        else if (id == R.id.menu_item_search){
+            onSearchRequested();
         }
 
         return super.onOptionsItemSelected(item);
@@ -119,6 +123,7 @@ public class Gist extends AppCompatActivity
                 else{
                     Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
                 }
+                return;
         case Helpers.RESULT_CODE_SETTINGS:
             if (resultCode==RESULT_OK){
                 Snackbar.make(fab, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
@@ -126,6 +131,7 @@ public class Gist extends AppCompatActivity
             else{
                 Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
             }
+            return;
         }
 
     }
@@ -134,8 +140,10 @@ public class Gist extends AppCompatActivity
         switch (currentFragment){
             case Helpers.FRAGMENT_DUE_PAYMENTS:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+                return;
             default:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+                return;
         }
     }
 
@@ -159,6 +167,13 @@ public class Gist extends AppCompatActivity
         }
 
         fragmentTransaction.commit();
+        currentFragment= entity;
+        String label= Helpers.getStringByName(this, "fragment_label_"+String.valueOf(currentFragment));
+        if (label==null){
+            return;
+        }
+
+        toolbar.setTitle(label);
 
         return;
     }
@@ -168,5 +183,10 @@ public class Gist extends AppCompatActivity
         if (view.equals(fab)){
             commenceAddition();
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

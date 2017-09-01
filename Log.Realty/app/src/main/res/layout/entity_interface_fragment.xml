@@ -20,6 +20,25 @@
                 android:id="@+id/list_view_entity_interfaces"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/button_load_more_entity_interface_fragment"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:elevation="3dp"
+                android:fontFamily="casual"
+                android:gravity="center_horizontal"
+                android:text="Load More"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView_temp1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="30sp" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

@@ -87,7 +87,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         finisher.putExtra("details", payment.toString());
         finish();
     }
-    
+
     protected void onAmountError(){
         Toast.makeText(this, "Amount Error", Toast.LENGTH_SHORT).show();
     }
@@ -167,5 +167,6 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         chosen= results.get(i);
+        //TODO Move to next and indicate something was chosen
     }
 }

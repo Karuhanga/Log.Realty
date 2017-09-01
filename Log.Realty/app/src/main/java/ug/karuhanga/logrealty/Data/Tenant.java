@@ -3,7 +3,6 @@ package ug.karuhanga.logrealty.Data;
 import java.util.Date;
 
 import ug.karuhanga.logrealty.Helpers;
-import ug.karuhanga.logrealty.Record;
 
 /**
  * Created by karuhanga on 8/25/17.

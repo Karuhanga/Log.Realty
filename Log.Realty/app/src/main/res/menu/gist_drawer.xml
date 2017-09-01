@@ -9,19 +9,19 @@
         android:visible="true">
         <item
             android:id="@+id/menu_item_rent_due"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_notifications_black_24dp"
             android:title="Upcoming Payments" />
         <item
             android:id="@+id/menu_item_locations"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_satellite_black_24dp"
             android:title="Locations" />
         <item
             android:id="@+id/menu_item_Houses"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_account_balance_black_24dp"
             android:title="Houses" />
         <item
             android:id="@+id/menu_item_tenants"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_wc_black_24dp"
             android:title="Tenants" />
     </group>
 

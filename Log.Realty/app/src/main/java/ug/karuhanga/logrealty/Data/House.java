@@ -1,7 +1,5 @@
 package ug.karuhanga.logrealty.Data;
 
-import ug.karuhanga.logrealty.Record;
-
 /**
  * Created by karuhanga on 8/25/17.
  */

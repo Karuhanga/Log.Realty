@@ -1,4 +1,4 @@
-package ug.karuhanga.logrealty;
+package ug.karuhanga.logrealty.Data;
 
 import com.orm.SugarRecord;
 

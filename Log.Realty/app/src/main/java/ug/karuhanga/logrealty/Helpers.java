@@ -1,5 +1,7 @@
 package ug.karuhanga.logrealty;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import java.text.ParseException;
@@ -16,6 +18,7 @@ public class Helpers {
     public static final int FRAGMENT_LOCATIONS= 1002;
     public static final int FRAGMENT_HOUSES= 1003;
     public static final int FRAGMENT_TENANTS= 1004;
+    public static final int FRAGMENT_PAYMENTS= 1005;
     public static final int FRAGMENT_NONE= -1000;
 
     public static final int RESULT_CODE_ADD_PAYMENT= 100;
@@ -51,5 +54,17 @@ public class Helpers {
             result+= (word+" ");
         }
         return result.substring(0,result.length());
+    }
+
+    public static String getStringByName(Context context,String name){
+        Resources res= context.getResources();
+        int id= res.getIdentifier(name, "string", context.getPackageName());
+        String result;
+        try {
+            result= res.getString(id);
+        }catch (Resources.NotFoundException e){
+            result= null;
+        }
+        return result;
     }
 }
