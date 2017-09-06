@@ -1,5 +1,7 @@
 package ug.karuhanga.logrealty.Activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.orm.SugarContext;
 
@@ -33,6 +35,7 @@ public class Gist extends AppCompatActivity
     private FloatingActionButton fabShowFabs, fabAdd, fabEdit, fabDelete;
     private int currentFragment;
     private Toolbar toolbar;
+    private SearchView searchView;
 
     private Animation rotate_forward, rotate_backward, open, close;
 
@@ -42,6 +45,7 @@ public class Gist extends AppCompatActivity
         SugarContext.init(this);
         setContentView(R.layout.gist_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        searchView = (SearchView) findViewById(R.id.search_view_gist);
         setSupportActionBar(toolbar);
         currentFragment= Helpers.FRAGMENT_NONE;
 
@@ -77,7 +81,13 @@ public class Gist extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if (searchView.getVisibility()==View.VISIBLE){
+            searchView.startAnimation(close);
+            searchView.setVisibility(View.GONE);
+            findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+        }
+        else {
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             super.onBackPressed();
         }
@@ -87,6 +97,12 @@ public class Gist extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gist, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
         return true;
     }
 
@@ -102,10 +118,16 @@ public class Gist extends AppCompatActivity
             startActivityForResult(new Intent(Gist.this, Settings.class), Helpers.RESULT_CODE_SETTINGS);
         }
         else if (id == R.id.menu_item_search){
-            onSearchRequested();
+            doStartSearchStuff();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void doStartSearchStuff() {
+        searchView.startAnimation(open);
+        searchView.setVisibility(View.VISIBLE);
+        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -158,8 +180,9 @@ public class Gist extends AppCompatActivity
             case Helpers.FRAGMENT_DUE_PAYMENTS:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
                 return;
+            case Helpers.FRAGMENT_LOCATIONS:
+                startActivityForResult(new Intent(Gist.this, AddLocation.class), Helpers.RESULT_CODE_ADD_LOCATION);
             default:
-                startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
                 return;
         }
     }

@@ -55,6 +55,10 @@
             android:name=".Activities.Settings"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.AddLocation"
+            android:label="@string/title_activity_add_location"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
