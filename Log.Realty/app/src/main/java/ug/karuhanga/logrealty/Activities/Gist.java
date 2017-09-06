@@ -62,6 +62,7 @@ public class Gist extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             super.onBackPressed();
         }
     }
@@ -170,7 +171,7 @@ public class Gist extends AppCompatActivity
         currentFragment= entity;
         String label= Helpers.getStringByName(this, "fragment_label_"+String.valueOf(currentFragment));
         if (label==null){
-            return;
+            label= getString(R.string.app_name);
         }
 
         toolbar.setTitle(label);
