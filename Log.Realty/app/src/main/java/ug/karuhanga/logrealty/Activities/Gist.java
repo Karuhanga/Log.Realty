@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.orm.SugarContext;
@@ -28,9 +30,11 @@ import ug.karuhanga.logrealty.R;
 public class Gist extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EntityInterface.OnFragmentInteractionListener {
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabShowFabs, fabAdd, fabEdit, fabDelete;
     private int currentFragment;
     private Toolbar toolbar;
+
+    private Animation rotate_forward, rotate_backward, open, close;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,20 @@ public class Gist extends AppCompatActivity
         setSupportActionBar(toolbar);
         currentFragment= Helpers.FRAGMENT_NONE;
 
-        fab = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
-        fab.setOnClickListener(this);
+        fabAdd = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
+        fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_stuff);
+        fabDelete = (FloatingActionButton) findViewById(R.id.fab_delete_stuff);
+        fabShowFabs = (FloatingActionButton) findViewById(R.id.fab_crud_ops);
+
+        fabAdd.setOnClickListener(this);
+        fabEdit.setOnClickListener(this);
+        fabDelete.setOnClickListener(this);
+        fabShowFabs.setOnClickListener(this);
+
+        rotate_forward= AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotate_backward= AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
+        open= AnimationUtils.loadAnimation(this, R.anim.fab_open);
+        close= AnimationUtils.loadAnimation(this, R.anim.fab_close);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -119,18 +135,18 @@ public class Gist extends AppCompatActivity
         switch (requestCode){
             case Helpers.RESULT_CODE_ADD_PAYMENT:
                 if (resultCode==RESULT_OK){
-                    Snackbar.make(fab, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                    Snackbar.make(fabAdd, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
                 }
                 else{
-                    Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                    Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
                 }
                 return;
         case Helpers.RESULT_CODE_SETTINGS:
             if (resultCode==RESULT_OK){
-                Snackbar.make(fab, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                Snackbar.make(fabAdd, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
             }
             else{
-                Snackbar.make(fab, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
             }
             return;
         }
@@ -179,9 +195,37 @@ public class Gist extends AppCompatActivity
         return;
     }
 
+    private void toggleVisibility() {
+        if (fabAdd.getVisibility()==View.VISIBLE){
+            fabShowFabs.startAnimation(rotate_backward);
+            fabAdd.startAnimation(close);
+            fabDelete.startAnimation(close);
+            fabEdit.startAnimation(close);
+
+            fabShowFabs.setImageResource(R.drawable.icon_edit);
+            fabAdd.setVisibility(View.GONE);
+            fabDelete.setVisibility(View.GONE);
+            fabEdit.setVisibility(View.GONE);
+        }
+        else{
+            fabShowFabs.startAnimation(rotate_forward);
+            fabAdd.startAnimation(open);
+            fabDelete.startAnimation(open);
+            fabEdit.startAnimation(open);
+
+            fabShowFabs.setImageResource(R.drawable.ic_replay_black_24dp);
+            fabAdd.setVisibility(View.VISIBLE);
+            fabDelete.setVisibility(View.VISIBLE);
+            fabEdit.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onClick(View view) {
-        if (view.equals(fab)){
+        if (view.equals(fabShowFabs)){
+            toggleVisibility();
+        }
+        else if (view.equals(fabAdd)){
             commenceAddition();
         }
     }
