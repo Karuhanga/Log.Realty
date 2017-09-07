@@ -20,7 +20,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/add_payment_content" />
+    <include
+        layout="@layout/add_payment_content"
+        android:layout_width="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_payment"
@@ -28,9 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
         app:elevation="5dp"
         app:fabSize="normal"
-        app:srcCompat="?android:attr/textCheckMark" />
+        app:srcCompat="@drawable/ic_check_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

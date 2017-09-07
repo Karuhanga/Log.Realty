@@ -23,6 +23,10 @@
             android:id="@+id/menu_item_tenants"
             android:icon="@drawable/ic_wc_black_24dp"
             android:title="Tenants" />
+        <item
+            android:id="@+id/menu_item_payments"
+            android:icon="@drawable/ic_layers_black_24dp"
+            android:title="Payments" />
     </group>
 
     <item

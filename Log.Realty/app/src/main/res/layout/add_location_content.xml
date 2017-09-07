@@ -8,4 +8,35 @@
     tools:context="ug.karuhanga.logrealty.Activities.AddLocation"
     tools:showIn="@layout/add_location_activity">
 
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:showDividers="end"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="8dp">
+
+        <EditText
+            android:id="@+id/edit_text_add_location_location"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:hint="Location Name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/edit_text_add_location_amount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="Default Rent Paid Here"
+            android:inputType="number" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

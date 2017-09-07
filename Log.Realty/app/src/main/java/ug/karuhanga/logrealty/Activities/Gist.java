@@ -144,6 +144,8 @@ public class Gist extends AppCompatActivity
             displayFragment(Helpers.FRAGMENT_HOUSES);
         } else if (id == R.id.menu_item_tenants) {
             displayFragment(Helpers.FRAGMENT_TENANTS);
+        } else if (id == R.id.menu_item_payments) {
+            displayFragment(Helpers.FRAGMENT_PAYMENTS);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -154,6 +156,8 @@ public class Gist extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //TODO Find less crude manner of notifying data update
+        displayFragment(currentFragment);
         switch (requestCode){
             case Helpers.RESULT_CODE_ADD_PAYMENT:
                 if (resultCode==RESULT_OK){
@@ -171,6 +175,8 @@ public class Gist extends AppCompatActivity
                 Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
             }
             return;
+        default:
+            return;
         }
 
     }
@@ -182,6 +188,16 @@ public class Gist extends AppCompatActivity
                 return;
             case Helpers.FRAGMENT_LOCATIONS:
                 startActivityForResult(new Intent(Gist.this, AddLocation.class), Helpers.RESULT_CODE_ADD_LOCATION);
+                return;
+            case Helpers.FRAGMENT_HOUSES:
+                startActivityForResult(new Intent(Gist.this, AddHouse.class), Helpers.RESULT_CODE_ADD_HOUSE);
+                return;
+            case Helpers.FRAGMENT_TENANTS:
+                startActivityForResult(new Intent(Gist.this, AddTenant.class), Helpers.RESULT_CODE_ADD_TENANT);
+                return;
+            case Helpers.FRAGMENT_PAYMENTS:
+                startActivityForResult(new Intent(Gist.this, AddPayment.class), Helpers.RESULT_CODE_ADD_PAYMENT);
+                return;
             default:
                 return;
         }

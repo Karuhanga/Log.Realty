@@ -11,9 +11,12 @@
     <LinearLayout
         android:layout_width="368dp"
         android:layout_height="495dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:showDividers="end"
-        tools:layout_editor_absoluteX="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteY="8dp">
 
         <AutoCompleteTextView

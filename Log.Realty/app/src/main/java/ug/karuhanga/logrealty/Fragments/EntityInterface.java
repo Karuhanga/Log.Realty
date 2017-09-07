@@ -50,7 +50,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
     private int displayNumber;
     private Button buttonLoadMore;
     private ListView listView;
-    private Adapter listAdapter;
+    private ArrayAdapter listAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,7 +81,6 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
             ENTITY  = getArguments().getInt("ENTITY");
         }
         displayNumber= 10;
-        fetchData(displayNumber);
     }
 
     @Override
@@ -91,20 +90,21 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
         buttonLoadMore= (Button) view.findViewById(R.id.button_load_more_entity_interface_fragment);
         listView= (ListView) view.findViewById(R.id.list_view_entity_interfaces);
-        listAdapter= new ArrayAdapter<MinifiedRecord>(getContext(), R.layout.list_item_entity_interface, R.id.list_view_entity_interfaces, data);
+        listAdapter= new ArrayAdapter<>(getContext(), R.layout.list_item_entity_interface, R.id.textView_list_item_entity_interface, data);
 
         listView.setAdapter((ListAdapter) listAdapter);
         listView.setOnItemClickListener(this);
 
         buttonLoadMore.setOnClickListener(this);
+
+        fetchData(displayNumber);
+
         int data_amount= data.size();
         if (displayNumber>data_amount){
             displayNumber= data_amount;
             buttonLoadMore.setVisibility(View.GONE);
         }
 
-        //TODO Remove Debug tool
-        ((TextView) view.findViewById(R.id.textView_temp1)).setText(Helpers.getStringByName(getContext(), "fragment_label_"+String.valueOf(ENTITY)));
 
         return view;
     }
@@ -153,7 +153,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
         switch (ENTITY){
             case Helpers.FRAGMENT_LOCATIONS:
                 List<Location> results;
-                results= Select.from(Location.class).list();
+                results= Select.from(Location.class).limit(String.valueOf(limit)).list();
                 for (Location result : results) {
                     data.add(new MinifiedRecord(result.getId(), result.toString()));
                 }
@@ -187,6 +187,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
                 }
                 break;
         }
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override

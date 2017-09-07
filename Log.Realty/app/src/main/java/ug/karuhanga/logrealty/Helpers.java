@@ -24,6 +24,10 @@ public class Helpers {
     public static final int RESULT_CODE_ADD_PAYMENT= 100;
     public static final int RESULT_CODE_SETTINGS= 101;
     public static final int RESULT_CODE_ADD_LOCATION= 102;
+    public static final int RESULT_CODE_ADD_HOUSE= 103;
+    public static final int RESULT_CODE_ADD_TENANT= 104;
+
+    public static final int AMOUNT_MINIMUM_RENT= 250000;
 
     public static Date dueUpdater(Date oldDue, int amount, int rate){
         int months= amount/rate;

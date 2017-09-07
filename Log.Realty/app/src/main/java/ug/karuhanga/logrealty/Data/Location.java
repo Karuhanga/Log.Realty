@@ -1,5 +1,7 @@
 package ug.karuhanga.logrealty.Data;
 
+import ug.karuhanga.logrealty.Helpers;
+
 /**
  * Created by karuhanga on 8/25/17.
  */
@@ -16,6 +18,12 @@ public class Location extends Record {
     public Location(String name, android.location.Location location, int defaultRent) {
         this.name = name;
         this.location = location;
+        this.defaultRent= defaultRent;
+    }
+
+    public Location(String name, int defaultRent) {
+        this.name = name;
+        this.location = null;
         this.defaultRent= defaultRent;
     }
 
@@ -41,5 +49,10 @@ public class Location extends Record {
 
     public void setDefaultRent(int defaultRent) {
         this.defaultRent = defaultRent;
+    }
+
+    @Override
+    public String toString(){
+        return name+", "+String.valueOf(defaultRent);
     }
 }

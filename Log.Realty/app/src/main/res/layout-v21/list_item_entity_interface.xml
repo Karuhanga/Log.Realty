@@ -15,20 +15,19 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_inner_list_item_entity_interface"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="2dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/textView_list_item_entity_interface"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="Entity"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+                android:textAlignment="gravity"
+                android:textAppearance="@android:style/TextAppearance.Material.Large"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="8dp" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

@@ -95,4 +95,6 @@
     <string name="fragment_label_1004">Tenants</string>
     <string name="fragment_label_1005">Payments</string>
     <string name="title_activity_add_location">Add Location</string>
+    <string name="title_activity_add_house">Add House</string>
+    <string name="title_activity_add_tenant">Add Tenant</string>
 </resources>
