@@ -8,4 +8,116 @@
     tools:context="ug.karuhanga.logrealty.Activities.AddTenant"
     tools:showIn="@layout/add_tenant_activity">
 
+    <ScrollView
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:showDividers="end"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_fname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="First Name"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_onames"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="Surname/Other Names"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="Email Address"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_contact"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="Telephone Contact"
+                android:inputType="text|phone" />
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_idtype"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="ID Type"
+                android:inputType="textAutoCorrect" />
+
+            <EditText
+                android:id="@+id/edit_text_add_tenant_idno"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:foregroundGravity="center_horizontal"
+                android:hint="ID Number"
+                android:inputType="text" />
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="House Occupied" />
+
+            <TextView
+                android:id="@+id/label_date_picker_add_tenant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/date_picker_add_tenant_entering"
+                android:text="Date Entered"
+                android:textSize="19sp" />
+
+            <DatePicker
+                android:id="@+id/date_picker_add_tenant_entering"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:calendarViewShown="false"
+                android:foregroundGravity="center_horizontal"
+                android:headerBackground="@color/colorStatusBar"
+                android:theme="@style/Base.CardView"
+                tools:calendarViewShown="true" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </android.support.constraint.ConstraintLayout>

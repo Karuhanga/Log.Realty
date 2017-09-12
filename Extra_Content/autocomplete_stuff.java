@@ -51,13 +51,8 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         adapter= null;
 
         editTextTenant.setOnItemClickListener(this);
-        editTextTenant.setThreshold(1);
         editTextTenant.addTextChangedListener(this);
 
-        results= Select.from(Tenant.class).list();
-        adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
-        adapter.setNotifyOnChange(true);
-        editTextTenant.setAdapter(adapter);
 
         fab.setOnClickListener(this);
     }
@@ -67,7 +62,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         try{
             amount= Integer.valueOf(editTextAmount.getText().toString());
         }catch (NumberFormatException e){
-            onPaymentUnsuccessful("Amount Error");
+            onAmountError();
             return;
         }
 
@@ -84,7 +79,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         boolean successful= chosen.updateRentDue(payment);
         if (!successful){
             payment.delete();
-            onPaymentUnsuccessful("Payment Unsuccessful");
+            onPaymentUnsuccessful();
             return;
         }
         chosen.save();
@@ -93,12 +88,51 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         finish();
     }
 
-    protected void onPaymentUnsuccessful(String notif){
-        Toast.makeText(this, notif, Toast.LENGTH_SHORT).show();
+    protected void onAmountError(){
+        Toast.makeText(this, "Amount Error", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void onPaymentUnsuccessful(){
+        Toast.makeText(this, "Payment Unsuccessful", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void clearAutoCompleteOptions(){
+        editTextTenant.dismissDropDown();
+        if (adapter==null){
+            return;
+        }
+        adapter.clear();
+    }
+
+    protected void populateOptions(){
+        if (adapter==null){
+            adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
+            adapter.setNotifyOnChange(true);
+            editTextTenant.setAdapter(adapter);
+        }
+        adapter.notifyDataSetChanged();
+        editTextTenant.showDropDown();
     }
 
     protected void onNoMatch(){
         editTextTenant.setTextColor(Color.RED);
+    }
+
+    protected void updateOptions(String soFar){
+        if (soFar==null || soFar.length()<1){
+            clearAutoCompleteOptions();
+            return;
+        }
+
+        results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("fName")).like(soFar+"%")).list();
+        results.addAll(Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("oNames")).like(soFar+"%")).list());
+
+        if ((results==null) || results.isEmpty()){
+            onNoMatch();
+            return;
+        }
+
+        populateOptions();
     }
 
     @Override
@@ -109,10 +143,10 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        chosen= (Tenant) adapterView.getItemAtPosition(i);
-        editTextAmount.requestFocus();
-        //TODO Move to next and indicate something was chosen
+    public void afterTextChanged(Editable editable) {
+        editTextTenant.setTextColor(previousColor);
+        String soFar= editable.toString();
+        updateOptions(soFar);
     }
 
     @Override
@@ -126,7 +160,8 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
-    public void afterTextChanged(Editable editable) {
-
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        chosen= results.get(i);
+        //TODO Move to next and indicate something was chosen
     }
 }

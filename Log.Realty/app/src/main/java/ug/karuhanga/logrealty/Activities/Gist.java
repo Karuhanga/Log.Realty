@@ -205,6 +205,13 @@ public class Gist extends AppCompatActivity
 
     private void displayFragment(int entity) {
         //TODO Test Fragment Transitions
+        if (entity==Helpers.FRAGMENT_DUE_PAYMENTS){
+            fabShowFabs.setImageResource(R.drawable.ic_add_black_24dp);
+        }
+        else{
+            fabShowFabs.setImageResource(R.drawable.icon_edit);
+        }
+
         EntityInterface fragment;
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
@@ -262,7 +269,12 @@ public class Gist extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view.equals(fabShowFabs)){
-            toggleVisibility();
+            if (currentFragment==Helpers.FRAGMENT_DUE_PAYMENTS){
+                commenceAddition();
+            }
+            else{
+                toggleVisibility();
+            }
         }
         else if (view.equals(fabAdd)){
             commenceAddition();
