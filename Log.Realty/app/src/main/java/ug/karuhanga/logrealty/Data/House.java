@@ -30,7 +30,8 @@ public class House extends Record {
 
     @Override
     public String toString(){
-        return "House "+String.valueOf(number)+", "+description+", "+location+"/n"+String.valueOf(rent);
+        //TODO Add tenant to description
+        return "House "+String.valueOf(number)+": "+description+"\n"+location+"\n"+String.valueOf(rent);
     }
 
     public int getRent() {

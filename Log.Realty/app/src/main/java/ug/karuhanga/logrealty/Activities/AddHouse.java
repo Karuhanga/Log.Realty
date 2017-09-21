@@ -86,7 +86,6 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
 
         if (chosen==null){
             onNoMatch();
-            Toast.makeText(this, "Please pick a Location", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -101,15 +100,9 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
         Toast.makeText(this, notif, Toast.LENGTH_SHORT).show();
     }
 
-    protected void clearAutoCompleteOptions(){
-        editTextLocation.dismissDropDown();
-        if (adapter==null){
-            return;
-        }
-    }
-
     protected void onNoMatch(){
         editTextLocation.setTextColor(Color.RED);
+        Toast.makeText(this, "Please pick a Location", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -123,7 +116,6 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         chosen= (Location) adapterView.getItemAtPosition(i);
         editTextNumber.requestFocus();
-        //TODO Move to next and indicate something was chosen
     }
 
     @Override

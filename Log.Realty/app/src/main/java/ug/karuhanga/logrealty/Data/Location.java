@@ -53,6 +53,6 @@ public class Location extends Record {
 
     @Override
     public String toString(){
-        return name+", "+String.valueOf(defaultRent);
+        return name;
     }
 }
