@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
@@ -24,9 +25,16 @@ import android.view.animation.AnimationUtils;
 
 import com.orm.SugarContext;
 
+import ug.karuhanga.logrealty.Fragments.DuePayments;
 import ug.karuhanga.logrealty.Fragments.EntityInterface;
 import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
+
+import static ug.karuhanga.logrealty.Helpers.ACTION_ADD;
+import static ug.karuhanga.logrealty.Helpers.ACTION_DELETE;
+import static ug.karuhanga.logrealty.Helpers.ACTION_SHOW;
+import static ug.karuhanga.logrealty.Helpers.FRAGMENT_DUE_PAYMENTS;
 
 
 public class Gist extends AppCompatActivity
@@ -34,8 +42,10 @@ public class Gist extends AppCompatActivity
 
     private FloatingActionButton fabShowFabs, fabAdd, fabEdit, fabDelete;
     private int currentFragment;
+    private Fragment currentFrag;
     private Toolbar toolbar;
     private SearchView searchView;
+    private int selected;
 
     private Animation rotate_forward, rotate_backward, open, close;
 
@@ -48,6 +58,7 @@ public class Gist extends AppCompatActivity
         searchView = (SearchView) findViewById(R.id.search_view_gist);
         setSupportActionBar(toolbar);
         currentFragment= Helpers.FRAGMENT_NONE;
+        selected= 0;
 
         fabAdd = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
         fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_stuff);
@@ -81,16 +92,23 @@ public class Gist extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            return;
         }
-        else if (searchView.getVisibility()==View.VISIBLE){
+
+        if (searchView.getVisibility()==View.VISIBLE){
             searchView.startAnimation(close);
             searchView.setVisibility(View.GONE);
             findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+            return;
         }
-        else {
-            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            super.onBackPressed();
+
+        if (currentFrag instanceof GistInteractionListener){
+            if (((GistInteractionListener) currentFrag).onBackPressed()){
+                return;
+            }
         }
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        super.onBackPressed();
     }
 
     @Override
@@ -205,19 +223,19 @@ public class Gist extends AppCompatActivity
 
     private void displayFragment(int entity) {
         //TODO Test Fragment Transitions
-        if (entity==Helpers.FRAGMENT_DUE_PAYMENTS){
-            fabShowFabs.setImageResource(R.drawable.ic_add_black_24dp);
-        }
-        else{
-            fabShowFabs.setImageResource(R.drawable.icon_edit);
-        }
+        convertActionFab(ACTION_ADD);
 
-        EntityInterface fragment;
+        Fragment fragment;
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
 
-        EntityInterface storedFragment= (EntityInterface) fragmentManager.findFragmentByTag(String.valueOf(entity));
-        fragment= (storedFragment==null)? EntityInterface.newInstance(entity) : storedFragment;
+        Fragment storedFragment= fragmentManager.findFragmentByTag(String.valueOf(entity));
+        if (entity==FRAGMENT_DUE_PAYMENTS){
+            fragment= DuePayments.newInstance();
+        }
+        else {
+            fragment = (storedFragment == null) ? EntityInterface.newInstance(entity) : storedFragment;
+        }
 
         if (currentFragment==Helpers.FRAGMENT_NONE){
             fragmentTransaction.add(R.id.layout_fragment_holder, fragment);
@@ -231,36 +249,34 @@ public class Gist extends AppCompatActivity
 
         fragmentTransaction.commit();
         currentFragment= entity;
+        currentFrag= fragment;
         String label= Helpers.getStringByName(this, "fragment_label_"+String.valueOf(currentFragment));
         if (label==null){
             label= getString(R.string.app_name);
         }
 
         toolbar.setTitle(label);
+        selected= 0;
 
         return;
     }
 
-    private void toggleVisibility() {
-        if (fabAdd.getVisibility()==View.VISIBLE){
+    private void toggleFabVisibility() {
+        if (fabEdit.getVisibility()==View.VISIBLE){
             fabShowFabs.startAnimation(rotate_backward);
-            fabAdd.startAnimation(close);
             fabDelete.startAnimation(close);
             fabEdit.startAnimation(close);
 
             fabShowFabs.setImageResource(R.drawable.icon_edit);
-            fabAdd.setVisibility(View.GONE);
             fabDelete.setVisibility(View.GONE);
             fabEdit.setVisibility(View.GONE);
         }
         else{
             fabShowFabs.startAnimation(rotate_forward);
-            fabAdd.startAnimation(open);
             fabDelete.startAnimation(open);
             fabEdit.startAnimation(open);
 
             fabShowFabs.setImageResource(R.drawable.ic_replay_black_24dp);
-            fabAdd.setVisibility(View.VISIBLE);
             fabDelete.setVisibility(View.VISIBLE);
             fabEdit.setVisibility(View.VISIBLE);
         }
@@ -269,12 +285,19 @@ public class Gist extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view.equals(fabShowFabs)){
-            if (currentFragment==Helpers.FRAGMENT_DUE_PAYMENTS){
+            if (currentFragment==Helpers.FRAGMENT_DUE_PAYMENTS || (selected==0)){
                 commenceAddition();
+                return;
             }
-            else{
-                toggleVisibility();
+
+            if (selected>1){
+                if (currentFrag instanceof GistInteractionListener){
+                    ((GistInteractionListener) currentFrag).onDeletePressed();
+                }
+                return;
             }
+
+            toggleFabVisibility();
         }
         else if (view.equals(fabAdd)){
             commenceAddition();
@@ -282,7 +305,40 @@ public class Gist extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onSelectionUpdate(int selected) {
+        this.selected= selected;
 
+
+        switch (selected){
+            case 0:
+                if (fabEdit.getVisibility()==View.VISIBLE){
+                    toggleFabVisibility();
+                }
+                convertActionFab(ACTION_ADD);
+                return;
+            case 1:
+                convertActionFab(ACTION_SHOW);
+                return;
+            default:
+                if (fabEdit.getVisibility()==View.VISIBLE){
+                    toggleFabVisibility();
+                }
+                convertActionFab(ACTION_DELETE);
+        }
+
+
+    }
+
+    private void convertActionFab(int ACTION){
+        switch (ACTION){
+            case ACTION_ADD:
+                fabShowFabs.setImageResource(R.drawable.ic_add_black_24dp);
+                return;
+            case ACTION_DELETE:
+                fabShowFabs.setImageResource(R.drawable.ic_delete_black_24dp);
+                return;
+            default:
+                fabShowFabs.setImageResource(R.drawable.icon_edit);
+        }
     }
 }

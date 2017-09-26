@@ -10,8 +10,7 @@
         android:id="@+id/card_view_list_item_entity_interface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="3dp"
-        app:cardBackgroundColor="@color/cardview_shadow_end_color">
+        android:backgroundTint="@color/cardview_shadow_end_color">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/layout_inner_list_item_entity_interface"

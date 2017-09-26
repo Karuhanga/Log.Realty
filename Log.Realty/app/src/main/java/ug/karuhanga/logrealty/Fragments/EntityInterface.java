@@ -1,6 +1,7 @@
 package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,9 +12,11 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Checkable;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orm.query.Select;
 
@@ -26,7 +29,10 @@ import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
+
+import static android.graphics.Color.GREEN;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +42,7 @@ import ug.karuhanga.logrealty.R;
  * Use the {@link EntityInterface#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EntityInterface extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class EntityInterface extends Fragment implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener, GistInteractionListener {
     // TODO: Rename parameter arguments, choose names that match
     //TODO: BETTER FRGAMENT MANAGEMENT
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,6 +57,8 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
     private Button buttonLoadMore;
     private ListView listView;
     private ArrayAdapter listAdapter;
+    private boolean inSelectionProcess;
+    private List<MinifiedRecord> selected= new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,6 +95,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        inSelectionProcess= false;
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
         buttonLoadMore= (Button) view.findViewById(R.id.button_load_more_entity_interface_fragment);
         listView= (ListView) view.findViewById(R.id.list_view_entity_interfaces);
@@ -94,6 +103,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
 
         listView.setAdapter((ListAdapter) listAdapter);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
 
         buttonLoadMore.setOnClickListener(this);
 
@@ -107,13 +117,6 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
 
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -133,6 +136,79 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
         mListener = null;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (!inSelectionProcess){
+            return;
+        }
+
+        MinifiedRecord record= (MinifiedRecord) listAdapter.getItem(adapterView.getPositionForView(view));
+        if (selected.contains(record)){
+            selected.remove(record);
+            unSelectVisual(view);
+            if (selected.size()<1){
+                inSelectionProcess= false;
+            }
+            selectionUpdate(selected.size());
+            return;
+        }
+        selected.add(record);
+        selectVisual(view);
+        selectionUpdate(selected.size());
+        return;
+    }
+
+    private void selectVisual(View view) {
+        view.findViewById(R.id.layout_inner_list_item_entity_interface).setBackgroundColor(getResources().getColor(R.color.cardview_shadow_start_color));
+    }
+
+    private void unSelectVisual(View view) {
+        view.findViewById(R.id.layout_inner_list_item_entity_interface).setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (inSelectionProcess){
+            inSelectionProcess= false;
+            for (MinifiedRecord record : selected) {
+                unSelectVisual(listView.getChildAt(listAdapter.getPosition(record)));
+            }
+            selected.clear();
+            selectionUpdate(selected.size());
+            return true;
+        }
+        selected.clear();
+        selected.add((MinifiedRecord) listAdapter.getItem(i));
+        selectVisual(view);
+        inSelectionProcess= true;
+        selectionUpdate(selected.size());
+        return true;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (inSelectionProcess){
+            inSelectionProcess= false;
+            for (MinifiedRecord record : selected) {
+                unSelectVisual(listView.getChildAt(listAdapter.getPosition(record)));
+            }
+            selected.clear();
+            selectionUpdate(selected.size());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onEditPressed() {
+        return false;
+    }
+
+    @Override
+    public boolean onDeletePressed() {
+        return false;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -145,7 +221,13 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onSelectionUpdate(int selected);
+    }
+
+    public void selectionUpdate(int selected) {
+        if (mListener != null) {
+            mListener.onSelectionUpdate(selected);
+        }
     }
 
     private void fetchData(int limit) {
@@ -203,10 +285,5 @@ public class EntityInterface extends Fragment implements View.OnClickListener, A
         }
     }
 
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
 
 }
