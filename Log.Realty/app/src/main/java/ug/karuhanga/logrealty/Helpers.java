@@ -47,7 +47,7 @@ public class Helpers {
         Date newDue;
 
         try {
-            newDue= formatter.parse(String.format("%d/%d/%d", date[0], date[1], date[2]));
+            newDue= formatter.parse(String.format("%s/%s/%s", date[0], date[1], date[2]));
         } catch (ParseException e) {
             return oldDue;
         }
