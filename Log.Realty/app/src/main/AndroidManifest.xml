@@ -66,7 +66,7 @@
         <activity
             android:name=".Activities.AddTenant"
             android:label="@string/title_activity_add_tenant"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

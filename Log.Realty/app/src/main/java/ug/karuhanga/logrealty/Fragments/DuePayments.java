@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
 /**
@@ -18,7 +19,7 @@ import ug.karuhanga.logrealty.R;
  * Use the {@link DuePayments#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DuePayments extends Fragment {
+public class DuePayments extends Fragment implements Confirmation {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -80,6 +81,19 @@ public class DuePayments extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onReceiveResult(boolean result) {
+        if (!result){
+            return;
+        }
+        performPendingAction();
+    }
+
+    private void performPendingAction() {
+        //TODO Perform actual confirmed action
+        return;
     }
 
     /**

@@ -1,5 +1,6 @@
 package ug.karuhanga.logrealty.Listeners;
 
+import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Data.Record;
 
 /**
@@ -8,5 +9,5 @@ import ug.karuhanga.logrealty.Data.Record;
 
 public interface OnCRUDOperationListener {
     public void onOperationFailed(String notification);
-    public void onOperationComplete(boolean successful, Record record);
+    public void onOperationComplete(boolean successful, String message, MinifiedRecord record);
 }

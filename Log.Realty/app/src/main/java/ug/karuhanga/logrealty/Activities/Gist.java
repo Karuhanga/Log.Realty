@@ -25,6 +25,9 @@ import android.view.animation.AnimationUtils;
 
 import com.orm.SugarContext;
 
+import java.util.List;
+
+import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Fragments.DuePayments;
 import ug.karuhanga.logrealty.Fragments.EntityInterface;
 import ug.karuhanga.logrealty.Helpers;
@@ -302,6 +305,10 @@ public class Gist extends AppCompatActivity
         else if (view.equals(fabAdd)){
             commenceAddition();
         }
+        else if (view.equals(fabDelete)){
+            ((GistInteractionListener) currentFrag).onDeletePressed();
+            return;
+        }
     }
 
     @Override
@@ -327,6 +334,22 @@ public class Gist extends AppCompatActivity
         }
 
 
+    }
+
+    @Override
+    public void onCRUDOperationFailed(String notification) {
+
+    }
+
+    @Override
+    public void onCRUDOperationComplete(boolean successful, String message, List<MinifiedRecord> records) {
+        displayFragment(currentFragment);
+        String data= "";
+        for (MinifiedRecord record :
+                records) {
+            data+= "\n"+record.toString();
+        }
+        Snackbar.make(fabShowFabs, message+"\n"+data, Snackbar.LENGTH_SHORT).show();
     }
 
     private void convertActionFab(int ACTION){

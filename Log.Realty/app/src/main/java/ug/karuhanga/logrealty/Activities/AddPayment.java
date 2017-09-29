@@ -112,6 +112,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         chosen= (Tenant) adapterView.getItemAtPosition(i);
         editTextAmount.requestFocus();
+        editTextTenant.setText(chosen.getfName()+" "+chosen.getoNames());
         //TODO Move to next and indicate something was chosen
     }
 

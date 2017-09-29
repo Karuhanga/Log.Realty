@@ -27,8 +27,10 @@ import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Location;
 import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Data.Payment;
+import ug.karuhanga.logrealty.Data.Record;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
 
@@ -42,7 +44,7 @@ import static android.graphics.Color.GREEN;
  * Use the {@link EntityInterface#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EntityInterface extends Fragment implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener, GistInteractionListener {
+public class EntityInterface extends Fragment implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener, GistInteractionListener, Confirmation {
     // TODO: Rename parameter arguments, choose names that match
     //TODO: BETTER FRGAMENT MANAGEMENT
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -206,7 +208,57 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
 
     @Override
     public boolean onDeletePressed() {
+        new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Blah", R.drawable.icon_edit, "Yes", "No").show();
         return false;
+    }
+
+    @Override
+    public void onReceiveResult(boolean result) {
+        if (result){
+            performPendingActions();
+        }
+    }
+
+    private void performPendingActions() {
+        if (selected.size()<1){
+            return;
+            //TODO Notify Caller of failure
+        }
+        for (MinifiedRecord record:selected) {
+            boolean result;
+            switch (ENTITY){
+                case Helpers.FRAGMENT_LOCATIONS:
+                     result= Location.findById(Location.class, record.getId()).delete();
+                    if (result){
+                    }
+                    break;
+                case Helpers.FRAGMENT_HOUSES:
+                    result= House.findById(House.class, record.getId()).delete();
+                    if (result){
+                    }
+                    break;
+                case Helpers.FRAGMENT_TENANTS:
+                    result= Tenant.findById(Tenant.class, record.getId()).delete();
+                    if (result){
+                    }
+                    break;
+                case Helpers.FRAGMENT_PAYMENTS:
+                    Payment payment= Payment.findById(Payment.class, record.getId());
+                    result= payment.delete();
+                    if (result){
+                        //TODO Notify of Success and update details
+                        payment.setAmount(0-payment.getAmount());
+                        payment.getTenant().updateRentDue(payment);
+                    }
+                    //TODO Add Failure Notifs
+                    break;
+                default:
+                    return;
+            }
+        }
+        if (mListener != null) {
+            mListener.onCRUDOperationComplete(true,"Deleted:", selected);
+        }
     }
 
     /**
@@ -222,6 +274,8 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onSelectionUpdate(int selected);
+        public void onCRUDOperationFailed(String notification);
+        public void onCRUDOperationComplete(boolean successful, String message, List<MinifiedRecord> record);
     }
 
     public void selectionUpdate(int selected) {
