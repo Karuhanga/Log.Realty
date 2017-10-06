@@ -1,2 +1,5 @@
-Add Tenant House occupied not searching with locations
-Fabs acting up when adding data
+Add Ripples when fabs change
+Editting entities
+Improve interface layouts
+Adding action undos
+Add unoccupied houses
