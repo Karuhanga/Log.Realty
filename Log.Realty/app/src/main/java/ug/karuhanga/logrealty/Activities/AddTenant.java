@@ -18,7 +18,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.orm.query.Condition;
 import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.Date;
 import java.util.List;
@@ -26,9 +28,10 @@ import java.util.List;
 import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
-public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener {
+public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, Confirmation {
 
     private EditText first_name;
     private EditText surname;
@@ -41,6 +44,16 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     private FloatingActionButton fab;
     private EditText colored;
     private int previousColor;
+
+    String fName;
+    String oNames;
+    String Email;
+    String Contact;
+    String idType;
+    String idNo;
+    Date Entered;
+    List<Tenant> current;
+
 
     private House chosen;
     ArrayAdapter<House> adapter;
@@ -83,27 +96,27 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     }
 
     private void addTenant() {
-        String fName= first_name.getText().toString();
+        fName= first_name.getText().toString();
         fName= Helpers.cleaner(fName);
         if (fName==null){
             onError("Invalid Name", first_name);
             return;
         }
 
-        String oNames= surname.getText().toString();
+        oNames= surname.getText().toString();
         oNames= Helpers.cleaner(oNames);
         if (oNames==null){
             onError("Invalid Name", surname);
             return;
         }
 
-        String Email= email.getText().toString();
+        Email= email.getText().toString();
         if (!Email.matches(Helpers.REGEX_EMAIL)){
             onError("Invalid Email", email);
             return;
         }
 
-        String Contact= contact.getText().toString();
+        Contact= contact.getText().toString();
         if (Contact.length()!=10){
             onError("Invalid Contact", contact);
             return;
@@ -115,21 +128,21 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
             return;
         }
 
-        String idType= id_type.getText().toString();
+        idType= id_type.getText().toString();
         idType= Helpers.cleaner(idType);
         if (idType==null){
             onError("Invalid ID Type", id_type);
             return;
         }
 
-        String idNo= id_no.getText().toString();
+        idNo= id_no.getText().toString();
         idNo= Helpers.cleaner(idNo);
         if (idNo==null){
             onError("Invalid ID Number", id_no);
             return;
         }
 
-        Date Entered= Helpers.makeDate(date_entered.getDayOfMonth(), date_entered.getMonth(), date_entered.getYear());
+        Entered= Helpers.makeDate(date_entered.getDayOfMonth(), date_entered.getMonth(), date_entered.getYear());
         if (Entered==null){
             Toast.makeText(this, "Invalid Date", Toast.LENGTH_SHORT).show();
             return;
@@ -140,7 +153,26 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
             return;
         }
 
-        new Tenant(fName, oNames, Email, Contact, Entered, idType, idNo, chosen).save();
+        current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
+        if (current.size()>0){
+            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+chosen.toString(), R.drawable.ic_edit_black_24dp, "Yes", "No").show();
+            return;
+        }
+        else{
+            completeAddition();
+        }
+    }
+
+    private void completeAddition(){
+        if (current.size()>0){
+            current.get(0).setEx(true);
+            current.get(0).save();
+        }
+        Tenant tenant= new Tenant(fName, oNames, Email, Contact, Entered, idType, idNo, chosen);
+        tenant.save();
+        //TODO set tenant to house..resolve error causing crush(Weak HashMap)
+//        chosen.setTenant(tenant);
+//        chosen.save();
         finish();
         //TODO Finish with notification to activity and chance to undo
     }
@@ -178,5 +210,12 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         chosen= (House) adapterView.getItemAtPosition(i);
         date_entered.requestFocus();
+    }
+
+    @Override
+    public void onReceiveResult(boolean result) {
+        if (result){
+            completeAddition();
+        }
     }
 }

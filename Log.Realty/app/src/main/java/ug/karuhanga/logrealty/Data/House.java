@@ -19,6 +19,7 @@ public class House extends Record {
         this.description = description;
         this.location = location;
         this.rent= location.getDefaultRent();
+        this.tenant= null;
     }
 
     public House(int number, int rent, Location location, String description) {
@@ -26,6 +27,7 @@ public class House extends Record {
         this.rent = rent;
         this.description= description;
         this.location = location;
+        this.tenant= null;
     }
 
     @Override

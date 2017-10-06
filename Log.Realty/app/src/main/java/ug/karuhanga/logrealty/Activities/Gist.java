@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.orm.SugarContext;
 
@@ -332,8 +333,6 @@ public class Gist extends AppCompatActivity
                 }
                 convertActionFab(ACTION_DELETE);
         }
-
-
     }
 
     @Override
@@ -345,11 +344,11 @@ public class Gist extends AppCompatActivity
     public void onCRUDOperationComplete(boolean successful, String message, List<MinifiedRecord> records) {
         displayFragment(currentFragment);
         String data= "";
-        for (MinifiedRecord record :
-                records) {
-            data+= "\n"+record.toString();
+        for (MinifiedRecord record : records) {
+            data+= "\n"+record.getDescription();
         }
-        Snackbar.make(fabShowFabs, message+"\n"+data, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(fabShowFabs, message+": "+data, Snackbar.LENGTH_SHORT).show();
+        //TODO Set undo action
     }
 
     private void convertActionFab(int ACTION){

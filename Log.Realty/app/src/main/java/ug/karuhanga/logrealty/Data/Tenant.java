@@ -17,6 +17,7 @@ public class Tenant extends Record {
     private Date rentDue;
     private String idType;
     private String idNo;
+    private boolean ex;
 
     private House house;
 
@@ -33,6 +34,7 @@ public class Tenant extends Record {
         this.idType = idType;
         this.idNo = idNo;
         this.house = house;
+        this.ex= false;
     }
 
     public boolean updateRentDue(Payment payment){
@@ -119,5 +121,13 @@ public class Tenant extends Record {
 
     public void setHouse(House house) {
         this.house = house;
+    }
+
+    public boolean isEx() {
+        return ex;
+    }
+
+    public void setEx(boolean ex) {
+        this.ex = ex;
     }
 }

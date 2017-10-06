@@ -54,11 +54,29 @@ public class Helpers {
         return newDue;
     }
 
+    public static Date getLaterDate(Date oldDate, int days){
+        SimpleDateFormat formatter= new SimpleDateFormat("dd/MM/yyyy");
+        String date[]= formatter.format(oldDate).split("/");
+
+        int day= Integer.valueOf(date[0]);
+        day+= days;
+        date[0]= String.valueOf(day);
+
+        Date newDate;
+
+        try {
+            newDate= formatter.parse(String.format("%s/%s/%s", date[0], date[1], date[2]));
+        } catch (ParseException e) {
+            return oldDate;
+        }
+        return newDate;
+    }
+
     public static Date makeDate(int day, int month, int year){
         SimpleDateFormat formatter= new SimpleDateFormat("dd/MM/yyyy");
         Date result= null;
         try {
-            result= formatter.parse(String.format("%d/%d/%d", day, month, year));
+            result= formatter.parse(String.format("%d/%d/%d", day, month+1, year));
         } catch (ParseException e) {
             result= null;
         }finally {
@@ -97,5 +115,19 @@ public class Helpers {
             result= null;
         }
         return result;
+    }
+
+    public static String dateToString(Date date){
+        if (date==null){
+            return "";
+        }
+        String[] helper= date.toString().split(" ");
+        return helper[0]+", "+helper[2]+" "+helper[1]+" "+helper[5];
+    }
+
+    public static String toCurrency(int number){
+        String result= String.valueOf(number);
+        String[] helper= result.split("");
+        return "UgShs. "+helper[1]+helper[2]+helper[3]+","+helper[4]+helper[5]+helper[6]+"/=";
     }
 }

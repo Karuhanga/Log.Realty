@@ -18,7 +18,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orm.query.Condition;
 import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,7 +210,11 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
 
     @Override
     public boolean onDeletePressed() {
-        new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Blah", R.drawable.icon_edit, "Yes", "No").show();
+        if (selected.size()>1){
+            new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+String.valueOf(selected.size())+" items", R.drawable.ic_delete_black_24dp, "Yes", "No").show();
+            return false;
+        }
+        new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+selected.get(0).getDescription(), R.drawable.ic_delete_black_24dp, "Yes", "No").show();
         return false;
     }
 
@@ -247,8 +253,11 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                     result= payment.delete();
                     if (result){
                         //TODO Notify of Success and update details
+                        //TODO Due Date not updating
                         payment.setAmount(0-payment.getAmount());
+                        Toast.makeText(getContext(), String.valueOf(payment.getAmount()), Toast.LENGTH_SHORT).show();
                         payment.getTenant().updateRentDue(payment);
+                        payment.getTenant().save();
                     }
                     //TODO Add Failure Notifs
                     break;
@@ -303,7 +312,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                 break;
             case Helpers.FRAGMENT_TENANTS:
                 List<Tenant> results3;
-                results3= Select.from(Tenant.class).limit(String.valueOf(limit)).list();
+                results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).limit(String.valueOf(limit)).list();
                 for (Tenant result : results3) {
                     data.add(new MinifiedRecord(result.getId(), result.toString()));
                 }

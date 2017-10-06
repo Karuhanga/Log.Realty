@@ -54,7 +54,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         editTextTenant.setThreshold(1);
         editTextTenant.addTextChangedListener(this);
 
-        results= Select.from(Tenant.class).list();
+        results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
         adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
         adapter.setNotifyOnChange(true);
         editTextTenant.setAdapter(adapter);

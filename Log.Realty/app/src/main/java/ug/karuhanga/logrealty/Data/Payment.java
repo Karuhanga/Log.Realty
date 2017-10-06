@@ -2,6 +2,9 @@ package ug.karuhanga.logrealty.Data;
 
 import java.util.Date;
 
+import static ug.karuhanga.logrealty.Helpers.dateToString;
+import static ug.karuhanga.logrealty.Helpers.toCurrency;
+
 /**
  * Created by karuhanga on 8/25/17.
  */
@@ -26,7 +29,7 @@ public class Payment extends Record {
 
     @Override
     public String toString(){
-        return String.valueOf(amount)+", paid by"+ tenant.getfName()+" "+tenant.getoNames();
+        return toCurrency(amount)+"\n"+dateToString(date)+"\n"+ tenant.getfName()+"- "+tenant.getHouse().getLocation().getName()+" (House "+String.valueOf(tenant.getHouse().getNumber())+")";
     }
 
     public Date getDate() {
