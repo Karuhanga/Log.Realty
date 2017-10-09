@@ -3,7 +3,6 @@ package ug.karuhanga.logrealty.Activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.orm.SugarContext;
 
@@ -227,7 +225,7 @@ public class Gist extends AppCompatActivity
 
     private void displayFragment(int entity) {
         //TODO Test Fragment Transitions
-        convertActionFab(ACTION_ADD);
+        onSelectionUpdate(0);
 
         Fragment fragment;
         FragmentManager fragmentManager= getSupportFragmentManager();
@@ -316,7 +314,6 @@ public class Gist extends AppCompatActivity
     public void onSelectionUpdate(int selected) {
         this.selected= selected;
 
-
         switch (selected){
             case 0:
                 if (fabEdit.getVisibility()==View.VISIBLE){
@@ -333,6 +330,11 @@ public class Gist extends AppCompatActivity
                 }
                 convertActionFab(ACTION_DELETE);
         }
+    }
+
+    @Override
+    public void onDetailsRequested(Long id) {
+        startActivity(new Intent(this, Details.class).putExtra("entity", currentFragment).putExtra("id", id));
     }
 
     @Override

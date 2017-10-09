@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,14 +25,18 @@ import java.util.List;
 
 import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Location;
+import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
-public class AddHouse extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener {
+public class AddHouse extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
 
     FloatingActionButton fab;
     EditText editTextNumber;
     AutoCompleteTextView editTextLocation;
+    CheckBox checkBoxSingleHouse;
+    CheckBox checkBoxDefaultRent;
     EditText description;
+    EditText editTextRentPaid;
     ArrayAdapter<Location> adapter;
     List<Location> results;
     Location chosen;
@@ -42,10 +48,14 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
         setContentView(R.layout.add_house_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_house);
+        checkBoxSingleHouse= (CheckBox) findViewById(R.id.checkBox_single_house_add_house);
+        checkBoxDefaultRent= (CheckBox) findViewById(R.id.checkBox_location_rent_add_house);
         editTextLocation= (AutoCompleteTextView) findViewById(R.id.edit_text_add_house_location);
         editTextNumber= (EditText) findViewById(R.id.edit_text_add_house_number);
+        editTextRentPaid= (EditText) findViewById(R.id.editText_rent_paid_add_house);
         description= (EditText) findViewById(R.id.edit_text_add_house_description);
         previousColor= editTextLocation.getCurrentTextColor();
         chosen= null;
@@ -54,9 +64,14 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
         editTextLocation.setOnItemClickListener(this);
         editTextLocation.setThreshold(1);
         editTextLocation.addTextChangedListener(this);
+        editTextNumber.addTextChangedListener(this);
+        editTextRentPaid.addTextChangedListener(this);
+        description.addTextChangedListener(this);
+        checkBoxSingleHouse.setOnCheckedChangeListener(this);
+        checkBoxDefaultRent.setOnCheckedChangeListener(this);
 
         results= Select.from(Location.class).list();
-        adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
+        adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, results);
         adapter.setNotifyOnChange(true);
         editTextLocation.setAdapter(adapter);
 
@@ -66,43 +81,105 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
     private void addHouse(){
         int number;
         String desc;
+        int rentPaid;
+        House house;
+         //Must have a location
+        if (chosen==null){
+            onError(editTextLocation, "Please pick a house location or add one first");
+            return;
+        }
+
+        //Only one single house
+        List<House> results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(0)).list();
+        if (!(results.isEmpty())){
+            onError(editTextNumber, "This house was added already");
+            return;
+        }
+
+        //No description and house number
+        if (checkBoxSingleHouse.isChecked()){
+
+            //No rent
+            if (checkBoxDefaultRent.isChecked()){
+                house= new House(chosen);
+                house.save();
+                Intent finisher= new Intent();
+                finisher.putExtra("details", house.toString());
+                finish();
+                return;
+            }
+
+            //else get rent paid
+            try{
+                rentPaid= Integer.valueOf(editTextRentPaid.getText().toString());
+            }catch (NumberFormatException e){
+                onError(editTextRentPaid, "Please input a rent amount");
+                return;
+            }
+            if (rentPaid< Helpers.AMOUNT_MINIMUM_RENT){
+                onError(editTextRentPaid, "Rent must be at least UgShs.250,000/=");
+                return;
+            }
+            house= new House(chosen, rentPaid);
+            house.save();
+            Intent finisher= new Intent();
+            finisher.putExtra("details", house.toString());
+            finish();
+            return;
+        }
 
         desc= description.getText().toString();
+        if (desc.length()<1){
+            onError(description, "Please provide a small description");
+            return;
+        }
 
         try{
             number= Integer.valueOf(editTextNumber.getText().toString());
         }catch (NumberFormatException e){
-            onNumberError("Number Error");
+            onError(editTextNumber, "Please input a house number");
             return;
         }
-
         List<House> responses= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(number)).list();
         if (!(responses.isEmpty())){
-            onNumberError("A House with this No. already exists");
+            onError(editTextNumber, "This house was added already");
             return;
         }
-        //TODO Check if number already exists
-        //TODO Add unique rent entry option
-
-        if (chosen==null){
-            onNoMatch();
+        if (number==0){
+            onError(editTextNumber, "Please input a valid house number");
             return;
         }
 
-        House house= new House(number,desc, chosen);
+        if (checkBoxDefaultRent.isChecked()){
+            house= new House(number, desc, chosen);
+            house.save();
+            Intent finisher= new Intent();
+            finisher.putExtra("details", house.toString());
+            finish();
+            return;
+        }
+
+        try{
+            rentPaid= Integer.valueOf(editTextRentPaid.getText().toString());
+        }catch (NumberFormatException e){
+            onError(editTextRentPaid, "Please input a rent amount");
+            return;
+        }
+        if (rentPaid< Helpers.AMOUNT_MINIMUM_RENT){
+            onError(editTextRentPaid, "Rent must be at least UgShs.250,000/=");
+            return;
+        }
+
+        house= new House(number,desc, chosen, rentPaid);
         house.save();
         Intent finisher= new Intent();
         finisher.putExtra("details", house.toString());
         finish();
     }
 
-    protected void onNumberError(String notif){
+    protected void onError(EditText view, String notif){
+        view.setTextColor(Color.RED);
         Toast.makeText(this, notif, Toast.LENGTH_SHORT).show();
-    }
-
-    protected void onNoMatch(){
-        editTextLocation.setTextColor(Color.RED);
-        Toast.makeText(this, "Please pick a Location", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -121,6 +198,9 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         editTextLocation.setTextColor(previousColor);
+        editTextNumber.setTextColor(previousColor);
+        editTextRentPaid.setTextColor(previousColor);
+        description.setTextColor(previousColor);
     }
 
     @Override
@@ -131,5 +211,27 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
     @Override
     public void afterTextChanged(Editable editable) {
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton==checkBoxSingleHouse){
+            if (b){
+                editTextNumber.setVisibility(View.GONE);
+                description.setVisibility(View.GONE);
+            }
+            else{
+                editTextNumber.setVisibility(View.VISIBLE);
+                description.setVisibility(View.VISIBLE);
+            }
+        }
+        else if (compoundButton==checkBoxDefaultRent){
+            if (b){
+                editTextRentPaid.setVisibility(View.GONE);
+            }
+            else{
+                editTextRentPaid.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

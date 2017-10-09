@@ -63,4 +63,16 @@ public class Payment extends Record {
     public void setHouse(House house) {
         this.house = house;
     }
+
+    public boolean onNewPaymentAdded(){
+        tenant.updateRentDue(this);
+        return true;
+    }
+
+    public boolean onPaymentDeleted(){
+        this.amount= 0-amount;
+        tenant.updateRentDue(this);
+        this.amount= 0-amount;
+        return true;
+    }
 }

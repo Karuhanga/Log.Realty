@@ -97,4 +97,6 @@
     <string name="title_activity_add_location">Add Location</string>
     <string name="title_activity_add_house">Add House</string>
     <string name="title_activity_add_tenant">Add Tenant</string>
+    <string name="title_activity_detailed_locations">Locations</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

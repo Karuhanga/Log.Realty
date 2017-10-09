@@ -1,22 +1,16 @@
 package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Checkable;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -29,14 +23,11 @@ import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Location;
 import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Data.Payment;
-import ug.karuhanga.logrealty.Data.Record;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
-
-import static android.graphics.Color.GREEN;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -143,6 +134,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!inSelectionProcess){
+            onDetailsRequested(((MinifiedRecord) listAdapter.getItem(adapterView.getPositionForView(view))).getId());
             return;
         }
 
@@ -250,14 +242,10 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                     break;
                 case Helpers.FRAGMENT_PAYMENTS:
                     Payment payment= Payment.findById(Payment.class, record.getId());
-                    result= payment.delete();
-                    if (result){
-                        //TODO Notify of Success and update details
-                        //TODO Due Date not updating
-                        payment.setAmount(0-payment.getAmount());
-                        Toast.makeText(getContext(), String.valueOf(payment.getAmount()), Toast.LENGTH_SHORT).show();
-                        payment.getTenant().updateRentDue(payment);
-                        payment.getTenant().save();
+
+                    //TODO Notify of Success and update details
+                    if (payment.onPaymentDeleted()) {
+                        payment.delete();
                     }
                     //TODO Add Failure Notifs
                     break;
@@ -283,6 +271,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onSelectionUpdate(int selected);
+        void onDetailsRequested(Long id);
         public void onCRUDOperationFailed(String notification);
         public void onCRUDOperationComplete(boolean successful, String message, List<MinifiedRecord> record);
     }
@@ -293,6 +282,12 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
         }
     }
 
+    public void onDetailsRequested(Long id) {
+        if (mListener != null) {
+            mListener.onDetailsRequested(id);
+        }
+    }
+
     private void fetchData(int limit) {
         data.clear();
         switch (ENTITY){
@@ -300,35 +295,35 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                 List<Location> results;
                 results= Select.from(Location.class).limit(String.valueOf(limit)).list();
                 for (Location result : results) {
-                    data.add(new MinifiedRecord(result.getId(), result.toString()));
+                    data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             case Helpers.FRAGMENT_HOUSES:
                 List<House> results2;
                 results2= Select.from(House.class).limit(String.valueOf(limit)).list();
                 for (House result : results2) {
-                    data.add(new MinifiedRecord(result.getId(), result.toString()));
+                    data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             case Helpers.FRAGMENT_TENANTS:
                 List<Tenant> results3;
                 results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).limit(String.valueOf(limit)).list();
                 for (Tenant result : results3) {
-                    data.add(new MinifiedRecord(result.getId(), result.toString()));
+                    data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             case Helpers.FRAGMENT_PAYMENTS:
                 List<Payment> results4;
                 results4= Select.from(Payment.class).limit(String.valueOf(limit)).list();
                 for (Payment result : results4) {
-                    data.add(new MinifiedRecord(result.getId(), result.toString()));
+                    data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             default:
                 List<Payment> results5;
                 results5= Select.from(Payment.class).limit(String.valueOf(limit)).list();
                 for (Payment result : results5) {
-                    data.add(new MinifiedRecord(result.getId(), result.toString()));
+                    data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
         }

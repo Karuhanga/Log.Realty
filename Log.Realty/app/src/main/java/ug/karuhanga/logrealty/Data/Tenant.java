@@ -43,12 +43,18 @@ public class Tenant extends Record {
             return false;
         }
         this.rentDue= newDue;
+        this.save();
         return true;
     }
 
     @Override
     public String toString(){
-        return this.fName+" "+this.oNames+"\n"+this.house.toString();
+        return this.fName+" "+this.oNames+"\n"+this.house.getLocation().getName()+"\nDue: "+Helpers.dateToString(rentDue);
+    }
+
+    @Override
+    public String getSummary(){
+        return this.fName+" "+this.oNames+"\n"+this.house.getLocation().getName()+"\n"+Helpers.toCurrency(house.getRent());
     }
 
     public String getfName() {
@@ -65,6 +71,10 @@ public class Tenant extends Record {
 
     public void setoNames(String oNames) {
         this.oNames = oNames;
+    }
+
+    public String getName(){
+        return this.fName+" "+this.getoNames();
     }
 
     public String getEmail() {

@@ -1,5 +1,9 @@
 package ug.karuhanga.logrealty.Data;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
+
 import ug.karuhanga.logrealty.Helpers;
 
 /**
@@ -54,5 +58,16 @@ public class Location extends Record {
     @Override
     public String toString(){
         return name;
+    }
+
+    @Override
+    public String getSummary(){
+        int number= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(this)).list().size();
+        if (number==1){
+            return name+"\n"+String.valueOf(number)+" property";
+        }
+        else{
+            return name+"\n"+String.valueOf(number)+" properties";
+        }
     }
 }

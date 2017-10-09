@@ -80,14 +80,13 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         //TODO Add Few Amounts Checking
 
         Payment payment= new Payment(Calendar.getInstance().getTime(), amount, chosen);
-        payment.save();
-        boolean successful= chosen.updateRentDue(payment);
-        if (!successful){
-            payment.delete();
+        if (payment.onNewPaymentAdded()){
+            payment.save();
+        }
+        else{
             onPaymentUnsuccessful("Payment Unsuccessful");
             return;
         }
-        chosen.save();
         Intent finisher= new Intent();
         finisher.putExtra("details", payment.toString());
         finish();

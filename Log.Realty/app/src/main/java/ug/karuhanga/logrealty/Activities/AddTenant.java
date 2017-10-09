@@ -65,6 +65,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.add_tenant_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         first_name= (EditText) findViewById(R.id.edit_text_add_tenant_fname);
         surname= (EditText) findViewById(R.id.edit_text_add_tenant_onames);
@@ -85,7 +86,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         house_occupied.setThreshold(1);
 
         results= Select.from(House.class).list();
-        adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
+        adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, results);
         adapter.setNotifyOnChange(true);
         house_occupied.setAdapter(adapter);
 
@@ -155,7 +156,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
 
         current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
         if (current.size()>0){
-            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+chosen.toString(), R.drawable.ic_edit_black_24dp, "Yes", "No").show();
+            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "No").show();
             return;
         }
         else{

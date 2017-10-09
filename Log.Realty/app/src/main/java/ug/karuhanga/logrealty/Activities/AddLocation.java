@@ -30,6 +30,7 @@ public class AddLocation extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.add_location_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_location);
         location= (EditText) findViewById(R.id.edit_text_add_location_location);

@@ -8,46 +8,78 @@
     tools:context="ug.karuhanga.logrealty.Activities.AddHouse"
     tools:showIn="@layout/add_house_activity">
 
-    <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        android:showDividers="end"
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <AutoCompleteTextView
-            android:id="@+id/edit_text_add_house_location"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:hint="Location"
-            android:inputType="text"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edit_text_add_house_number"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="House No."
-            android:inputType="number" />
+            <AutoCompleteTextView
+                android:id="@+id/edit_text_add_house_location"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:hint="Location"
+                android:inputType="text" />
 
-        <EditText
-            android:id="@+id/edit_text_add_house_description"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="Short Description"
-            android:inputType="textImeMultiLine|textAutoCorrect" />
-    </LinearLayout>
+            <CheckBox
+                android:id="@+id/checkBox_single_house_add_house"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Only one house in this location"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/edit_text_add_house_number"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint="House No."
+                android:inputType="number" />
+
+            <EditText
+                android:id="@+id/edit_text_add_house_description"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint="Short Description"
+                android:inputType="textImeMultiLine|textAutoCorrect" />
+
+            <CheckBox
+                android:id="@+id/checkBox_location_rent_add_house"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Use default rent paid at this Location"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/editText_rent_paid_add_house"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint="Rent paid"
+                android:inputType="number|numberSigned" />
+        </LinearLayout>
+    </ScrollView>
+
+
 </android.support.constraint.ConstraintLayout>

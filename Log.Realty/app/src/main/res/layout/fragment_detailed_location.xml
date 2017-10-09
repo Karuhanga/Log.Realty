@@ -1,0 +1,111 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    tools:context="ug.karuhanga.logrealty.Fragments.DetailedLocation">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="495dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:showDividers="end"
+            tools:layout_editor_absoluteY="8dp">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <EditText
+                        android:id="@+id/edit_text_location_fragment_detailed_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Location Name"
+                        android:inputType="text"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_location_fragment_detailed_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Default Rent Paid Here"
+                        android:text="Location"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+                    <ImageButton
+                        android:id="@+id/button_location_fragment_detailed_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/Transparent"
+                        android:contextClickable="false"
+                        android:paddingBottom="10dp"
+                        app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <EditText
+                        android:id="@+id/edit_text_amount_fragment_detailed_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Default Rent Paid Here"
+                        android:inputType="number"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_amount_fragment_detailed_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Default Rent Paid Here"
+                        android:inputType="number"
+                        android:text="Default Rent"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+                    <ImageButton
+                        android:id="@+id/button_amount_fragment_detailed_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/Transparent"
+                        android:paddingBottom="10dp"
+                        app:srcCompat="@drawable/ic_edit_black_24dp" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

@@ -50,23 +50,40 @@
         <activity
             android:name=".Activities.AddPayment"
             android:label="@string/title_activity_add_payment"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activities.Settings"
             android:label="@string/title_activity_settings"
+            android:parentActivityName=".Activities.Gist"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.AddLocation"
             android:label="@string/title_activity_add_location"
+            android:parentActivityName=".Activities.Gist"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.AddHouse"
             android:label="@string/title_activity_add_house"
+            android:parentActivityName=".Activities.Gist"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.AddTenant"
             android:label="@string/title_activity_add_tenant"
+            android:parentActivityName=".Activities.Gist"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.Details"
+            android:label="Details"
+            android:parentActivityName=".Activities.Gist"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ug.karuhanga.logrealty.Activities.Gist" />
+        </activity>
     </application>
 
 </manifest>

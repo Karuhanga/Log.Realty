@@ -63,7 +63,7 @@ public class DuePayments extends Fragment implements Confirmation {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Date date= getLaterDate(Calendar.getInstance().getTime(), 7);
-        //TODO Dynami Selection with load more capability
+        //TODO Dynamic Selection with load more capability
         defaulters= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).and(Condition.prop(NamingHelper.toSQLNameDefault("rentDue")).lt(date.getTime())).list();
     }
 

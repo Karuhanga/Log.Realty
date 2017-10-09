@@ -128,6 +128,6 @@ public class Helpers {
     public static String toCurrency(int number){
         String result= String.valueOf(number);
         String[] helper= result.split("");
-        return "UgShs. "+helper[1]+helper[2]+helper[3]+","+helper[4]+helper[5]+helper[6]+"/=";
+        return helper[1]+helper[2]+helper[3]+","+helper[4]+helper[5]+helper[6]+"/=";
     }
 }

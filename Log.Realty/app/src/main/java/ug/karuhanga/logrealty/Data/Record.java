@@ -16,4 +16,8 @@ public abstract class Record extends SugarRecord {
     public void setSynced(boolean synced) {
         this.synced = synced;
     }
+
+    public String getSummary(){
+        return this.toString();
+    }
 }

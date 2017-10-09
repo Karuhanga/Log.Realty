@@ -1,5 +1,7 @@
 package ug.karuhanga.logrealty.Data;
 
+import ug.karuhanga.logrealty.Helpers;
+
 /**
  * Created by karuhanga on 8/25/17.
  */
@@ -10,7 +12,6 @@ public class House extends Record {
     private String description;
 
     private Location location;
-    private Tenant tenant;
 
     public House(){}
 
@@ -19,21 +20,43 @@ public class House extends Record {
         this.description = description;
         this.location = location;
         this.rent= location.getDefaultRent();
-        this.tenant= null;
     }
 
-    public House(int number, int rent, Location location, String description) {
+    public House(Location location) {
+        this.location = location;
+        this.number= 0;
+        this.rent= location.getDefaultRent();
+        this.description= "Single House";
+    }
+
+    public House(Location location, int rent) {
+        this.location = location;
+        this.number= 0;
+        this.rent= rent;
+        this.description= "Single House";
+    }
+
+    public House(int number, String description, Location location, int rent) {
         this.number = number;
         this.rent = rent;
         this.description= description;
         this.location = location;
-        this.tenant= null;
     }
 
     @Override
     public String toString(){
-        //TODO Add tenant to description
-        return "House "+String.valueOf(number)+": "+description+"\n"+location+"\n"+String.valueOf(rent);
+        if (number==0){
+            return this.location.getName();
+        }
+        return location+", House "+String.valueOf(number)+": "+description;
+    }
+
+    @Override
+    public String getSummary(){
+        if (number==0){
+            return this.location.getName()+"\n"+ Helpers.toCurrency(rent);
+        }
+        return "House "+String.valueOf(number)+": "+description+"\n"+location+"\n"+Helpers.toCurrency(rent);
     }
 
     public int getRent() {
@@ -66,13 +89,5 @@ public class House extends Record {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public Tenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
     }
 }
