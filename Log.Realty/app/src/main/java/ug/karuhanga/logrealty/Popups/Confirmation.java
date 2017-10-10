@@ -10,14 +10,16 @@ import android.support.v7.app.AlertDialog;
 
 public class Confirmation extends AlertDialog implements DialogInterface.OnClickListener {
     ug.karuhanga.logrealty.Listeners.Confirmation caller;
+    private int requestCode;
     public Confirmation(Context context){
         super(context);
         //TODO Check for wrong class cast
     }
 
-    public Confirmation(Context context, ug.karuhanga.logrealty.Listeners.Confirmation caller, String title, String message, int icon, String accept, String reject){
+    public Confirmation(Context context, ug.karuhanga.logrealty.Listeners.Confirmation caller, String title, String message, int icon, String accept, String reject, int requestCode){
         super(context);
         this.caller= caller;
+        this.requestCode= requestCode;
         //TODO Check for wrong class cast
         setTitle(title);
         setMessage(message);
@@ -31,7 +33,7 @@ public class Confirmation extends AlertDialog implements DialogInterface.OnClick
         if (i!=BUTTON_POSITIVE){
             return;
         }
-        caller.onReceiveResult(true);
+        caller.onReceiveResult(true, requestCode);
         return;
     }
 }

@@ -99,4 +99,7 @@
     <string name="title_activity_add_tenant">Add Tenant</string>
     <string name="title_activity_detailed_locations">Locations</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="delete_notif_location">"Delete this location and all houses here:</string>
+    <string name="delete_notif_house">"Delete this house and all tenants here:</string>
 </resources>

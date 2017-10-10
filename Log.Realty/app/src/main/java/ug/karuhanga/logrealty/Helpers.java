@@ -27,9 +27,15 @@ public class Helpers {
     public static final int RESULT_CODE_ADD_HOUSE= 103;
     public static final int RESULT_CODE_ADD_TENANT= 104;
 
+    public static final int RESULT_CODE_REFRESH= 105;
+
     public static final int ACTION_SHOW= 200;
     public static final int ACTION_ADD= 201;
     public static final int ACTION_DELETE= 202;
+
+    public static final int REQUEST_CODE_DETAILS= 300;
+    public static final int REQUEST_CODE_DELETE= 301;
+    public static final int REQUEST_CODE_REPLACE= 302;
 
     public static final int AMOUNT_MINIMUM_RENT= 250000;
 

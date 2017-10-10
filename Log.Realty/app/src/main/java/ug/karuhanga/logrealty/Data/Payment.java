@@ -69,10 +69,12 @@ public class Payment extends Record {
         return true;
     }
 
-    public boolean onPaymentDeleted(){
+    @Override
+    protected boolean onDelete(){
         this.amount= 0-amount;
         tenant.updateRentDue(this);
         this.amount= 0-amount;
+        //TODO Add Error Checking
         return true;
     }
 }

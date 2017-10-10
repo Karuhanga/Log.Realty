@@ -5,5 +5,5 @@ package ug.karuhanga.logrealty.Listeners;
  */
 
 public interface Confirmation {
-    public void onReceiveResult(boolean result);
+    void onReceiveResult(boolean result, int requestCode);
 }

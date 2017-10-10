@@ -89,6 +89,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         }
         Intent finisher= new Intent();
         finisher.putExtra("details", payment.toString());
+        setResult(RESULT_OK);
         finish();
     }
 

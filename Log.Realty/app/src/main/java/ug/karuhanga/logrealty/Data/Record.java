@@ -20,4 +20,14 @@ public abstract class Record extends SugarRecord {
     public String getSummary(){
         return this.toString();
     }
+
+    protected boolean onDelete(){
+        return true;
+    }
+
+    @Override
+    public boolean delete(){
+        boolean result= onDelete();
+        return super.delete() && result;
+    }
 }

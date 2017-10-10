@@ -92,12 +92,18 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
         //Only one single house
         List<House> results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(0)).list();
         if (!(results.isEmpty())){
-            onError(editTextNumber, "This house was added already");
+            onError(editTextNumber, "This house was already added");
             return;
         }
 
         //No description and house number
         if (checkBoxSingleHouse.isChecked()){
+
+            results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).list();
+            if (!(results.isEmpty())){
+                onError(editTextNumber, "This house was already added");
+                return;
+            }
 
             //No rent
             if (checkBoxDefaultRent.isChecked()){

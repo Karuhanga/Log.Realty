@@ -4,6 +4,8 @@ import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.orm.util.NamingHelper;
 
+import java.util.List;
+
 import ug.karuhanga.logrealty.Helpers;
 
 /**
@@ -69,5 +71,16 @@ public class Location extends Record {
         else{
             return name+"\n"+String.valueOf(number)+" properties";
         }
+    }
+
+    @Override
+    protected boolean onDelete(){
+        List<House> results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(this)).list();
+
+        for (House house:results ) {
+            house.delete();
+            //TODO Add Error Checking
+        }
+        return true;
     }
 }

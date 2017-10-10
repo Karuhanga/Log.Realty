@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -28,6 +29,8 @@ import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
+
+import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DELETE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -197,22 +200,32 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
 
     @Override
     public boolean onEditPressed() {
-        return false;
+        if (inSelectionProcess){
+            inSelectionProcess= false;
+            Long id= selected.get(0).getId();
+            for (MinifiedRecord record : selected) {
+                unSelectVisual(listView.getChildAt(listAdapter.getPosition(record)));
+            }
+            selected.clear();
+            selectionUpdate(selected.size());
+            onDetailsRequested(id);
+        }
+        return true;
     }
 
     @Override
     public boolean onDeletePressed() {
         if (selected.size()>1){
-            new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+String.valueOf(selected.size())+" items", R.drawable.ic_delete_black_24dp, "Yes", "No").show();
+            new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+String.valueOf(selected.size())+" items", R.drawable.ic_delete_black_24dp, "Yes", "No", REQUEST_CODE_DELETE).show();
             return false;
         }
-        new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+selected.get(0).getDescription(), R.drawable.ic_delete_black_24dp, "Yes", "No").show();
+        new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Delete:\n"+selected.get(0).getDescription(), R.drawable.ic_delete_black_24dp, "Yes", "No", REQUEST_CODE_DELETE).show();
         return false;
     }
 
     @Override
-    public void onReceiveResult(boolean result) {
-        if (result){
+    public void onReceiveResult(boolean result, int requestCode) {
+        if (result && requestCode==REQUEST_CODE_DELETE){
             performPendingActions();
         }
     }
@@ -244,8 +257,8 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                     Payment payment= Payment.findById(Payment.class, record.getId());
 
                     //TODO Notify of Success and update details
-                    if (payment.onPaymentDeleted()) {
-                        payment.delete();
+                    if (payment.delete()) {
+                        Toast.makeText(getContext(), "deleted!", Toast.LENGTH_SHORT).show();
                     }
                     //TODO Add Failure Notifs
                     break;

@@ -1,5 +1,11 @@
 package ug.karuhanga.logrealty.Data;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
+
+import java.util.List;
+
 import ug.karuhanga.logrealty.Helpers;
 
 /**
@@ -89,5 +95,16 @@ public class House extends Record {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    @Override
+    protected boolean onDelete(){
+        List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(this)).list();
+
+        for (Tenant tenant:results ) {
+            tenant.delete();
+            //TODO Add Error Checking
+        }
+        return true;
     }
 }

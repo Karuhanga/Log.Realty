@@ -1,5 +1,6 @@
 package ug.karuhanga.logrealty.Activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,8 @@ import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Fragments.DetailedLocation;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
+
+import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
 
 public class Details extends AppCompatActivity implements DetailedLocation.OnFragmentInteractionListener, View.OnClickListener {
 
@@ -128,6 +131,42 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void finish(){
+        Intent finisher= new Intent();
+        setResult(RESULT_CODE_REFRESH);
+        super.finish();
+    }
+
+    @Override
+    public void onItemDeleted(Long item) {
+        int index= ids.indexOf(item);
+        ids.remove(item);
+        mItemsStatePagerAdapter = new ItemsStatePagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mItemsStatePagerAdapter);
+
+        try {
+            ids.get(index);
+        }catch (IndexOutOfBoundsException e){
+            try {
+                ids.get(index-1);
+            }catch (IndexOutOfBoundsException ex){
+                onNoData();
+                return;
+            }
+            mViewPager.arrowScroll(View.FOCUS_LEFT);
+            return;
+        }
+        mViewPager.arrowScroll(View.FOCUS_RIGHT);
+    }
+
+    private void onNoData() {
+        button_left.setVisibility(View.INVISIBLE);
+        button_right.setVisibility(View.INVISIBLE);
+        findViewById(R.id.textView_details).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.textView_details)).setText("Add a location to begin");
     }
 
     @Override

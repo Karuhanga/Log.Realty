@@ -1,6 +1,11 @@
 package ug.karuhanga.logrealty.Data;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
+
 import java.util.Date;
+import java.util.List;
 
 import ug.karuhanga.logrealty.Helpers;
 
@@ -44,6 +49,15 @@ public class Tenant extends Record {
         }
         this.rentDue= newDue;
         this.save();
+        return true;
+    }
+
+    public boolean onDelete(){
+        List<Payment> results= Select.from(Payment.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(this)).list();
+        for (Payment payment : results) {
+            payment.delete();
+            //TODO Add Error Checking
+        }
         return true;
     }
 

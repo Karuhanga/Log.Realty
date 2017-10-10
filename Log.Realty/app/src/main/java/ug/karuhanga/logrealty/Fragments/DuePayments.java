@@ -24,6 +24,7 @@ import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DELETE;
 import static ug.karuhanga.logrealty.Helpers.getLaterDate;
 
 /**
@@ -108,7 +109,7 @@ public class DuePayments extends Fragment implements Confirmation {
     }
 
     @Override
-    public void onReceiveResult(boolean result) {
+    public void onReceiveResult(boolean result, int requestCode) {
         if (!result){
             return;
         }

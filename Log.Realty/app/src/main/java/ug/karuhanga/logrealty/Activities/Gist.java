@@ -37,6 +37,9 @@ import static ug.karuhanga.logrealty.Helpers.ACTION_ADD;
 import static ug.karuhanga.logrealty.Helpers.ACTION_DELETE;
 import static ug.karuhanga.logrealty.Helpers.ACTION_SHOW;
 import static ug.karuhanga.logrealty.Helpers.FRAGMENT_DUE_PAYMENTS;
+import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DETAILS;
+import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
+import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_SETTINGS;
 
 
 public class Gist extends AppCompatActivity
@@ -135,7 +138,7 @@ public class Gist extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_item_settings) {
-            startActivityForResult(new Intent(Gist.this, Settings.class), Helpers.RESULT_CODE_SETTINGS);
+            startActivityForResult(new Intent(Gist.this, Settings.class), RESULT_CODE_SETTINGS);
         }
         else if (id == R.id.menu_item_search){
             doStartSearchStuff();
@@ -187,16 +190,22 @@ public class Gist extends AppCompatActivity
                     Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
                 }
                 return;
-        case Helpers.RESULT_CODE_SETTINGS:
-            if (resultCode==RESULT_OK){
-                Snackbar.make(fabAdd, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
-            }
-            else{
-                Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
-            }
-            return;
-        default:
-            return;
+            case RESULT_CODE_SETTINGS:
+                if (resultCode==RESULT_OK){
+                    Snackbar.make(fabAdd, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                }
+                else{
+                    Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                }
+                return;
+            case REQUEST_CODE_DETAILS:
+                if (resultCode==RESULT_CODE_REFRESH){
+                    displayFragment(currentFragment);
+                }
+                return;
+
+            default:
+                return;
         }
 
     }
@@ -303,10 +312,14 @@ public class Gist extends AppCompatActivity
         }
         else if (view.equals(fabAdd)){
             commenceAddition();
+            return;
         }
         else if (view.equals(fabDelete)){
             ((GistInteractionListener) currentFrag).onDeletePressed();
             return;
+        }
+        else if (view==fabEdit){
+            ((GistInteractionListener) currentFrag).onEditPressed();
         }
     }
 
@@ -334,7 +347,7 @@ public class Gist extends AppCompatActivity
 
     @Override
     public void onDetailsRequested(Long id) {
-        startActivity(new Intent(this, Details.class).putExtra("entity", currentFragment).putExtra("id", id));
+        startActivityForResult(new Intent(this, Details.class).putExtra("entity", currentFragment).putExtra("id", id), REQUEST_CODE_DETAILS);
     }
 
     @Override

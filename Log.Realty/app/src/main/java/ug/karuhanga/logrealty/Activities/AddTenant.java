@@ -31,6 +31,8 @@ import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
+
 public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, Confirmation {
 
     private EditText first_name;
@@ -156,7 +158,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
 
         current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
         if (current.size()>0){
-            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "No").show();
+            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "No", REQUEST_CODE_REPLACE).show();
             return;
         }
         else{
@@ -214,8 +216,8 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     }
 
     @Override
-    public void onReceiveResult(boolean result) {
-        if (result){
+    public void onReceiveResult(boolean result, int requestCode) {
+        if (result && (requestCode==REQUEST_CODE_REPLACE)){
             completeAddition();
         }
     }
