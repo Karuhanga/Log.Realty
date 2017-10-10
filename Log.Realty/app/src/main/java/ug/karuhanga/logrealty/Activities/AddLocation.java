@@ -45,12 +45,14 @@ public class AddLocation extends AppCompatActivity implements View.OnClickListen
 
     private void addLocation() {
         //TODO Add Error checking
-        String name= location.getText().toString();
+
         int amount= Integer.valueOf(rent.getText().toString());
         if (amount< Helpers.AMOUNT_MINIMUM_RENT){
             onError("Rent must be >=250,000/=", rent);
             return;
         }
+
+        String name= location.getText().toString();
         name= Helpers.cleaner(name);
         if (name==null){
             onError("Invalid Location Name", location);

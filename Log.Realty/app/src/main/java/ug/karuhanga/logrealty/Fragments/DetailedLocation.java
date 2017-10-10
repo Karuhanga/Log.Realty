@@ -1,6 +1,7 @@
 package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orm.query.Select;
 
@@ -40,12 +42,13 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
     private ImageButton buttonRent;
     private EditText editTextLocation;
     private EditText editTextRent;
+    private EditText colored;
     private TextView textViewLocation;
     private TextView textViewRent;
     private FloatingActionButton fab;
     private FloatingActionButton fab_delete;
 
-    private int previousColor;
+    private int previous_color;
     private int editCount;
     private Location locationObject;
 
@@ -97,19 +100,25 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
         fab= view.findViewById(R.id.fab_detailed_location);
         fab_delete= view.findViewById(R.id.fab_delete_detailed_location);
 
-        previousColor= editTextLocation.getCurrentTextColor();
+        previous_color= editTextLocation.getCurrentTextColor();
+        colored= editTextLocation;
         editCount= 0;
         locationObject= Location.findById(Location.class, location);
 
         textViewLocation.setText(locationObject.getName());
         textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
         editTextLocation.setText(textViewLocation.getText());
-        editTextRent.setText(textViewRent.getText());
+        editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
 
         buttonLocation.setOnClickListener(this);
         buttonRent.setOnClickListener(this);
         fab.setOnClickListener(this);
         fab_delete.setOnClickListener(this);
+
+        editTextLocation.addTextChangedListener(this);
+        editTextRent.addTextChangedListener(this);
+
+
 
         return view;
     }
@@ -188,7 +197,7 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
                 editCount--;
                 editTextRent.setVisibility(View.GONE);
                 textViewRent.setVisibility(View.VISIBLE);
-                editTextRent.setText(textViewRent.getText());
+                editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
                 buttonRent.setImageResource(R.drawable.icon_edit);
                 editting.remove("rent");
                 editting.put("rent", false);
@@ -219,11 +228,50 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
     }
 
     private void completeEdit() {
+        Location temp= Location.findById(Location.class, locationObject.getId());
+
+        if (editCount==0){
+            return;
+        }
+        if (editting.get("location")){
+            String name= editTextLocation.getText().toString();
+            name= Helpers.cleaner(name);
+            if (name==null){
+                onError("Invalid Location Name", editTextLocation);
+                locationObject= temp;
+                return;
+            }
+            onClick(buttonLocation);
+            locationObject.setName(name);
+        }
+
+        if (editting.get("rent")){
+            int amount= Integer.valueOf(editTextRent.getText().toString());
+            if (amount< Helpers.AMOUNT_MINIMUM_RENT){
+                onError("Rent must be >=250,000/=", editTextRent);
+                locationObject= temp;
+                return;
+            }
+            onClick(buttonRent);
+            locationObject.setDefaultRent(amount);
+        }
+
+        locationObject.save();
+        Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
+        textViewLocation.setText(locationObject.getName());
+        textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
+        onClick(fab);
+    }
+
+    private void onError(String notif, EditText item) {
+        item.setTextColor(Color.RED);
+        Toast.makeText(getContext(), notif, Toast.LENGTH_SHORT).show();
+        colored= item;
     }
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        colored.setTextColor(previous_color);
     }
 
     @Override
