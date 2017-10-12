@@ -1,13 +1,272 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    app:theme="@style/AppTheme"
+    android:theme="@style/AppTheme"
     tools:context="ug.karuhanga.logrealty.Fragments.DetailedHouse">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="495dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:showDividers="end"
+            tools:layout_editor_absoluteY="8dp">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/edit_text_location_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Location"
+                        android:inputType="text"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_location_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:text="Location"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+                    <ImageButton
+                        android:id="@+id/button_location_fragment_detailed_house"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/Transparent"
+                        android:contextClickable="false"
+                        android:paddingBottom="10dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <TextView
+                        android:id="@+id/text_view_house_information_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="House Information"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+                    <ImageButton
+                        android:id="@+id/button_house_information_fragment_detailed_house"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/Transparent"
+                        android:paddingBottom="10dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_edit_black_24dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/checkbox_single_house_detailed_house"
+                        android:layout_weight="8"
+                        android:text="Only one house in this location"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_single_house_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="8"
+                        android:text="There's only a single house in this location"
+                        android:textAlignment="center"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <EditText
+                        android:id="@+id/edit_text_number_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="House No."
+                        android:inputType="number"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_number_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:text="House No."
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <EditText
+                        android:id="@+id/edit_text_description_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Description"
+                        android:inputType="text"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_description_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:text="Description"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <android.support.v7.widget.AppCompatCheckBox
+                        android:id="@+id/checkbox_default_rent_fragment_detailed_house"
+                        android:layout_weight="8"
+                        android:visibility="gone"
+                        android:text="Use the default rent paid at this location" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="8">
+
+                    <EditText
+                        android:id="@+id/edit_text_amount_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:hint="Rent Amount"
+                        android:inputType="number"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/text_view_amount_fragment_detailed_house"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="7"
+                        android:inputType="number"
+                        android:text="Rent Amount"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+
+                    <ImageButton
+                        android:id="@+id/button_amount_fragment_detailed_house"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/Transparent"
+                        android:paddingBottom="10dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_edit_black_24dp" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@color/Transparent"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="6dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_detailed_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:visibility="visible"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_delete_detailed_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:visibility="visible"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/ic_delete_black_24dp" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,26 +1,74 @@
 package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.orm.query.Select;
+
+import java.util.HashMap;
+
+import ug.karuhanga.logrealty.Data.House;
+import ug.karuhanga.logrealty.Data.Location;
+import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Popups.Confirmation;
 import ug.karuhanga.logrealty.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DetailedHouse.OnFragmentInteractionListener} interface
+ * {@link DetailedLocation.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DetailedHouse#newInstance} factory method to
+ * Use the {@link DetailedLocation#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailedHouse extends Fragment {
+public class DetailedHouse extends Fragment implements TextWatcher, View.OnClickListener, ug.karuhanga.logrealty.Listeners.Confirmation {
+    // TODO: Rename parameter arguments, choose names that match
 
     private Long house;
+    private ImageButton buttonLocation;
+    private ImageButton buttonInfo;
+    private ImageButton buttonRent;
+
+    private CheckBox checkBoxSingleHouse;
+    private CheckBox checkBoxDefaultRent;
+
+    private EditText editTextLocation;
+    private EditText editTextDescription;
+    private EditText editTextNumber;
+    private EditText editTextRent;
+
+    private EditText colored;
+
+    private TextView textViewLocation;
+    private TextView textViewSingleHouse;
+    private TextView textViewDescription;
+    private TextView textViewNumber;
+    private TextView textViewRent;
+
+    private FloatingActionButton fab;
+    private FloatingActionButton fab_delete;
+
+    private int previous_color;
+    private int editCount;
+    private House houseObject;
+
+    private HashMap<String, Boolean> editting= new HashMap<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,6 +86,7 @@ public class DetailedHouse extends Fragment {
     public static DetailedHouse newInstance(Long id) {
         DetailedHouse fragment = new DetailedHouse();
         Bundle args = new Bundle();
+
         args.putLong("id", id);
         fragment.setArguments(args);
         return fragment;
@@ -47,15 +96,82 @@ public class DetailedHouse extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            house= getArguments().getLong("id");
+            house = getArguments().getLong("id");
         }
+        editting.put("location", false);
+        editting.put("information", false);
+        editting.put("rent", false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.detailed_house_fragment, container, false);
+        View view= inflater.inflate(R.layout.detailed_house_fragment, container, false);
+        buttonLocation= view.findViewById(R.id.button_location_fragment_detailed_house);
+        buttonInfo= view.findViewById(R.id.button_house_information_fragment_detailed_house);
+        buttonRent= view.findViewById(R.id.button_amount_fragment_detailed_house);
+        textViewLocation= view.findViewById(R.id.text_view_location_fragment_detailed_house);
+        textViewNumber= view.findViewById(R.id.text_view_number_fragment_detailed_house);
+        textViewDescription= view.findViewById(R.id.text_view_description_fragment_detailed_house);
+        textViewRent= view.findViewById(R.id.text_view_amount_fragment_detailed_house);
+        textViewSingleHouse= view.findViewById(R.id.text_view_single_house_fragment_detailed_house);
+
+        checkBoxSingleHouse= view.findViewById(R.id.checkBox_single_house_add_house);
+        checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
+
+        editTextLocation= view.findViewById(R.id.edit_text_location_fragment_detailed_house);
+        editTextNumber= view.findViewById(R.id.edit_text_number_fragment_detailed_house);
+        editTextDescription= view.findViewById(R.id.edit_text_description_fragment_detailed_house);
+        editTextRent= view.findViewById(R.id.edit_text_amount_fragment_detailed_location);
+
+        fab= view.findViewById(R.id.fab_detailed_location);
+        fab_delete= view.findViewById(R.id.fab_delete_detailed_location);
+        checkBoxSingleHouse= view.findViewById(R.id.checkbox_single_house_detailed_house);
+        checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
+
+        previous_color= editTextLocation.getCurrentTextColor();
+        colored= editTextLocation;
+        editCount= 0;
+        houseObject= House.findById(House.class, house);
+
+        textViewLocation.setText(houseObject.getLocation().getName());
+        editTextLocation.setText(textViewLocation.getText());
+
+        if (houseObject.getNumber()==0){
+            hide(textViewNumber);
+            hide(textViewDescription);
+            checkBoxSingleHouse.setChecked(true);
+        }
+        else{
+            hide(textViewSingleHouse);
+            textViewNumber.setText("House No."+String.valueOf(houseObject.getNumber()));
+            textViewDescription.setText(houseObject.getDescription());
+        }
+
+        textViewRent.setText(Helpers.toCurrency(houseObject.getRent()));
+        editTextRent.setText(String.valueOf(houseObject.getRent()));
+
+        buttonLocation.setOnClickListener(this);
+        buttonInfo.setOnClickListener(this);
+        buttonRent.setOnClickListener(this);
+        fab.setOnClickListener(this);
+        fab_delete.setOnClickListener(this);
+
+        editTextLocation.addTextChangedListener(this);
+        editTextNumber.addTextChangedListener(this);
+        editTextDescription.addTextChangedListener(this);
+        editTextRent.addTextChangedListener(this);
+
+        return view;
+    }
+
+    private void hide(View view) {
+        view.setVisibility(View.INVISIBLE);
+    }
+
+    private void show(View view){
+        view.setVisibility(View.VISIBLE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -82,6 +198,157 @@ public class DetailedHouse extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view==fab){
+            if (editCount==0){
+                if (buttonLocation.getVisibility()==View.VISIBLE){
+                    fab.setImageResource(R.drawable.icon_edit);
+                    buttonLocation.setVisibility(View.INVISIBLE);
+                    buttonRent.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    fab.setImageResource(R.drawable.ic_close_black_24dp);
+                    buttonLocation.setVisibility(View.VISIBLE);
+                    buttonRent.setVisibility(View.VISIBLE);
+                }
+                return;
+            }
+            completeEdit();
+            return;
+        }
+        if (view==buttonLocation){
+            if (editting.get("location")){
+                editCount--;
+                editTextLocation.setVisibility(View.GONE);
+                textViewLocation.setVisibility(View.VISIBLE);
+                editTextLocation.setText(textViewLocation.getText());
+                buttonLocation.setImageResource(R.drawable.icon_edit);
+                editting.remove("location");
+                editting.put("location", false);
+                if (editCount==0){
+                    fab.setImageResource(R.drawable.ic_close_black_24dp);
+                }
+                return;
+            }
+            editCount++;
+            if (editCount==1){
+                fab.setImageResource(R.drawable.ic_check_black_24dp);
+            }
+            textViewLocation.setVisibility(View.GONE);
+            editTextLocation.setVisibility(View.VISIBLE);
+            buttonLocation.setImageResource(R.drawable.ic_close_black_24dp);
+            editting.remove("location");
+            editting.put("location", true);
+            return;
+        }
+
+        if (view==buttonRent){
+            if (editting.get("rent")){
+                editCount--;
+                editTextRent.setVisibility(View.GONE);
+                textViewRent.setVisibility(View.VISIBLE);
+                editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
+                buttonRent.setImageResource(R.drawable.icon_edit);
+                editting.remove("rent");
+                editting.put("rent", false);
+                if (editCount==0){
+                    fab.setImageResource(R.drawable.ic_close_black_24dp);
+                }
+                return;
+            }
+            editCount++;
+            if (editCount==1){
+                fab.setImageResource(R.drawable.ic_check_black_24dp);
+            }
+            textViewRent.setVisibility(View.GONE);
+            editTextRent.setVisibility(View.VISIBLE);
+            buttonRent.setImageResource(R.drawable.ic_close_black_24dp);
+            editting.remove("rent");
+            editting.put("rent", true);
+            return;
+        }
+
+        if (view==fab_delete){
+            deleteLocation();
+        }
+    }
+
+    private void deleteLocation() {
+        new Confirmation(getContext(), this, "Are you sure?", "Delete this location and all houses here:\n"+locationObject.getSummary(), R.drawable.ic_delete_black_24dp, "Yes", "Cancel", Helpers.REQUEST_CODE_DELETE).show();
+    }
+
+    private void completeEdit() {
+        Location temp= Location.findById(Location.class, locationObject.getId());
+
+        if (editCount==0){
+            return;
+        }
+        if (editting.get("location")){
+            String name= editTextLocation.getText().toString();
+            name= Helpers.cleaner(name);
+            if (name==null){
+                onError("Invalid Location Name", editTextLocation);
+                locationObject= temp;
+                return;
+            }
+            onClick(buttonLocation);
+            locationObject.setName(name);
+        }
+
+        if (editting.get("rent")){
+            int amount= Integer.valueOf(editTextRent.getText().toString());
+            if (amount< Helpers.AMOUNT_MINIMUM_RENT){
+                onError("Rent must be >=250,000/=", editTextRent);
+                locationObject= temp;
+                return;
+            }
+            onClick(buttonRent);
+            locationObject.setDefaultRent(amount);
+        }
+
+        locationObject.save();
+        Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
+        textViewLocation.setText(locationObject.getName());
+        textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
+        onClick(fab);
+    }
+
+    private void onError(String notif, EditText item) {
+        item.setTextColor(Color.RED);
+        Toast.makeText(getContext(), notif, Toast.LENGTH_SHORT).show();
+        colored= item;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        colored.setTextColor(previous_color);
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
+    }
+
+    @Override
+    public void onReceiveResult(boolean result, int requestCode) {
+        if (result &&(requestCode==Helpers.REQUEST_CODE_DELETE)){
+            locationObject.delete();
+            scrollToNext();
+        }
+    }
+
+    private void scrollToNext() {
+        if (mListener != null) {
+            mListener.onItemDeleted(location);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -95,5 +362,7 @@ public class DetailedHouse extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+        void onItemDeleted(Long id);
     }
 }
