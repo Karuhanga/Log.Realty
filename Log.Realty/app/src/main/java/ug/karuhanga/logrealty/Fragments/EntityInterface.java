@@ -306,21 +306,21 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
         switch (ENTITY){
             case Helpers.FRAGMENT_LOCATIONS:
                 List<Location> results;
-                results= Select.from(Location.class).limit(String.valueOf(limit)).list();
+                results= Select.from(Location.class).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("name")).list();
                 for (Location result : results) {
                     data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             case Helpers.FRAGMENT_HOUSES:
                 List<House> results2;
-                results2= Select.from(House.class).limit(String.valueOf(limit)).list();
+                results2= Select.from(House.class).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("number")).orderBy(NamingHelper.toSQLNameDefault("location")).list();
                 for (House result : results2) {
                     data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }
                 break;
             case Helpers.FRAGMENT_TENANTS:
                 List<Tenant> results3;
-                results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).limit(String.valueOf(limit)).list();
+                results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("rentDue")).list();
                 for (Tenant result : results3) {
                     data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }

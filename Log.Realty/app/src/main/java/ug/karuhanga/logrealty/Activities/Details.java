@@ -32,13 +32,14 @@ import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Location;
 import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
+import ug.karuhanga.logrealty.Fragments.DetailedHouse;
 import ug.karuhanga.logrealty.Fragments.DetailedLocation;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
 
-public class Details extends AppCompatActivity implements DetailedLocation.OnFragmentInteractionListener, View.OnClickListener {
+public class Details extends AppCompatActivity implements DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, View.OnClickListener {
 
     private int ENTITY;
     private Long current_id;
@@ -105,10 +106,13 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
 
         button_left= (ImageButton) findViewById(R.id.button_left_details_activity);
         button_right= (ImageButton) findViewById(R.id.button_right_details_activity);
+        button_left.setAlpha(0.3f);
+        button_right.setAlpha(0.3f);
+
 
         DisplayMetrics metrics= getResources().getDisplayMetrics();
         int screenWidth= (int) (metrics.widthPixels*0.80);
-        int screenHeight= (int) (metrics.heightPixels*0.60);
+        int screenHeight= (int) (metrics.heightPixels*0.55);
 
         getWindow().setLayout(screenWidth, screenHeight);
 
@@ -198,6 +202,7 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (ENTITY){
                 case Helpers.FRAGMENT_LOCATIONS: return DetailedLocation.newInstance(ids.get(position));
+                case Helpers.FRAGMENT_HOUSES: return DetailedHouse.newInstance(ids.get(position));
                 default: return DetailedLocation.newInstance(ids.get(position));
             }
         }

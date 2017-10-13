@@ -107,7 +107,7 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
 
         textViewLocation.setText(locationObject.getName());
         textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
-        editTextLocation.setText(textViewLocation.getText());
+        editTextLocation.setText(locationObject.getName());
         editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
 
         buttonLocation.setOnClickListener(this);
@@ -171,7 +171,7 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
                 editCount--;
                 editTextLocation.setVisibility(View.GONE);
                 textViewLocation.setVisibility(View.VISIBLE);
-                editTextLocation.setText(textViewLocation.getText());
+                editTextLocation.setText(locationObject.getName());
                 buttonLocation.setImageResource(R.drawable.icon_edit);
                 editting.remove("location");
                 editting.put("location", false);
@@ -241,7 +241,6 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
                 locationObject= temp;
                 return;
             }
-            onClick(buttonLocation);
             locationObject.setName(name);
         }
 
@@ -252,14 +251,17 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
                 locationObject= temp;
                 return;
             }
-            onClick(buttonRent);
             locationObject.setDefaultRent(amount);
         }
 
         locationObject.save();
         Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
-        textViewLocation.setText(locationObject.getName());
-        textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
+        if (editting.get("location")){
+            onClick(buttonLocation);
+        }
+        if (editting.get("rent")){
+            onClick(buttonRent);
+        }
         onClick(fab);
     }
 

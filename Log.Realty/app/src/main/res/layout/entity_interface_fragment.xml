@@ -10,7 +10,7 @@
 
     <ListView
         android:id="@+id/list_view_entity_interfaces"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@android:color/transparent"
         android:dividerHeight="5dp"

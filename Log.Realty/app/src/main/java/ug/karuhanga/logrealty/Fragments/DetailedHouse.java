@@ -11,17 +11,24 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orm.query.Condition;
 import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.HashMap;
+import java.util.List;
 
 import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Location;
@@ -37,18 +44,26 @@ import ug.karuhanga.logrealty.R;
  * Use the {@link DetailedLocation#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailedHouse extends Fragment implements TextWatcher, View.OnClickListener, ug.karuhanga.logrealty.Listeners.Confirmation {
+public class DetailedHouse extends Fragment implements TextWatcher, View.OnClickListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener, ug.karuhanga.logrealty.Listeners.Confirmation {
     // TODO: Rename parameter arguments, choose names that match
 
     private Long house;
+    private ArrayAdapter<Location> adapter;
+    private List<Location> results;
+
     private ImageButton buttonLocation;
     private ImageButton buttonInfo;
     private ImageButton buttonRent;
 
+    private TableRow rowSingleHouse;
+    private TableRow rowDefaultRent;
+    private View labelNumber;
+    private View labelDescription;
+    private View labelRent;
     private CheckBox checkBoxSingleHouse;
     private CheckBox checkBoxDefaultRent;
 
-    private EditText editTextLocation;
+    private AutoCompleteTextView editTextLocation;
     private EditText editTextDescription;
     private EditText editTextNumber;
     private EditText editTextRent;
@@ -67,6 +82,7 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
     private int previous_color;
     private int editCount;
     private House houseObject;
+    private Location chosen;
 
     private HashMap<String, Boolean> editting= new HashMap<>();
 
@@ -86,7 +102,6 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
     public static DetailedHouse newInstance(Long id) {
         DetailedHouse fragment = new DetailedHouse();
         Bundle args = new Bundle();
-
         args.putLong("id", id);
         fragment.setArguments(args);
         return fragment;
@@ -117,18 +132,31 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         textViewRent= view.findViewById(R.id.text_view_amount_fragment_detailed_house);
         textViewSingleHouse= view.findViewById(R.id.text_view_single_house_fragment_detailed_house);
 
+        rowSingleHouse= view.findViewById(R.id.row_single_house_detailed_house);
+        rowDefaultRent= view.findViewById(R.id.row_default_rent_detailed_house);
+        labelNumber= view.findViewById(R.id.text_view_label_number_fragment_detailed_house);
+        labelDescription= view.findViewById(R.id.text_view_label_description_fragment_detailed_house);
+        labelRent= view.findViewById(R.id.text_view_label_amount_fragment_detailed_house);
         checkBoxSingleHouse= view.findViewById(R.id.checkBox_single_house_add_house);
         checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
 
         editTextLocation= view.findViewById(R.id.edit_text_location_fragment_detailed_house);
         editTextNumber= view.findViewById(R.id.edit_text_number_fragment_detailed_house);
         editTextDescription= view.findViewById(R.id.edit_text_description_fragment_detailed_house);
-        editTextRent= view.findViewById(R.id.edit_text_amount_fragment_detailed_location);
+        editTextRent= view.findViewById(R.id.edit_text_amount_fragment_detailed_house);
 
         fab= view.findViewById(R.id.fab_detailed_location);
         fab_delete= view.findViewById(R.id.fab_delete_detailed_location);
         checkBoxSingleHouse= view.findViewById(R.id.checkbox_single_house_detailed_house);
         checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
+
+        results= Select.from(Location.class).list();
+        adapter= new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, results);
+        adapter.setNotifyOnChange(true);
+        editTextLocation.setAdapter(adapter);
+        editTextLocation.setThreshold(1);
+        editTextLocation.setOnItemClickListener(this);
+        chosen= null;
 
         previous_color= editTextLocation.getCurrentTextColor();
         colored= editTextLocation;
@@ -136,19 +164,11 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         houseObject= House.findById(House.class, house);
 
         textViewLocation.setText(houseObject.getLocation().getName());
-        editTextLocation.setText(textViewLocation.getText());
+        editTextLocation.setText(houseObject.getLocation().getName());
 
-        if (houseObject.getNumber()==0){
-            hide(textViewNumber);
-            hide(textViewDescription);
-            checkBoxSingleHouse.setChecked(true);
-        }
-        else{
-            hide(textViewSingleHouse);
-            textViewNumber.setText("House No."+String.valueOf(houseObject.getNumber()));
-            textViewDescription.setText(houseObject.getDescription());
-        }
+        displayInfo();
 
+        hide(rowDefaultRent);
         textViewRent.setText(Helpers.toCurrency(houseObject.getRent()));
         editTextRent.setText(String.valueOf(houseObject.getRent()));
 
@@ -157,6 +177,8 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         buttonRent.setOnClickListener(this);
         fab.setOnClickListener(this);
         fab_delete.setOnClickListener(this);
+        checkBoxSingleHouse.setOnCheckedChangeListener(this);
+        checkBoxDefaultRent.setOnCheckedChangeListener(this);
 
         editTextLocation.addTextChangedListener(this);
         editTextNumber.addTextChangedListener(this);
@@ -167,35 +189,11 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
     }
 
     private void hide(View view) {
-        view.setVisibility(View.INVISIBLE);
+        view.setVisibility(View.GONE);
     }
 
     private void show(View view){
         view.setVisibility(View.VISIBLE);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -204,13 +202,15 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
             if (editCount==0){
                 if (buttonLocation.getVisibility()==View.VISIBLE){
                     fab.setImageResource(R.drawable.icon_edit);
-                    buttonLocation.setVisibility(View.INVISIBLE);
-                    buttonRent.setVisibility(View.INVISIBLE);
+                    hide(buttonLocation);
+                    hide(buttonInfo);
+                    hide(buttonRent);
                 }
                 else{
                     fab.setImageResource(R.drawable.ic_close_black_24dp);
-                    buttonLocation.setVisibility(View.VISIBLE);
-                    buttonRent.setVisibility(View.VISIBLE);
+                    show(buttonLocation);
+                    show(buttonInfo);
+                    show(buttonRent);
                 }
                 return;
             }
@@ -220,9 +220,9 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         if (view==buttonLocation){
             if (editting.get("location")){
                 editCount--;
-                editTextLocation.setVisibility(View.GONE);
-                textViewLocation.setVisibility(View.VISIBLE);
-                editTextLocation.setText(textViewLocation.getText());
+                hide(editTextLocation);
+                show(textViewLocation);
+                editTextLocation.setText(houseObject.getLocation().getName());
                 buttonLocation.setImageResource(R.drawable.icon_edit);
                 editting.remove("location");
                 editting.put("location", false);
@@ -235,21 +235,56 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
             if (editCount==1){
                 fab.setImageResource(R.drawable.ic_check_black_24dp);
             }
-            textViewLocation.setVisibility(View.GONE);
-            editTextLocation.setVisibility(View.VISIBLE);
+            hide(textViewLocation);
+            show(editTextLocation);
             buttonLocation.setImageResource(R.drawable.ic_close_black_24dp);
             editting.remove("location");
             editting.put("location", true);
             return;
         }
 
+        if (view==buttonInfo){
+            if (editting.get("information")){
+                editCount--;
+                hide(editTextNumber);
+                hide(editTextDescription);
+                hide(checkBoxSingleHouse);
+                hide(rowSingleHouse);
+                displayInfo();
+                buttonInfo.setImageResource(R.drawable.icon_edit);
+                editting.remove("information");
+                editting.put("information", false);
+                if (editCount==0){
+                    fab.setImageResource(R.drawable.ic_close_black_24dp);
+                }
+                return;
+            }
+            editCount++;
+            if (editCount==1){
+                fab.setImageResource(R.drawable.ic_check_black_24dp);
+            }
+            show(checkBoxSingleHouse);
+            show(editTextNumber);
+            show(editTextDescription);
+            show(labelNumber);
+            show(labelDescription);
+            hideInfo();
+            buttonInfo.setImageResource(R.drawable.ic_close_black_24dp);
+            editting.remove("information");
+            editting.put("information", true);
+            return;
+        }
+
         if (view==buttonRent){
             if (editting.get("rent")){
                 editCount--;
-                editTextRent.setVisibility(View.GONE);
-                textViewRent.setVisibility(View.VISIBLE);
-                editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
+                hide(editTextRent);
+                hide(rowDefaultRent);
+                show(textViewRent);
+                show(labelRent);
+                editTextRent.setText(String.valueOf(houseObject.getRent()));
                 buttonRent.setImageResource(R.drawable.icon_edit);
+                checkBoxDefaultRent.setChecked(false);
                 editting.remove("rent");
                 editting.put("rent", false);
                 if (editCount==0){
@@ -261,8 +296,10 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
             if (editCount==1){
                 fab.setImageResource(R.drawable.ic_check_black_24dp);
             }
-            textViewRent.setVisibility(View.GONE);
-            editTextRent.setVisibility(View.VISIBLE);
+            hide(textViewRent);
+            show(editTextRent);
+            show(labelRent);
+            show(rowDefaultRent);
             buttonRent.setImageResource(R.drawable.ic_close_black_24dp);
             editting.remove("rent");
             editting.put("rent", true);
@@ -270,48 +307,165 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         }
 
         if (view==fab_delete){
-            deleteLocation();
+            deleteHouse();
+            return;
         }
     }
 
-    private void deleteLocation() {
-        new Confirmation(getContext(), this, "Are you sure?", "Delete this location and all houses here:\n"+locationObject.getSummary(), R.drawable.ic_delete_black_24dp, "Yes", "Cancel", Helpers.REQUEST_CODE_DELETE).show();
+    private void deleteHouse() {
+        new Confirmation(getContext(), this, "Are you sure?", "Delete this house and its tenant:\n"+houseObject.getSummary(), R.drawable.ic_delete_black_24dp, "Yes", "Cancel", Helpers.REQUEST_CODE_DELETE).show();
+    }
+
+    private void displayInfo(){
+        if (houseObject.getNumber()==0){
+            hide(textViewNumber);
+            hide(labelNumber);
+            hide(textViewDescription);
+            show(rowSingleHouse);
+            show(textViewSingleHouse);
+            hide(labelNumber);
+            hide(labelDescription);
+        }
+        else{
+            hide(rowSingleHouse);
+            hide(textViewSingleHouse);
+            textViewNumber.setText("House No. "+String.valueOf(houseObject.getNumber()));
+            textViewDescription.setText(houseObject.getDescription());
+            editTextNumber.setText(String.valueOf(houseObject.getNumber()));
+            editTextDescription.setText(houseObject.getDescription());
+            show(textViewNumber);
+            show(labelNumber);
+            show(textViewDescription);
+            show(labelDescription);
+        }
+    }
+
+    private void hideInfo(){
+        if (houseObject.getNumber()==0){
+            hide(textViewSingleHouse);
+            checkBoxSingleHouse.setChecked(true);
+            hide(editTextNumber);
+            hide(editTextDescription);
+            hide(labelNumber);
+            hide(labelDescription);
+        }
+        else{
+            show(rowSingleHouse);
+            checkBoxSingleHouse.setChecked(false);
+            hide(textViewNumber);
+            hide(textViewDescription);
+        }
     }
 
     private void completeEdit() {
-        Location temp= Location.findById(Location.class, locationObject.getId());
+        String desc;
+        int number;
+        int rentPaid;
+        House temp= House.findById(House.class, houseObject.getId());
 
         if (editCount==0){
             return;
         }
+
         if (editting.get("location")){
-            String name= editTextLocation.getText().toString();
-            name= Helpers.cleaner(name);
-            if (name==null){
+            if (chosen==null){
                 onError("Invalid Location Name", editTextLocation);
-                locationObject= temp;
+                houseObject= temp;
                 return;
             }
-            onClick(buttonLocation);
-            locationObject.setName(name);
+
+            List<House> results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(houseObject.getNumber())).list();
+            results.addAll(Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(0)).list());
+            if (!(results.isEmpty())){
+                Toast.makeText(getContext(), "This house already exists!", Toast.LENGTH_LONG).show();
+                houseObject= temp;
+                return;
+            }
+            houseObject.setLocation(chosen);
+        }
+
+        if (editting.get("information")){
+            if (checkBoxSingleHouse.isChecked()){
+                //if previously not checked
+                if (houseObject.getNumber()!=0){
+                    List<House> results= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).list();
+                    if (!(results.isEmpty())){
+                        Toast.makeText(getContext(), "This location already has multiple houses", Toast.LENGTH_LONG).show();
+                        houseObject= temp;
+                        return;
+                    }
+                    else{
+                        houseObject.setNumber(0);
+                    }
+                }
+                //otherwise change nothing
+            }
+            else{
+                desc= editTextDescription.getText().toString();
+                if (desc.length()<1){
+                    onError("Please provide a small description", editTextDescription);
+                    houseObject= temp;
+                    return;
+                }
+                houseObject.setDescription(desc);
+
+                try{
+                    number= Integer.valueOf(editTextNumber.getText().toString());
+                }catch (NumberFormatException e){
+                    onError("Please input a house number", editTextNumber);
+                    houseObject= temp;
+                    return;
+                }
+
+                List<House> responses= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("number")).eq(number)).list();
+                if (!(responses.isEmpty())){
+                    onError("This house was already added", editTextNumber);
+                    houseObject= temp;
+                    return;
+                }
+                if (number==0){
+                    onError("Please input a valid house number", editTextNumber);
+                    houseObject= temp;
+                    return;
+                }
+
+                houseObject.setNumber(number);
+            }
         }
 
         if (editting.get("rent")){
-            int amount= Integer.valueOf(editTextRent.getText().toString());
-            if (amount< Helpers.AMOUNT_MINIMUM_RENT){
-                onError("Rent must be >=250,000/=", editTextRent);
-                locationObject= temp;
-                return;
+            if (checkBoxDefaultRent.isChecked()){
+                houseObject.setRent(houseObject.getLocation().getDefaultRent());
             }
-            onClick(buttonRent);
-            locationObject.setDefaultRent(amount);
+            else{
+                try{
+                    rentPaid= Integer.valueOf(editTextRent.getText().toString());
+                }catch (NumberFormatException e){
+                    onError("Please input a rent amount", editTextRent);
+                    houseObject=temp;
+                    return;
+                }
+                if (rentPaid< Helpers.AMOUNT_MINIMUM_RENT){
+                    onError("Rent must be at least UgShs.250,000/=", editTextRent);
+                    houseObject=temp;
+                    return;
+                }
+                houseObject.setRent(rentPaid);
+            }
         }
-
-        locationObject.save();
-        Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
-        textViewLocation.setText(locationObject.getName());
-        textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
+        houseObject.save();
+        if (editting.get("location")){
+            onClick(buttonLocation);
+        }
+        if (editting.get("information")){
+            onClick(buttonInfo);
+        }
+        if (editting.get("rent")){
+            onClick(buttonRent);
+        }
         onClick(fab);
+        Toast.makeText(getContext(), "Complete!", Toast.LENGTH_SHORT).show();
+        return;
     }
 
     private void onError(String notif, EditText item) {
@@ -336,16 +490,49 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
     }
 
     @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        chosen= (Location) adapterView.getItemAtPosition(i);
+    }
+
+    @Override
     public void onReceiveResult(boolean result, int requestCode) {
         if (result &&(requestCode==Helpers.REQUEST_CODE_DELETE)){
-            locationObject.delete();
+            houseObject.delete();
             scrollToNext();
         }
     }
 
     private void scrollToNext() {
         if (mListener != null) {
-            mListener.onItemDeleted(location);
+            mListener.onItemDeleted(house);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton==checkBoxSingleHouse){
+            if (b){
+                hide(editTextNumber);
+                hide(editTextDescription);
+                hide(labelNumber);
+                hide(labelDescription);
+            }
+            else{
+                show(editTextNumber);
+                show(editTextDescription);
+                show(labelNumber);
+                show(labelDescription);
+            }
+        }
+        else if (compoundButton==checkBoxDefaultRent){
+            if (b){
+                hide(editTextRent);
+                hide(labelRent);
+            }
+            else{
+                show(editTextRent);
+                show(labelRent);
+            }
         }
     }
 
@@ -360,9 +547,24 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
 
         void onItemDeleted(Long id);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 }
