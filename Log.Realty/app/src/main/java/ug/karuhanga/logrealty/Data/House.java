@@ -54,7 +54,7 @@ public class House extends Record {
         if (number==0){
             return this.location.getName();
         }
-        return location+", House "+String.valueOf(number)+": "+description;
+        return location+"\nHouse "+String.valueOf(number)+": "+description;
     }
 
     @Override

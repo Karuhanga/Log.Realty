@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.orm.SugarContext;
 
@@ -240,18 +241,22 @@ public class Gist extends AppCompatActivity
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction= fragmentManager.beginTransaction();
 
+        //check if fragment we need is in memory and set the respective fragment
         Fragment storedFragment= fragmentManager.findFragmentByTag(String.valueOf(entity));
         if (entity==FRAGMENT_DUE_PAYMENTS){
-            fragment= DuePayments.newInstance();
+            fragment= (storedFragment == null) ? DuePayments.newInstance() : storedFragment;
         }
         else {
             fragment = (storedFragment == null) ? EntityInterface.newInstance(entity) : storedFragment;
         }
 
+
+        //if there was no fragment, nothing to save, just display
         if (currentFragment==Helpers.FRAGMENT_NONE){
             fragmentTransaction.add(R.id.layout_fragment_holder, fragment);
         }
         else{
+            //something to save, check if it is possibly already saved, to prevent multiple additions
             if (fragmentManager.findFragmentByTag(String.valueOf(currentFragment))==null){
                 fragmentTransaction.addToBackStack(String.valueOf(currentFragment));
             }
@@ -268,7 +273,6 @@ public class Gist extends AppCompatActivity
 
         toolbar.setTitle(label);
         selected= 0;
-
         return;
     }
 

@@ -1,11 +1,13 @@
 package ug.karuhanga.logrealty;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -36,6 +38,7 @@ public class Helpers {
     public static final int REQUEST_CODE_DETAILS= 300;
     public static final int REQUEST_CODE_DELETE= 301;
     public static final int REQUEST_CODE_REPLACE= 302;
+    public static final int REQUEST_CODE_EDIT= 303;
 
     public static final int AMOUNT_MINIMUM_RENT= 250000;
 
@@ -88,6 +91,19 @@ public class Helpers {
         }finally {
             return result;
         }
+    }
+
+    public static ArrayList<Integer> breakDate(Date date){
+        SimpleDateFormat formatter= new SimpleDateFormat("dd/MM/yyyy");
+        ArrayList<Integer> result= new ArrayList<>();
+
+        String[] temp= formatter.format(date).split("/");
+        for (String item : temp) {
+            result.add(Integer.parseInt(item));
+        }
+        result.set(1, result.get(1)-1);
+
+        return result;
     }
 
     public static String cleaner(String text){

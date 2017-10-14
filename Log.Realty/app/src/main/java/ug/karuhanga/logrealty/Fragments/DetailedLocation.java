@@ -153,13 +153,13 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
             if (editCount==0){
                 if (buttonLocation.getVisibility()==View.VISIBLE){
                     fab.setImageResource(R.drawable.icon_edit);
-                    buttonLocation.setVisibility(View.INVISIBLE);
-                    buttonRent.setVisibility(View.INVISIBLE);
+                    hide(buttonLocation);
+                    hide(buttonRent);
                 }
                 else{
                     fab.setImageResource(R.drawable.ic_close_black_24dp);
-                    buttonLocation.setVisibility(View.VISIBLE);
-                    buttonRent.setVisibility(View.VISIBLE);
+                    show(buttonLocation);
+                    show(buttonRent);
                 }
                 return;
             }
@@ -169,8 +169,8 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
         if (view==buttonLocation){
             if (editting.get("location")){
                 editCount--;
-                editTextLocation.setVisibility(View.GONE);
-                textViewLocation.setVisibility(View.VISIBLE);
+                hide(editTextLocation);
+                show(textViewLocation);
                 editTextLocation.setText(locationObject.getName());
                 buttonLocation.setImageResource(R.drawable.icon_edit);
                 editting.remove("location");
@@ -184,8 +184,8 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
             if (editCount==1){
                 fab.setImageResource(R.drawable.ic_check_black_24dp);
             }
-            textViewLocation.setVisibility(View.GONE);
-            editTextLocation.setVisibility(View.VISIBLE);
+            hide(textViewLocation);
+            show(editTextLocation);
             buttonLocation.setImageResource(R.drawable.ic_close_black_24dp);
             editting.remove("location");
             editting.put("location", true);
@@ -195,8 +195,8 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
         if (view==buttonRent){
             if (editting.get("rent")){
                 editCount--;
-                editTextRent.setVisibility(View.GONE);
-                textViewRent.setVisibility(View.VISIBLE);
+                hide(editTextRent);
+                show(textViewRent);
                 editTextRent.setText(String.valueOf(locationObject.getDefaultRent()));
                 buttonRent.setImageResource(R.drawable.icon_edit);
                 editting.remove("rent");
@@ -210,8 +210,8 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
             if (editCount==1){
                 fab.setImageResource(R.drawable.ic_check_black_24dp);
             }
-            textViewRent.setVisibility(View.GONE);
-            editTextRent.setVisibility(View.VISIBLE);
+            hide(textViewRent);
+            show(editTextRent);
             buttonRent.setImageResource(R.drawable.ic_close_black_24dp);
             editting.remove("rent");
             editting.put("rent", true);
@@ -254,14 +254,17 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
             locationObject.setDefaultRent(amount);
         }
 
-        locationObject.save();
+
         Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
         if (editting.get("location")){
+            textViewLocation.setText(locationObject.getName());
             onClick(buttonLocation);
         }
         if (editting.get("rent")){
+            textViewRent.setText(Helpers.toCurrency(locationObject.getDefaultRent()));
             onClick(buttonRent);
         }
+        locationObject.save();
         onClick(fab);
     }
 
@@ -269,6 +272,22 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
         item.setTextColor(Color.RED);
         Toast.makeText(getContext(), notif, Toast.LENGTH_SHORT).show();
         colored= item;
+    }
+
+    private void hide(final View view) {
+        view.animate().scaleY(0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                view.setScaleY(1f);
+                view.setVisibility(View.GONE);
+            }
+        }).start();
+    }
+
+    private void show(View view) {
+        view.setScaleY(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().scaleY(1f);
     }
 
     @Override

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:animateLayoutChanges="true"
     app:theme="@style/ActivityPopups"
     tools:context="ug.karuhanga.logrealty.Activities.Details">
 

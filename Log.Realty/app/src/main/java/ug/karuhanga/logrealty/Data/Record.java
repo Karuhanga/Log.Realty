@@ -30,4 +30,8 @@ public abstract class Record extends SugarRecord {
         boolean result= onDelete();
         return super.delete() && result;
     }
+
+    public boolean equals(Record record){
+        return getId()==record.getId();
+    }
 }

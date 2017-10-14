@@ -23,7 +23,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orm.query.Condition;
 import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +36,13 @@ import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Fragments.DetailedHouse;
 import ug.karuhanga.logrealty.Fragments.DetailedLocation;
+import ug.karuhanga.logrealty.Fragments.DetailedTenant;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
 
-public class Details extends AppCompatActivity implements DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, View.OnClickListener {
+public class Details extends AppCompatActivity implements DetailedTenant.OnFragmentInteractionListener, DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, View.OnClickListener {
 
     private int ENTITY;
     private Long current_id;
@@ -81,7 +84,7 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
                 }
                 break;
             case Helpers.FRAGMENT_TENANTS:
-                List<Tenant> results3= Select.from(Tenant.class).list();
+                List<Tenant> results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(0)).list();
                 for (Tenant result : results3) {
                     ids.add(result.getId());
                 }
@@ -111,8 +114,8 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
 
 
         DisplayMetrics metrics= getResources().getDisplayMetrics();
-        int screenWidth= (int) (metrics.widthPixels*0.80);
-        int screenHeight= (int) (metrics.heightPixels*0.55);
+        int screenWidth= (int) (metrics.widthPixels*0.85);
+        int screenHeight= (int) (metrics.heightPixels*0.60);
 
         getWindow().setLayout(screenWidth, screenHeight);
 
@@ -203,6 +206,7 @@ public class Details extends AppCompatActivity implements DetailedLocation.OnFra
             switch (ENTITY){
                 case Helpers.FRAGMENT_LOCATIONS: return DetailedLocation.newInstance(ids.get(position));
                 case Helpers.FRAGMENT_HOUSES: return DetailedHouse.newInstance(ids.get(position));
+                case Helpers.FRAGMENT_TENANTS: return DetailedTenant.newInstance(ids.get(position));
                 default: return DetailedLocation.newInstance(ids.get(position));
             }
         }

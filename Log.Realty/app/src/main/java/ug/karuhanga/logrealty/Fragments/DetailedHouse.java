@@ -188,12 +188,20 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
         return view;
     }
 
-    private void hide(View view) {
-        view.setVisibility(View.GONE);
+    private void hide(final View view) {
+        view.animate().scaleY(0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                view.setScaleY(1f);
+                view.setVisibility(View.GONE);
+            }
+        }).start();
     }
 
-    private void show(View view){
+    private void show(View view) {
+        view.setScaleY(0f);
         view.setVisibility(View.VISIBLE);
+        view.animate().scaleY(1f);
     }
 
     @Override
@@ -453,16 +461,20 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
                 houseObject.setRent(rentPaid);
             }
         }
-        houseObject.save();
+
         if (editting.get("location")){
+            textViewLocation.setText(houseObject.getLocation().getName());
             onClick(buttonLocation);
         }
         if (editting.get("information")){
             onClick(buttonInfo);
         }
         if (editting.get("rent")){
+            textViewRent.setText(Helpers.toCurrency(houseObject.getRent()));
             onClick(buttonRent);
         }
+
+        houseObject.save();
         onClick(fab);
         Toast.makeText(getContext(), "Complete!", Toast.LENGTH_SHORT).show();
         return;

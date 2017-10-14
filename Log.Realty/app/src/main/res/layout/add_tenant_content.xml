@@ -9,10 +9,10 @@
     tools:showIn="@layout/add_tenant_activity">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -25,7 +25,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_fname"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -36,7 +36,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_onames"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -47,7 +47,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_email"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -58,7 +58,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_contact"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -69,7 +69,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_idtype"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -80,7 +80,7 @@
             <EditText
                 android:id="@+id/edit_text_add_tenant_idno"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
@@ -93,12 +93,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:hint="House Occupied" />
 
             <TextView
                 android:id="@+id/label_date_picker_add_tenant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:labelFor="@+id/date_picker_add_tenant_entering"
                 android:text="Date Entered"
                 android:textSize="19sp" />
@@ -108,11 +110,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
                 android:calendarViewShown="false"
                 android:foregroundGravity="center_horizontal"
                 android:headerBackground="@color/colorStatusBar"
                 android:theme="@style/Base.CardView"
-                tools:calendarViewShown="true" />
+                tools:calendarViewShown="false" />
+
+            <TextView
+                android:id="@+id/label_date_picker_start_count_add_tenant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:labelFor="@+id/date_picker_start_count_add_tenant"
+                android:text="Start rent count on:"
+                android:textSize="19sp" />
+
+            <CheckBox
+                android:id="@+id/checkBox_use_for_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Use date of entry" />
+
+            <DatePicker
+                android:id="@+id/date_picker_start_count_add_tenant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:calendarViewShown="false"
+                android:foregroundGravity="center_horizontal"
+                android:headerBackground="@color/colorStatusBar"
+                android:theme="@style/Base.CardView"
+                tools:calendarViewShown="false" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp" />
 
         </LinearLayout>
     </ScrollView>

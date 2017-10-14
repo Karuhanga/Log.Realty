@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,7 +35,7 @@ import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
 
-public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, Confirmation {
+public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, Confirmation, CompoundButton.OnCheckedChangeListener {
 
     private EditText first_name;
     private EditText surname;
@@ -43,8 +45,10 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     private EditText id_no;
     private AutoCompleteTextView house_occupied;
     private DatePicker date_entered;
+    private DatePicker date_count_date;
     private FloatingActionButton fab;
     private EditText colored;
+    private CheckBox checkBoxUseEntered;
     private int previousColor;
 
     String fName;
@@ -55,6 +59,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     String idNo;
     Date Entered;
     List<Tenant> current;
+    Date start_count;
 
 
     private House chosen;
@@ -77,7 +82,9 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         id_no= (EditText) findViewById(R.id.edit_text_add_tenant_idno);
         house_occupied= (AutoCompleteTextView) findViewById(R.id.edit_text_add_tenant_house);
         date_entered= (DatePicker) findViewById(R.id.date_picker_add_tenant_entering);
+        date_count_date= (DatePicker) findViewById(R.id.date_picker_start_count_add_tenant);
         fab= (FloatingActionButton) findViewById(R.id.fab_add_tenant);
+        checkBoxUseEntered= (CheckBox) findViewById(R.id.checkBox_use_for_start);
 
         previousColor= house_occupied.getCurrentTextColor();
         colored= first_name;
@@ -93,6 +100,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         house_occupied.setAdapter(adapter);
 
         fab.setOnClickListener(this);
+        checkBoxUseEntered.setOnCheckedChangeListener(this);
 
 
 
@@ -102,52 +110,64 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         fName= first_name.getText().toString();
         fName= Helpers.cleaner(fName);
         if (fName==null){
-            onError("Invalid Name", first_name);
+            onError("Please input the Tenant's first name", first_name);
             return;
         }
 
         oNames= surname.getText().toString();
         oNames= Helpers.cleaner(oNames);
         if (oNames==null){
-            onError("Invalid Name", surname);
+            onError("Please input the Tenant's surname", surname);
             return;
         }
 
         Email= email.getText().toString();
         if (!Email.matches(Helpers.REGEX_EMAIL)){
-            onError("Invalid Email", email);
+            onError("Please input a valid email address", email);
             return;
         }
 
         Contact= contact.getText().toString();
         if (Contact.length()!=10){
-            onError("Invalid Contact", contact);
+            onError("Please input a valid contact", contact);
             return;
         }
         try {
             Long.parseLong(Contact);
         }catch(Exception e){
-            onError("Invalid Contact", contact);
+            onError("Please input a valid contact", contact);
             return;
         }
 
         idType= id_type.getText().toString();
         idType= Helpers.cleaner(idType);
         if (idType==null){
-            onError("Invalid ID Type", id_type);
+            onError("Please input an ID type", id_type);
             return;
         }
 
         idNo= id_no.getText().toString();
         idNo= Helpers.cleaner(idNo);
         if (idNo==null){
-            onError("Invalid ID Number", id_no);
+            onError("Please input a valid ID number", id_no);
             return;
         }
 
         Entered= Helpers.makeDate(date_entered.getDayOfMonth(), date_entered.getMonth(), date_entered.getYear());
         if (Entered==null){
-            Toast.makeText(this, "Invalid Date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please input an entry date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (checkBoxUseEntered.isChecked()){
+            start_count= Entered;
+        }
+        else{
+            start_count= Helpers.makeDate(date_count_date.getDayOfMonth(), date_count_date.getMonth(), date_count_date.getYear());
+        }
+
+        if (start_count==null){
+            Toast.makeText(this, "Please select a date we'll calculate the rent from", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -158,7 +178,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
 
         current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
         if (current.size()>0){
-            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "No", REQUEST_CODE_REPLACE).show();
+            new ug.karuhanga.logrealty.Popups.Confirmation(this, this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "Pick a different House", REQUEST_CODE_REPLACE).show();
             return;
         }
         else{
@@ -171,7 +191,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
             current.get(0).setEx(true);
             current.get(0).save();
         }
-        Tenant tenant= new Tenant(fName, oNames, Email, Contact, Entered, idType, idNo, chosen);
+        Tenant tenant= new Tenant(fName, oNames, Email, Contact, Entered, start_count, idType, idNo, chosen);
         tenant.save();
         //TODO set tenant to house..resolve error causing crush(Weak HashMap)
 //        chosen.setTenant(tenant);
@@ -219,6 +239,18 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
     public void onReceiveResult(boolean result, int requestCode) {
         if (result && (requestCode==REQUEST_CODE_REPLACE)){
             completeAddition();
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton==checkBoxUseEntered){
+            if (b){
+                date_count_date.setVisibility(View.GONE);
+            }
+            else{
+                date_count_date.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

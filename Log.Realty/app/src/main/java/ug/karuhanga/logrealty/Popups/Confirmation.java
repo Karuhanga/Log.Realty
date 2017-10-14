@@ -30,10 +30,6 @@ public class Confirmation extends AlertDialog implements DialogInterface.OnClick
 
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
-        if (i!=BUTTON_POSITIVE){
-            return;
-        }
-        caller.onReceiveResult(true, requestCode);
-        return;
+        caller.onReceiveResult(i==BUTTON_POSITIVE, requestCode);
     }
 }

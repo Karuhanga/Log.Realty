@@ -29,13 +29,13 @@ public class Tenant extends Record {
     public Tenant(){
     }
 
-    public Tenant(String fName, String oNames, String email, String contact, Date entered, String idType, String idNo, House house) {
+    public Tenant(String fName, String oNames, String email, String contact, Date entered, Date countStarts, String idType, String idNo, House house) {
         this.fName = fName;
         this.oNames = oNames;
         this.email = email;
         this.contact = contact;
         this.entered = entered;
-        this.rentDue = entered;
+        this.rentDue = countStarts;
         this.idType = idType;
         this.idNo = idNo;
         this.house = house;
