@@ -36,13 +36,14 @@ import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Fragments.DetailedHouse;
 import ug.karuhanga.logrealty.Fragments.DetailedLocation;
+import ug.karuhanga.logrealty.Fragments.DetailedPayment;
 import ug.karuhanga.logrealty.Fragments.DetailedTenant;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
 
-public class Details extends AppCompatActivity implements DetailedTenant.OnFragmentInteractionListener, DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, View.OnClickListener {
+public class Details extends AppCompatActivity implements DetailedPayment.OnFragmentInteractionListener, DetailedTenant.OnFragmentInteractionListener, DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, View.OnClickListener {
 
     private int ENTITY;
     private Long current_id;
@@ -88,6 +89,7 @@ public class Details extends AppCompatActivity implements DetailedTenant.OnFragm
                 for (Tenant result : results3) {
                     ids.add(result.getId());
                 }
+                break;
             case Helpers.FRAGMENT_PAYMENTS:
                 List<Payment> results4= Select.from(Payment.class).list();
                 for (Payment result : results4) {
@@ -173,7 +175,7 @@ public class Details extends AppCompatActivity implements DetailedTenant.OnFragm
         button_left.setVisibility(View.INVISIBLE);
         button_right.setVisibility(View.INVISIBLE);
         findViewById(R.id.textView_details).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.textView_details)).setText("Add a location to begin");
+        ((TextView)findViewById(R.id.textView_details)).setText("Please add a few "+Helpers.getStringByName(this, "fragment_label_"+String.valueOf(ENTITY))+" to begin");
     }
 
     @Override
@@ -207,6 +209,7 @@ public class Details extends AppCompatActivity implements DetailedTenant.OnFragm
                 case Helpers.FRAGMENT_LOCATIONS: return DetailedLocation.newInstance(ids.get(position));
                 case Helpers.FRAGMENT_HOUSES: return DetailedHouse.newInstance(ids.get(position));
                 case Helpers.FRAGMENT_TENANTS: return DetailedTenant.newInstance(ids.get(position));
+                case Helpers.FRAGMENT_PAYMENTS: return DetailedPayment.newInstance(ids.get(position));
                 default: return DetailedLocation.newInstance(ids.get(position));
             }
         }

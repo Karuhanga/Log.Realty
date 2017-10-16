@@ -129,6 +129,20 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
         if (getArguments() != null) {
             tenant = getArguments().getLong("id");
         }
+        else{
+            List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(0)).list();
+            if (results.size()>0){
+                tenant= results.get(0).getId();
+            }
+            else{
+                return;
+            }
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         editting.put("fname", false);
         editting.put("surname", false);
         editting.put("email", false);
@@ -138,11 +152,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
         editting.put("house", false);
         editting.put("entered", false);
         editting.put("due", false);
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_tenant_fragment, container, false);
         

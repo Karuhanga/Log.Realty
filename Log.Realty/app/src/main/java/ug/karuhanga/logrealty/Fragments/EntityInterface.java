@@ -137,7 +137,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if (!inSelectionProcess){
-            onDetailsRequested(((MinifiedRecord) listAdapter.getItem(adapterView.getPositionForView(view))).getId());
+            onDetailsRequested(((MinifiedRecord) adapterView.getItemAtPosition(i)).getId());
             return;
         }
 
@@ -254,11 +254,9 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                     }
                     break;
                 case Helpers.FRAGMENT_PAYMENTS:
-                    Payment payment= Payment.findById(Payment.class, record.getId());
-
+                    result= Payment.findById(Payment.class, record.getId()).delete();
                     //TODO Notify of Success and update details
-                    if (payment.delete()) {
-                        Toast.makeText(getContext(), "deleted!", Toast.LENGTH_SHORT).show();
+                    if (result) {
                     }
                     //TODO Add Failure Notifs
                     break;

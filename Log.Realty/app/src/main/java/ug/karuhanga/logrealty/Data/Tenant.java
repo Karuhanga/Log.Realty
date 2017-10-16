@@ -43,7 +43,7 @@ public class Tenant extends Record {
     }
 
     public boolean updateRentDue(Payment payment){
-        Date newDue = Helpers.dueUpdater(this.rentDue, payment.getAmount(), this.house.getRent());
+        Date newDue = Helpers.dueUpdater(this.rentDue, payment.getAmount(), payment.getRate());
         if (newDue==null){
             return false;
         }

@@ -181,14 +181,17 @@ public class Gist extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //TODO Find less crude manner of notifying data update
+        //TODO find out why data is not being passed
         displayFragment(currentFragment);
         switch (requestCode){
             case Helpers.RESULT_CODE_ADD_PAYMENT:
                 if (resultCode==RESULT_OK){
-                    Snackbar.make(fabAdd, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                    Snackbar.make(fabAdd, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG).show();
                 }
                 else{
-                    Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                    if (data!=null){
+                        Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT).show();
+                    }
                 }
                 return;
             case RESULT_CODE_SETTINGS:

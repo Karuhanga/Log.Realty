@@ -12,9 +12,9 @@ import static ug.karuhanga.logrealty.Helpers.toCurrency;
 public class Payment extends Record {
     private Date date;
     private int amount;
+    private int rate;
 
     private Tenant tenant;
-    private House house;
 
 
     public Payment() {
@@ -24,12 +24,24 @@ public class Payment extends Record {
         this.date = date;
         this.amount = amount;
         this.tenant = tenant;
-        this.house = tenant.getHouse();
+        this.rate= tenant.getHouse().getRent();
+    }
+
+    public Payment(Date date, Tenant tenant, int months){
+        this.date = date;
+        this.rate= tenant.getHouse().getRent();
+        this.amount = this.rate*months;
+        this.tenant = tenant;
     }
 
     @Override
     public String toString(){
-        return toCurrency(amount)+"\n"+dateToString(date)+"\n"+ tenant.getfName()+"- "+tenant.getHouse().getLocation().getName()+" (House "+String.valueOf(tenant.getHouse().getNumber())+")";
+        return toCurrency(amount)+" paid by "+tenant.getName();
+    }
+
+    @Override
+    public String getSummary(){
+        return toCurrency(amount)+"\n"+dateToString(date)+"\n"+ tenant.getName()+"- "+tenant.getHouse().getLocation().getName()+" (House "+String.valueOf(tenant.getHouse().getNumber())+")";
     }
 
     public Date getDate() {
@@ -56,12 +68,12 @@ public class Payment extends Record {
         this.tenant = tenant;
     }
 
-    public House getHouse() {
-        return house;
+    public int getRate() {
+        return rate;
     }
 
-    public void setHouse(House house) {
-        this.house = house;
+    public void setRate(int rate) {
+        this.rate = rate;
     }
 
     public boolean onNewPaymentAdded(){

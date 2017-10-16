@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,7 +28,7 @@ import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.R;
 
-public class AddPayment extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener {
+public class AddPayment extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
 
     FloatingActionButton fab;
     EditText editTextAmount;
@@ -34,6 +36,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     ArrayAdapter<Tenant> adapter;
     List<Tenant> results;
     Tenant chosen;
+    private CheckBox checkBoxSingleMonth;
     private int previousColor;
 
     @Override
@@ -46,6 +49,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         fab = (FloatingActionButton) findViewById(R.id.fab_add_payment);
         editTextTenant= (AutoCompleteTextView) findViewById(R.id.edit_text_add_payment_tenant);
         editTextAmount= (EditText) findViewById(R.id.edit_text_add_payment_amount);
+        checkBoxSingleMonth= (CheckBox) findViewById(R.id.checkbox_add_payment);
         previousColor= editTextTenant.getCurrentTextColor();
         chosen= null;
         adapter= null;
@@ -60,15 +64,20 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         editTextTenant.setAdapter(adapter);
 
         fab.setOnClickListener(this);
+        checkBoxSingleMonth.setOnCheckedChangeListener(this);
     }
 
     private void addPayment(){
-        int amount;
-        try{
-            amount= Integer.valueOf(editTextAmount.getText().toString());
-        }catch (NumberFormatException e){
-            onPaymentUnsuccessful("Amount Error");
-            return;
+        Payment payment;
+        int amount= 0;
+
+        if (!checkBoxSingleMonth.isChecked()){
+            try{
+                amount= Integer.valueOf(editTextAmount.getText().toString());
+            }catch (NumberFormatException e){
+                onPaymentUnsuccessful("Amount Error");
+                return;
+            }
         }
 
         if (chosen==null){
@@ -79,7 +88,12 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
 
         //TODO Add Few Amounts Checking
 
-        Payment payment= new Payment(Calendar.getInstance().getTime(), amount, chosen);
+        if (checkBoxSingleMonth.isChecked()){
+            payment= new Payment(Calendar.getInstance().getTime(), chosen, 1);
+        }
+        else{
+            payment= new Payment(Calendar.getInstance().getTime(), amount, chosen);
+        }
         if (payment.onNewPaymentAdded()){
             payment.save();
         }
@@ -89,7 +103,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         }
         Intent finisher= new Intent();
         finisher.putExtra("details", payment.toString());
-        setResult(RESULT_OK);
+        setResult(RESULT_OK, finisher);
         finish();
     }
 
@@ -129,5 +143,33 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
     @Override
     public void afterTextChanged(Editable editable) {
 
+    }
+
+    private void hide(final View view) {
+        view.animate().scaleY(0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                view.setScaleY(1f);
+                view.setVisibility(View.GONE);
+            }
+        }).start();
+    }
+
+    private void show(View view) {
+        view.setScaleY(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().scaleY(1f);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton==checkBoxSingleMonth){
+            if (b){
+                hide(editTextAmount);
+            }
+            else{
+                show(editTextAmount);
+            }
+        }
     }
 }

@@ -102,4 +102,9 @@
 
     <string name="delete_notif_location">"Delete this location and all houses here:</string>
     <string name="delete_notif_house">"Delete this house and all tenants here:</string>
+    <string name="tenant">Tenant</string>
+    <string name="amount">Amount</string>
+    <string name="rate_considered_monthly">Rate Considered(Monthly)</string>
+    <string name="rate">Rate</string>
+    <string name="date">Date</string>
 </resources>
