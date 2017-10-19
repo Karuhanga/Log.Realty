@@ -17,26 +17,26 @@ public class House extends Record {
     private int rent;
     private String description;
 
-    private Location location;
+    private Long location;
 
     public House(){}
 
     public House(int number, String description, Location location) {
         this.number = number;
         this.description = description;
-        this.location = location;
+        this.location = location.getId();
         this.rent= location.getDefaultRent();
     }
 
     public House(Location location) {
-        this.location = location;
+        this.location = location.getId();
         this.number= 0;
         this.rent= location.getDefaultRent();
         this.description= "Single House";
     }
 
     public House(Location location, int rent) {
-        this.location = location;
+        this.location = location.getId();
         this.number= 0;
         this.rent= rent;
         this.description= "Single House";
@@ -46,23 +46,23 @@ public class House extends Record {
         this.number = number;
         this.rent = rent;
         this.description= description;
-        this.location = location;
+        this.location = location.getId();
     }
 
     @Override
     public String toString(){
         if (number==0){
-            return this.location.getName();
+            return getLocation().getName();
         }
-        return location+"\nHouse "+String.valueOf(number)+": "+description;
+        return getLocation()+"\nHouse "+String.valueOf(number)+": "+description;
     }
 
     @Override
     public String getSummary(){
         if (number==0){
-            return this.location.getName()+"\n"+ Helpers.toCurrency(rent);
+            return getLocation().getName()+"\n"+ Helpers.toCurrency(rent);
         }
-        return "House "+String.valueOf(number)+": "+description+"\n"+location+"\n"+Helpers.toCurrency(rent);
+        return "House "+String.valueOf(number)+": "+description+"\n"+getLocation()+"\n"+Helpers.toCurrency(rent);
     }
 
     public int getRent() {
@@ -74,11 +74,11 @@ public class House extends Record {
     }
 
     public Location getLocation() {
-        return location;
+        return Location.findById(Location.class, this.location);
     }
 
     public void setLocation(Location location) {
-        this.location = location;
+        this.location = location.getId();
     }
 
     public String getDescription() {
@@ -99,7 +99,7 @@ public class House extends Record {
 
     @Override
     protected boolean onDelete(){
-        List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(this)).list();
+        List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(this.getId())).list();
 
         for (Tenant tenant:results ) {
             tenant.delete();

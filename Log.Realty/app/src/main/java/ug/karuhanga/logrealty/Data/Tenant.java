@@ -24,7 +24,7 @@ public class Tenant extends Record {
     private String idNo;
     private boolean ex;
 
-    private House house;
+    private Long house;
 
     public Tenant(){
     }
@@ -38,7 +38,7 @@ public class Tenant extends Record {
         this.rentDue = countStarts;
         this.idType = idType;
         this.idNo = idNo;
-        this.house = house;
+        this.house = house.getId();
         this.ex= false;
     }
 
@@ -53,7 +53,7 @@ public class Tenant extends Record {
     }
 
     public boolean onDelete(){
-        List<Payment> results= Select.from(Payment.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(this)).list();
+        List<Payment> results= Select.from(Payment.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(this.getId())).list();
         for (Payment payment : results) {
             payment.delete();
             //TODO Add Error Checking
@@ -63,12 +63,13 @@ public class Tenant extends Record {
 
     @Override
     public String toString(){
-        return this.fName+" "+this.oNames+"\n"+this.house.getLocation().getName()+"\nDue: "+Helpers.dateToString(rentDue);
+        return this.fName+" "+this.oNames+"\n"+getHouse().getLocation().getName()+"\nDue: "+Helpers.dateToString(rentDue);
     }
 
     @Override
     public String getSummary(){
-        return this.fName+" "+this.oNames+"\n"+this.house.getLocation().getName()+"\n"+Helpers.toCurrency(house.getRent());
+        House houseObject= getHouse();
+        return this.fName+" "+this.oNames+"\n"+houseObject.getLocation().getName()+"\n"+Helpers.toCurrency(houseObject.getRent());
     }
 
     public String getfName() {
@@ -140,11 +141,11 @@ public class Tenant extends Record {
     }
 
     public House getHouse() {
-        return house;
+        return House.findById(House.class, this.house);
     }
 
     public void setHouse(House house) {
-        this.house = house;
+        this.house = house.getId();
     }
 
     public boolean isEx() {

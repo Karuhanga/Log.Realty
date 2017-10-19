@@ -14,7 +14,7 @@ public class Payment extends Record {
     private int amount;
     private int rate;
 
-    private Tenant tenant;
+    private Long tenant;
 
 
     public Payment() {
@@ -23,7 +23,7 @@ public class Payment extends Record {
     public Payment(Date date, int amount, Tenant tenant) {
         this.date = date;
         this.amount = amount;
-        this.tenant = tenant;
+        this.tenant = tenant.getId();
         this.rate= tenant.getHouse().getRent();
     }
 
@@ -31,17 +31,18 @@ public class Payment extends Record {
         this.date = date;
         this.rate= tenant.getHouse().getRent();
         this.amount = this.rate*months;
-        this.tenant = tenant;
+        this.tenant = tenant.getId();
     }
 
     @Override
     public String toString(){
-        return toCurrency(amount)+" paid by "+tenant.getName();
+        return toCurrency(amount)+" paid by "+getTenant().getName();
     }
 
     @Override
     public String getSummary(){
-        return toCurrency(amount)+"\n"+dateToString(date)+"\n"+ tenant.getName()+"- "+tenant.getHouse().getLocation().getName()+" (House "+String.valueOf(tenant.getHouse().getNumber())+")";
+        Tenant tenantObject= getTenant();
+        return toCurrency(amount)+"\n"+dateToString(date)+"\n"+ tenantObject.getName()+"- "+tenantObject.getHouse().getLocation().getName()+" (House "+String.valueOf(tenantObject.getHouse().getNumber())+")";
     }
 
     public Date getDate() {
@@ -61,11 +62,11 @@ public class Payment extends Record {
     }
 
     public Tenant getTenant() {
-        return tenant;
+        return Tenant.findById(Tenant.class, this.tenant);
     }
 
     public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
+        this.tenant = tenant.getId();
     }
 
     public int getRate() {
@@ -77,14 +78,14 @@ public class Payment extends Record {
     }
 
     public boolean onNewPaymentAdded(){
-        tenant.updateRentDue(this);
+        getTenant().updateRentDue(this);
         return true;
     }
 
     @Override
     protected boolean onDelete(){
         this.amount= 0-amount;
-        tenant.updateRentDue(this);
+        getTenant().updateRentDue(this);
         this.amount= 0-amount;
         //TODO Add Error Checking
         return true;
