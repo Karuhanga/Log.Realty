@@ -50,7 +50,7 @@
         <activity
             android:name=".Activities.AddPayment"
             android:label="@string/title_activity_add_payment"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -84,6 +84,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ug.karuhanga.logrealty.Activities.Gist" />
         </activity>
+
+        <service
+            android:name=".Services.ScheduledNotification"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.NotificationRestorer"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

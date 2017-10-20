@@ -1,14 +1,26 @@
 package ug.karuhanga.logrealty;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import ug.karuhanga.logrealty.Data.Notification;
+import ug.karuhanga.logrealty.Data.Tenant;
+import ug.karuhanga.logrealty.Services.ScheduledNotification;
 
 /**
  * Created by karuhanga on 8/25/17.
@@ -39,6 +51,12 @@ public class Helpers {
     public static final int REQUEST_CODE_DELETE= 301;
     public static final int REQUEST_CODE_REPLACE= 302;
     public static final int REQUEST_CODE_EDIT= 303;
+    public static final int REQUEST_CODE_NOTIFY= 304;
+
+    public static final int FLAG_NO_FLAGS= 0;
+    public static final int FLAG_ONE_DAY_TO= -1;
+    public static final int FLAG_ONE_DAY_AFTER= 1;
+    public static final int FLAG_EVERY_FIVE_DAYS= 400;
 
     public static final int AMOUNT_MINIMUM_RENT= 250000;
 
@@ -152,4 +170,50 @@ public class Helpers {
         String[] helper= result.split("");
         return helper[1]+helper[2]+helper[3]+","+helper[4]+helper[5]+helper[6]+"/=";
     }
+
+    public static boolean schedulePaymentNotification(Context context, Tenant tenant, boolean newPayment){
+        if (newPayment){
+            List<Notification> results= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
+            if (results.size()>0){
+                results.get(0).delete();
+            }
+        }
+        AlarmManager alarmManager= (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent notifIntent= new Intent(context, ScheduledNotification.class);
+        int flag= FLAG_ONE_DAY_TO;
+
+        PendingIntent alarmIntent= PendingIntent.getBroadcast(context, REQUEST_CODE_NOTIFY, notifIntent, FLAG_NO_FLAGS);
+
+        Calendar calendar= Calendar.getInstance();
+        List<Integer> date= breakDate(tenant.getRentDue());
+
+        List<Notification> notifs= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
+
+        if (notifs.size()<1){
+            flag= FLAG_ONE_DAY_TO;
+            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s next rent installment is due tomorrow");
+            new Notification(tenant).save();
+        }
+        else if(notifs.get(0).getStatusFlag()==FLAG_ONE_DAY_TO){
+            flag= FLAG_ONE_DAY_AFTER;
+            notifs.get(0).setStatusFlag(FLAG_ONE_DAY_AFTER);
+            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s rent installment was due yesterday");
+            notifs.get(0).save();
+        }
+        else{
+            flag= notifs.get(0).getStatusFlag()+5;
+            notifs.get(0).setStatusFlag(flag);
+            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s rent installment was due on "+dateToString(tenant.getRentDue()));
+            notifs.get(0).save();
+        }
+
+        notifIntent.putExtra("date", breakDate(tenant.getRentDue()));
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(date.get(2), date.get(1), date.get(0)+flag);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+        return true;
+    }
+
 }
