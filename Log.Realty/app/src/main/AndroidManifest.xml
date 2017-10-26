@@ -86,13 +86,11 @@
         </activity>
 
         <service
-            android:name=".Services.ScheduledNotification"
-            android:enabled="true"
-            android:exported="true" />
-        <service
             android:name=".Services.NotificationRestorer"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <receiver android:name=".Receivers.OnAlertTime" android:process=":remote"></receiver>
     </application>
 
 </manifest>

@@ -1,11 +1,14 @@
 package ug.karuhanga.logrealty;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -18,9 +21,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ug.karuhanga.logrealty.Activities.AddPayment;
+import ug.karuhanga.logrealty.Activities.Gist;
 import ug.karuhanga.logrealty.Data.Notification;
 import ug.karuhanga.logrealty.Data.Tenant;
-import ug.karuhanga.logrealty.Services.ScheduledNotification;
+import ug.karuhanga.logrealty.Receivers.OnAlertTime;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by karuhanga on 8/25/17.
@@ -171,7 +178,27 @@ public class Helpers {
         return helper[1]+helper[2]+helper[3]+","+helper[4]+helper[5]+helper[6]+"/=";
     }
 
+    public static Date getTodaysDate(){
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        return calendar.getTime();
+    }
+
+    public static boolean displayNotif(Context context, String title, String message){
+        NotificationCompat.Builder notifBuilder= new NotificationCompat.Builder(context);
+        notifBuilder.setSmallIcon(R.drawable.ic_timeline_black_24dp).setContentTitle(title).setContentText(message).setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, Gist.class), 0));
+        notifBuilder.addAction(R.drawable.ic_person_add_black_24dp, "Message", PendingIntent.getActivity(context, 0, new Intent(context, AddPayment.class), 0));//change to start text
+        notifBuilder.addAction(R.drawable.ic_add_black_24dp, "Add Payment", PendingIntent.getActivity(context, 0, new Intent(context, AddPayment.class), 0));
+
+        int notifID= (int) System.currentTimeMillis();
+        ((NotificationManager) context.getSystemService(NOTIFICATION_SERVICE)).notify(notifID, notifBuilder.build());
+        return true;
+    }
+
     public static boolean schedulePaymentNotification(Context context, Tenant tenant, boolean newPayment){
+        //TODO restart them on reboot
+        //TODO message action
+        //TODO 
         if (newPayment){
             List<Notification> results= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
             if (results.size()>0){
@@ -180,37 +207,47 @@ public class Helpers {
         }
         AlarmManager alarmManager= (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        Intent notifIntent= new Intent(context, ScheduledNotification.class);
+        Intent notifIntent= new Intent(context, OnAlertTime.class);
         int flag= FLAG_ONE_DAY_TO;
 
-        PendingIntent alarmIntent= PendingIntent.getBroadcast(context, REQUEST_CODE_NOTIFY, notifIntent, FLAG_NO_FLAGS);
-
         Calendar calendar= Calendar.getInstance();
-        List<Integer> date= breakDate(tenant.getRentDue());
+        calendar.setTime(tenant.getRentDue());
 
         List<Notification> notifs= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
 
         if (notifs.size()<1){
             flag= FLAG_ONE_DAY_TO;
-            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s next rent installment is due tomorrow");
-            new Notification(tenant).save();
+            notifIntent.putExtra("message", tenant.getName()+"'s next rent installment is due tomorrow");
+            Notification notification= new Notification(tenant);
+            notification.save();
+            notifIntent.putExtra("notif", notification.getId());
         }
         else if(notifs.get(0).getStatusFlag()==FLAG_ONE_DAY_TO){
             flag= FLAG_ONE_DAY_AFTER;
             notifs.get(0).setStatusFlag(FLAG_ONE_DAY_AFTER);
-            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s rent installment was due yesterday");
+            notifIntent.putExtra("message", tenant.getName()+"'s rent installment was due yesterday");
             notifs.get(0).save();
+            notifIntent.putExtra("notif", notifs.get(0).getId());
         }
         else{
             flag= notifs.get(0).getStatusFlag()+5;
             notifs.get(0).setStatusFlag(flag);
-            notifIntent.putExtra("message", tenant.getHouse().getLocation().getName()+ "\n"+ tenant.getName()+"'s rent installment was due on "+dateToString(tenant.getRentDue()));
+            notifIntent.putExtra("message", tenant.getName()+"'s rent installment was due on "+dateToString(tenant.getRentDue()));
             notifs.get(0).save();
+            notifIntent.putExtra("notif", notifs.get(0).getId());
         }
 
-        notifIntent.putExtra("date", breakDate(tenant.getRentDue()));
+        notifIntent.putExtra("title", "Rent Due: "+tenant.getHouse().getLocation().getName());
+        notifIntent.putExtra("date", calendar.getTimeInMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 9);
-        calendar.set(date.get(2), date.get(1), date.get(0)+flag);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)+flag);
+
+        if (calendar.getTime().before(getTodaysDate())){
+            return schedulePaymentNotification(context, tenant, false);
+        }
+        Toast.makeText(context, dateToString(calendar.getTime()), Toast.LENGTH_SHORT).show();
+
+        PendingIntent alarmIntent= PendingIntent.getBroadcast(context, REQUEST_CODE_NOTIFY, notifIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
 
         return true;

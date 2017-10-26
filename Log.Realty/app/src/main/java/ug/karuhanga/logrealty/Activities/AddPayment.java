@@ -94,7 +94,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         else{
             payment= new Payment(Calendar.getInstance().getTime(), amount, chosen);
         }
-        if (payment.onNewPaymentAdded()){
+        if (payment.onNewPaymentAdded(this)){
             payment.save();
         }
         else{

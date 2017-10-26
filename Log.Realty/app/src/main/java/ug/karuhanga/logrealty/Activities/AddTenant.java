@@ -34,6 +34,7 @@ import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
+import static ug.karuhanga.logrealty.Helpers.schedulePaymentNotification;
 
 public class AddTenant extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, Confirmation, CompoundButton.OnCheckedChangeListener {
 
@@ -193,9 +194,7 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         }
         Tenant tenant= new Tenant(fName, oNames, Email, Contact, Entered, start_count, idType, idNo, chosen);
         tenant.save();
-        //TODO set tenant to house..resolve error causing crush(Weak HashMap)
-//        chosen.setTenant(tenant);
-//        chosen.save();
+        schedulePaymentNotification(this, tenant, true);
         finish();
         //TODO Finish with notification to activity and chance to undo
     }

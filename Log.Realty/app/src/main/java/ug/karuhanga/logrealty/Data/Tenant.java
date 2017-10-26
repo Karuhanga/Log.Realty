@@ -58,6 +58,12 @@ public class Tenant extends Record {
             payment.delete();
             //TODO Add Error Checking
         }
+
+        List<Notification> notifs= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(this)).list();
+        for (Notification notification : notifs) {
+            notification.delete();
+            //TODO Add Error Checking
+        }
         return true;
     }
 

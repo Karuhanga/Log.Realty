@@ -1,8 +1,11 @@
 package ug.karuhanga.logrealty.Data;
 
+import android.content.Context;
+
 import java.util.Date;
 
 import static ug.karuhanga.logrealty.Helpers.dateToString;
+import static ug.karuhanga.logrealty.Helpers.schedulePaymentNotification;
 import static ug.karuhanga.logrealty.Helpers.toCurrency;
 
 /**
@@ -77,8 +80,10 @@ public class Payment extends Record {
         this.rate = rate;
     }
 
-    public boolean onNewPaymentAdded(){
-        getTenant().updateRentDue(this);
+    public boolean onNewPaymentAdded(Context context){
+        Tenant tenant= getTenant();
+        tenant.updateRentDue(this);
+        schedulePaymentNotification(context, tenant, true);
         return true;
     }
 
