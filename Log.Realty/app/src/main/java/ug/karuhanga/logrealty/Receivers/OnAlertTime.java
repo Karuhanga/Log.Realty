@@ -29,12 +29,15 @@ public class OnAlertTime extends BroadcastReceiver {
             return;
         }
 
-        if (getTodaysDate().after(new Date(intent.getLongExtra("date", 0)))){
+        Notification notification= Notification.findById(Notification.class, intent.getLongExtra("notif", 0));
+
+        //do nothing if
+        if (notification==null || notification.getTenant().getRentDue().after(new Date(intent.getLongExtra("date", 0)))){
             return;
         }
 
         displayNotif(context, intent.getStringExtra("title"), intent.getStringExtra("message"));
-        schedulePaymentNotification(context, Notification.findById(Notification.class, intent.getLongExtra("notif", 0)).getTenant(), false);
+        schedulePaymentNotification(context, notification.getTenant(), false);
     }
 
 

@@ -186,7 +186,7 @@ public class Helpers {
 
     public static boolean displayNotif(Context context, String title, String message){
         NotificationCompat.Builder notifBuilder= new NotificationCompat.Builder(context);
-        notifBuilder.setSmallIcon(R.drawable.ic_timeline_black_24dp).setContentTitle(title).setContentText(message).setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, Gist.class), 0));
+        notifBuilder.setSmallIcon(R.drawable.ic_timeline_black_24dp).setContentTitle(title).setContentText(message).setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, Gist.class), 0)).setAutoCancel(true).setOnlyAlertOnce(false);
         notifBuilder.addAction(R.drawable.ic_person_add_black_24dp, "Message", PendingIntent.getActivity(context, 0, new Intent(context, AddPayment.class), 0));//change to start text
         notifBuilder.addAction(R.drawable.ic_add_black_24dp, "Add Payment", PendingIntent.getActivity(context, 0, new Intent(context, AddPayment.class), 0));
 
@@ -198,7 +198,7 @@ public class Helpers {
     public static boolean schedulePaymentNotification(Context context, Tenant tenant, boolean newPayment){
         //TODO restart them on reboot
         //TODO message action
-        //TODO 
+        //TODO
         if (newPayment){
             List<Notification> results= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
             if (results.size()>0){
@@ -212,6 +212,8 @@ public class Helpers {
 
         Calendar calendar= Calendar.getInstance();
         calendar.setTime(tenant.getRentDue());
+        notifIntent.putExtra("title", "Rent Due: "+tenant.getHouse().getLocation().getName());
+        notifIntent.putExtra("date", calendar.getTimeInMillis());
 
         List<Notification> notifs= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(tenant)).list();
 
@@ -237,15 +239,54 @@ public class Helpers {
             notifIntent.putExtra("notif", notifs.get(0).getId());
         }
 
-        notifIntent.putExtra("title", "Rent Due: "+tenant.getHouse().getLocation().getName());
-        notifIntent.putExtra("date", calendar.getTimeInMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 9);
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)+flag);
 
         if (calendar.getTime().before(getTodaysDate())){
             return schedulePaymentNotification(context, tenant, false);
         }
-        Toast.makeText(context, dateToString(calendar.getTime()), Toast.LENGTH_SHORT).show();
+
+        PendingIntent alarmIntent= PendingIntent.getBroadcast(context, REQUEST_CODE_NOTIFY, notifIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+        return true;
+    }
+
+    public static boolean restorePaymentNotification(Context context, Notification notification){
+        Tenant tenant= notification.getTenant();
+        //TODO message action
+        //TODO
+        AlarmManager alarmManager= (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent notifIntent= new Intent(context, OnAlertTime.class);
+
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTime(tenant.getRentDue());
+        notifIntent.putExtra("title", "Rent Due: "+tenant.getHouse().getLocation().getName());
+        notifIntent.putExtra("date", calendar.getTimeInMillis());
+
+        switch (notification.getStatusFlag()){
+            case FLAG_ONE_DAY_TO:
+                notifIntent.putExtra("message", tenant.getName()+"'s next rent installment is due tomorrow");
+                notifIntent.putExtra("notif", notification.getId());
+                break;
+            case FLAG_ONE_DAY_AFTER:
+                notifIntent.putExtra("message", tenant.getName()+"'s rent installment was due yesterday");
+                notifIntent.putExtra("notif", notification.getId());
+                break;
+            default:
+                notifIntent.putExtra("message", tenant.getName()+"'s rent installment was due on "+dateToString(tenant.getRentDue()));
+                notifIntent.putExtra("notif", notification.getId());
+                break;
+        }
+
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)+notification.getStatusFlag());
+
+        if (calendar.getTime().before(getTodaysDate())){
+            return schedulePaymentNotification(context, tenant, true);
+        }
+
 
         PendingIntent alarmIntent= PendingIntent.getBroadcast(context, REQUEST_CODE_NOTIFY, notifIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);

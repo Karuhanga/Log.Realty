@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ug.karuhanga.logrealty">
+    package="ug.karuhanga.logrealty"
+    android:installLocation="internalOnly">
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_timeline_black_24dp"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_timeline_black_24dp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -90,7 +92,12 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name=".Receivers.OnAlertTime" android:process=":remote"></receiver>
+        <receiver android:name=".Receivers.OnAlertTime" android:enabled="true" android:exported="true" android:process=":remote"></receiver>
+        <receiver android:name=".Receivers.OnRestoreNotifs" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
