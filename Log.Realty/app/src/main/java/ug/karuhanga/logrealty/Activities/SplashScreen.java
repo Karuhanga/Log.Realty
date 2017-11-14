@@ -9,6 +9,14 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
+
+import java.util.List;
+
+import ug.karuhanga.logrealty.Data.Setting;
+import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 /**
@@ -105,10 +113,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -120,6 +124,25 @@ public class SplashScreen extends AppCompatActivity {
         // are available.
         delayedHide(100);
         //TODO create splash screen delay
+        List<Setting> setting= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helpers.FLAG_SETTINGS_FIRST_TIME)).list();
+        if (setting.size()>0){
+            if (setting.get(0).getStatus()){
+                setting.get(0).setStatus(false).save();
+                displayIntro();
+            }
+            else{
+                startActivity(new Intent(SplashScreen.this, Gist.class));
+                finish();
+            }
+        }
+        else{
+            new Setting(Helpers.FLAG_SETTINGS_FIRST_TIME, false).save();
+            displayIntro();
+        }
+    }
+
+    private void displayIntro(){
+        //TODO Update First time status
         startActivity(new Intent(SplashScreen.this, Gist.class));
         finish();
     }

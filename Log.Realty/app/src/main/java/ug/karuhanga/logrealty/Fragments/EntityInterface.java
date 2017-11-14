@@ -30,6 +30,7 @@ import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helpers.FALSE;
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DELETE;
 
 /**
@@ -318,7 +319,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
                 break;
             case Helpers.FRAGMENT_TENANTS:
                 List<Tenant> results3;
-                results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("rentDue")).list();
+                results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("rentDue")).list();
                 for (Tenant result : results3) {
                     data.add(new MinifiedRecord(result.getId(), result.getSummary()));
                 }

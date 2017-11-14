@@ -36,6 +36,7 @@ import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.Popups.Confirmation;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helpers.FALSE;
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_EDIT;
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
 
@@ -130,7 +131,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
             tenant = getArguments().getLong("id");
         }
         else{
-            List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(0)).list();
+            List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).list();
             if (results.size()>0){
                 tenant= results.get(0).getId();
             }

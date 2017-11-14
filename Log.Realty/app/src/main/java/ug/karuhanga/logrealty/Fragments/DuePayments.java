@@ -24,6 +24,7 @@ import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helpers.FALSE;
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DELETE;
 import static ug.karuhanga.logrealty.Helpers.getLaterDate;
 
@@ -65,7 +66,7 @@ public class DuePayments extends Fragment implements Confirmation {
         super.onCreate(savedInstanceState);
         Date date= getLaterDate(Calendar.getInstance().getTime(), 7);
         //TODO Dynamic Selection with load more capability
-        defaulters= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).and(Condition.prop(NamingHelper.toSQLNameDefault("rentDue")).lt(date.getTime())).list();
+        defaulters= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).and(Condition.prop(NamingHelper.toSQLNameDefault("rentDue")).lt(date.getTime())).list();
     }
 
     @Override

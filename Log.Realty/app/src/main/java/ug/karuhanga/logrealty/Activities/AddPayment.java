@@ -26,7 +26,10 @@ import java.util.List;
 
 import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
+import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
+
+import static ug.karuhanga.logrealty.Helpers.FALSE;
 
 public class AddPayment extends AppCompatActivity implements View.OnClickListener, TextWatcher, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -58,7 +61,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         editTextTenant.setThreshold(1);
         editTextTenant.addTextChangedListener(this);
 
-        results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
+        results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).list();
         adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
         adapter.setNotifyOnChange(true);
         editTextTenant.setAdapter(adapter);
