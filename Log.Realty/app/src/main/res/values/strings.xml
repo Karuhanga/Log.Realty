@@ -107,4 +107,7 @@
     <string name="rate_considered_monthly">Rate Considered(Monthly)</string>
     <string name="rate">Rate</string>
     <string name="date">Date</string>
+    <string name="Rent_notif_1"><![CDATA[Hello <Tenant\'s Name Goes Here>, a reminder that next month\'s rent is due in a few. Cheers!]]></string>
+    <string name="Rent_notif_2"><![CDATA[Hello <Tenant\'s Name Goes Here>, a reminder that this month\'s rent was due a few days ago. Cheers!]]></string>
+    <string name="email_default">user@domain.com</string>
 </resources>

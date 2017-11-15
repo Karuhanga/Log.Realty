@@ -65,7 +65,11 @@ public class Helpers {
     public static final int FLAG_ONE_DAY_AFTER= 1;
     public static final int FLAG_EVERY_FIVE_DAYS= 400;
 
-    public static final int FLAG_SETTINGS_FIRST_TIME= 500;
+    public static final String SETTINGS_FIRST_TIME= "First_Time";
+    public static final String SETTINGS_EMAIL= "Email";
+    public static final String SETTINGS_REMINDER_1= "Reminder_1";
+    public static final String SETTINGS_REMINDER_2= "Reminder_2";
+    public static final String ALLOW_BACKUP= "Backup";
 
     public static final String TRUE= "1";
     public static final String FALSE= "0";

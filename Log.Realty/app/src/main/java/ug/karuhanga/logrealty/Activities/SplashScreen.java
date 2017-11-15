@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -124,11 +125,11 @@ public class SplashScreen extends AppCompatActivity {
         // are available.
         delayedHide(100);
         //TODO create splash screen delay
-        List<Setting> setting= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helpers.FLAG_SETTINGS_FIRST_TIME)).list();
+        List<Setting> setting= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helpers.SETTINGS_FIRST_TIME)).list();
         if (setting.size()>0){
             if (setting.get(0).getStatus()){
                 setting.get(0).setStatus(false).save();
-                displayIntro();
+                performInitActions();
             }
             else{
                 startActivity(new Intent(SplashScreen.this, Gist.class));
@@ -136,15 +137,24 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
         else{
-            new Setting(Helpers.FLAG_SETTINGS_FIRST_TIME, false).save();
-            displayIntro();
+            new Setting(Helpers.SETTINGS_FIRST_TIME, false).save();
+            performInitActions();
         }
     }
 
-    private void displayIntro(){
-        //TODO Update First time status
+    private void performInitActions(){
+        displayIntro();
+        new Setting(Helpers.SETTINGS_EMAIL, "user@domain.com").save();
+        new Setting(Helpers.SETTINGS_REMINDER_1, Helpers.getStringByName(this, "Rent_notif_1")).save();
+        new Setting(Helpers.SETTINGS_REMINDER_2, Helpers.getStringByName(this, "Rent_notif_2")).save();
+        new Setting(Helpers.ALLOW_BACKUP, true).save();
         startActivity(new Intent(SplashScreen.this, Gist.class));
         finish();
+    }
+
+    private void displayIntro(){
+        //TODO Display Intro
+
     }
 
     private void toggle() {

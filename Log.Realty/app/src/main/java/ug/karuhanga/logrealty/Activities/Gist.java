@@ -21,13 +21,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.orm.SugarContext;
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 
 import java.util.List;
 
 import ug.karuhanga.logrealty.Data.MinifiedRecord;
+import ug.karuhanga.logrealty.Data.Setting;
 import ug.karuhanga.logrealty.Fragments.DuePayments;
 import ug.karuhanga.logrealty.Fragments.EntityInterface;
 import ug.karuhanga.logrealty.Helpers;
@@ -41,12 +46,13 @@ import static ug.karuhanga.logrealty.Helpers.FRAGMENT_DUE_PAYMENTS;
 import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DETAILS;
 import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_REFRESH;
 import static ug.karuhanga.logrealty.Helpers.RESULT_CODE_SETTINGS;
+import static ug.karuhanga.logrealty.Helpers.getStringByName;
 
 
 public class Gist extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EntityInterface.OnFragmentInteractionListener {
 
-    private FloatingActionButton fabShowFabs, fabAdd, fabEdit, fabDelete;
+    private FloatingActionButton fabShowFabs, fabEdit, fabDelete;
     private int currentFragment;
     private Fragment currentFrag;
     private Toolbar toolbar;
@@ -66,12 +72,10 @@ public class Gist extends AppCompatActivity
         currentFragment= Helpers.FRAGMENT_NONE;
         selected= 0;
 
-        fabAdd = (FloatingActionButton) findViewById(R.id.fab_add_stuff);
         fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_stuff);
         fabDelete = (FloatingActionButton) findViewById(R.id.fab_delete_stuff);
         fabShowFabs = (FloatingActionButton) findViewById(R.id.fab_crud_ops);
 
-        fabAdd.setOnClickListener(this);
         fabEdit.setOnClickListener(this);
         fabDelete.setOnClickListener(this);
         fabShowFabs.setOnClickListener(this);
@@ -89,6 +93,9 @@ public class Gist extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        List<Setting> ewrp= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helpers.SETTINGS_EMAIL)).list();
+        String dxrs= ewrp.isEmpty()? getStringByName(this, "email_default") : ewrp.get(0).getData();
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.text_view_user_name)).setText(dxrs);
 
         displayFragment(Helpers.FRAGMENT_DUE_PAYMENTS);
     }
@@ -186,20 +193,20 @@ public class Gist extends AppCompatActivity
         switch (requestCode){
             case Helpers.RESULT_CODE_ADD_PAYMENT:
                 if (resultCode==RESULT_OK){
-                    Snackbar.make(fabAdd, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(fabShowFabs, "Added Payment:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG).show();
                 }
                 else{
                     if (data!=null){
-                        Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(fabShowFabs, "Failed :(, please try again", Snackbar.LENGTH_SHORT).show();
                     }
                 }
                 return;
             case RESULT_CODE_SETTINGS:
                 if (resultCode==RESULT_OK){
-                    Snackbar.make(fabAdd, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
+                    Snackbar.make(fabShowFabs, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
                 }
                 else{
-                    Snackbar.make(fabAdd, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
+                    Snackbar.make(fabShowFabs, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
                 }
                 return;
             case REQUEST_CODE_DETAILS:
@@ -316,10 +323,6 @@ public class Gist extends AppCompatActivity
             }
 
             toggleFabVisibility();
-        }
-        else if (view.equals(fabAdd)){
-            commenceAddition();
-            return;
         }
         else if (view.equals(fabDelete)){
             ((GistInteractionListener) currentFrag).onDeletePressed();

@@ -5,27 +5,29 @@ package ug.karuhanga.logrealty.Data;
  */
 
 public class Setting extends Record {
-    private int name;
+    private String name;
     private boolean status;
     private String data;
 
-    public Setting(int name, String data) {
-        this.name = name;
-        this.data = data;
-        status= false;
+    public Setting(){
+
     }
 
-    public Setting(int name, boolean status) {
+    public Setting(String name, boolean status) {
         this.name = name;
         this.status = status;
-        data= null;
     }
 
-    public int getName() {
+    public Setting(String name, String data) {
+        this.name = name;
+        this.data = data;
+    }
+
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -42,7 +44,8 @@ public class Setting extends Record {
         return data;
     }
 
-    public void setData(String data) {
+    public Setting setData(String data) {
         this.data = data;
+        return this;
     }
 }
