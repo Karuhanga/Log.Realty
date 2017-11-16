@@ -20,11 +20,35 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <android.support.v7.widget.SearchView
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/search_view_gist"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_weight="1"
+            android:visibility="gone">
+
+            <AutoCompleteTextView
+                android:id="@+id/text_view_search_gist"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search Term"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/button_gist_close_search"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/button_gist_close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/Transparent"
+                android:onClick="closeSearch"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="3dp"
+                app:srcCompat="@drawable/ic_close_black_24dp" />
+        </android.support.constraint.ConstraintLayout>
 
 
     </android.support.design.widget.AppBarLayout>

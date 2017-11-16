@@ -20,8 +20,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import ug.karuhanga.logrealty.Data.MinifiedRecord;
 import ug.karuhanga.logrealty.Data.Tenant;
 import ug.karuhanga.logrealty.Listeners.Confirmation;
+import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.FALSE;
@@ -36,7 +38,7 @@ import static ug.karuhanga.logrealty.Helpers.getLaterDate;
  * Use the {@link DuePayments#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DuePayments extends Fragment implements Confirmation {
+public class DuePayments extends Fragment implements Confirmation, GistInteractionListener {
 
     ListView listView;
 
@@ -120,6 +122,30 @@ public class DuePayments extends Fragment implements Confirmation {
     private void performPendingAction() {
         //TODO Perform actual confirmed action
         return;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return false;
+    }
+
+    @Override
+    public boolean onEditPressed() {
+        return false;
+    }
+
+    @Override
+    public boolean onDeletePressed() {
+        return false;
+    }
+
+    @Override
+    public List<MinifiedRecord> getCoreData() {
+        List<MinifiedRecord> results= new ArrayList<>();
+        for (Tenant tenant : defaulters) {
+            results.add(new MinifiedRecord(tenant.getId(), tenant.getSummary()));
+        }
+        return results;
     }
 
     /**

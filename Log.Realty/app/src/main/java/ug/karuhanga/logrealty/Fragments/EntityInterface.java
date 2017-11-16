@@ -225,6 +225,11 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
     }
 
     @Override
+    public List<MinifiedRecord> getCoreData() {
+        return data;
+    }
+
+    @Override
     public void onReceiveResult(boolean result, int requestCode) {
         if (result && requestCode==REQUEST_CODE_DELETE){
             performPendingActions();

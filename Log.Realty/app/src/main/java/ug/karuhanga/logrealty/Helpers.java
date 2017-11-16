@@ -70,6 +70,7 @@ public class Helpers {
     public static final String SETTINGS_REMINDER_1= "Reminder_1";
     public static final String SETTINGS_REMINDER_2= "Reminder_2";
     public static final String ALLOW_BACKUP= "Backup";
+    public static final String TAG_APP_NAME= "Log.Realty";
 
     public static final String TRUE= "1";
     public static final String FALSE= "0";

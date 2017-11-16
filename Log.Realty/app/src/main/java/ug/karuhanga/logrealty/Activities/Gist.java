@@ -4,12 +4,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,14 +56,15 @@ import static ug.karuhanga.logrealty.Helpers.getStringByName;
 
 
 public class Gist extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EntityInterface.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, EntityInterface.OnFragmentInteractionListener, AdapterView.OnItemClickListener {
 
     private FloatingActionButton fabShowFabs, fabEdit, fabDelete;
     private int currentFragment;
     private Fragment currentFrag;
     private Toolbar toolbar;
-    private SearchView searchView;
+    private ConstraintLayout searchView;
     private int selected;
+    List<MinifiedRecord> coreData;
 
     private Animation rotate_forward, rotate_backward, open, close;
 
@@ -67,7 +74,7 @@ public class Gist extends AppCompatActivity
         SugarContext.init(this);
         setContentView(R.layout.gist_activity);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        searchView = (SearchView) findViewById(R.id.search_view_gist);
+        searchView = (ConstraintLayout) findViewById(R.id.search_view_gist);
         setSupportActionBar(toolbar);
         currentFragment= Helpers.FRAGMENT_NONE;
         selected= 0;
@@ -109,9 +116,7 @@ public class Gist extends AppCompatActivity
         }
 
         if (searchView.getVisibility()==View.VISIBLE){
-            searchView.startAnimation(close);
-            searchView.setVisibility(View.GONE);
-            findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+            closeSearch(null);
             return;
         }
 
@@ -129,11 +134,6 @@ public class Gist extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.gist, menu);
 
-        // Get the SearchView and set the searchable configuration
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
         return true;
     }
 
@@ -156,6 +156,13 @@ public class Gist extends AppCompatActivity
     }
 
     private void doStartSearchStuff() {
+        coreData= ((GistInteractionListener) currentFrag).getCoreData();
+        ArrayAdapter<MinifiedRecord> adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, coreData);
+        AutoCompleteTextView search_text_view= ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_search_gist));
+        search_text_view.setAdapter(adapter);
+        search_text_view.setThreshold(1);
+        search_text_view.requestFocus();
+        search_text_view.setOnItemClickListener(this);
         searchView.startAnimation(open);
         searchView.setVisibility(View.VISIBLE);
         findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
@@ -246,6 +253,11 @@ public class Gist extends AppCompatActivity
     private void displayFragment(int entity) {
         //TODO Test Fragment Transitions
         onSelectionUpdate(0);
+
+        if (searchView.getVisibility()==View.VISIBLE){
+            closeSearch(null);
+            return;
+        }
 
         Fragment fragment;
         FragmentManager fragmentManager= getSupportFragmentManager();
@@ -387,5 +399,21 @@ public class Gist extends AppCompatActivity
             default:
                 fabShowFabs.setImageResource(R.drawable.icon_edit);
         }
+    }
+
+    public void closeSearch(View view){
+        if (searchView.getVisibility()==View.VISIBLE){
+            searchView.startAnimation(close);
+            searchView.setVisibility(View.GONE);
+            ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_search_gist)).setText("");
+            findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+            return;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        closeSearch(null);
+        onDetailsRequested(((MinifiedRecord) adapterView.getItemAtPosition(i)).getId());
     }
 }
