@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ug.karuhanga.logrealty"
     android:installLocation="internalOnly">
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name="com.orm.SugarApp"
@@ -87,17 +88,28 @@
                 android:value="ug.karuhanga.logrealty.Activities.Gist" />
         </activity>
 
-        <service
-            android:name=".Services.NotificationRestorer"
+        <receiver
+            android:name=".Receivers.OnAlertTime"
             android:enabled="true"
-            android:exported="true" />
-
-        <receiver android:name=".Receivers.OnAlertTime" android:enabled="true" android:exported="true" android:process=":remote"></receiver>
-        <receiver android:name=".Receivers.OnRestoreNotifs" android:enabled="true" android:exported="true">
+            android:exported="true"
+            android:process=":remote" />
+        <receiver
+            android:name=".Receivers.OnRestoreNotifs"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".Services.Backup"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".Services.Restore"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
