@@ -22,10 +22,11 @@
                 android:layout_height="wrap_content">
 
                 <TableRow
+                    android:id="@+id/row_detailed_location_label_location"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
-                    android:labelFor="@+id/text_view_location_fragment_detailed_location">
+                    android:labelFor="@+id/text_view_detailed_location_location">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -33,10 +34,10 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/text_view_label_location_fragment_detailed_location"
+                            android:id="@+id/text_view_detailed_location_label_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Location"
+                            android:hint="@string/location"
                             android:textAppearance="@android:style/TextAppearance.Holo.Small"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -47,6 +48,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/row_detailed_location_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp">
@@ -57,20 +59,20 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/text_view_location_fragment_detailed_location"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/text_view_detailed_location_location"
                             android:layout_width="wrap_content"
-                            android:text="Location"
+                            android:layout_height="wrap_content"
+                            android:text="@string/location"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_location_fragment_detailed_location"
-                            android:hint="Location Name"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/edit_text_detailed_location_location"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/location_name"
                             android:inputType="text"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -78,7 +80,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_location_fragment_detailed_location"
+                            android:id="@+id/button_detailed_location_location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -93,10 +95,11 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/row_detailed_location_label_amount"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
-                    android:labelFor="@+id/text_view_amount_fragment_detailed_location">
+                    android:labelFor="@+id/text_view_detailed_location_amount">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -104,10 +107,10 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/text_view_label_amount_fragment_detailed_location"
+                            android:id="@+id/text_view_detailed_location_label_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Default Rent Paid"
+                            android:hint="@string/default_rent_paid"
                             android:textAppearance="@android:style/TextAppearance.Holo.Small"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -118,6 +121,7 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/row_detailed_location_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp">
@@ -128,22 +132,21 @@
                         android:layout_weight="1">
 
                         <TextView
-                            android:id="@+id/text_view_amount_fragment_detailed_location"
+                            android:id="@+id/text_view_detailed_location_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Default Rent Paid Here"
-                            android:inputType="number"
-                            android:text="Default Rent"
+                            android:hint="@string/default_rent_paid_here"
+                            android:text="@string/default_rent"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_amount_fragment_detailed_location"
+                            android:id="@+id/edit_text_detailed_location_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Default Rent Paid Here"
+                            android:hint="@string/default_rent"
                             android:inputType="number"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -151,7 +154,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_amount_fragment_detailed_location"
+                            android:id="@+id/button_detailed_location_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -193,7 +196,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_delete_detailed_location"
+            android:id="@+id/fab_detailed_location_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

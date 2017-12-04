@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -157,39 +156,39 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_tenant_fragment, container, false);
         
-        buttonFname= view.findViewById(R.id.button_details_tenant_fname);
-        buttonSurname= view.findViewById(R.id.button_details_tenant_onames);
-        buttonEmail= view.findViewById(R.id.button_details_tenant_email);
-        buttonContact= view.findViewById(R.id.button_details_tenant_contact);
-        buttonIdType= view.findViewById(R.id.button_details_tenant_idtype);
-        buttonIDNo= view.findViewById(R.id.button_details_tenant_id_no);
-        buttonHouse= view.findViewById(R.id.button_details_tenant_house);
-        buttonDateEntered= view.findViewById(R.id.button_details_tenant_date_entering);
-        buttonDateDue= view.findViewById(R.id.button_due_details_tenant);
+        buttonFname= view.findViewById(R.id.button_detailed_tenant_fname);
+        buttonSurname= view.findViewById(R.id.button_detailed_tenant_onames);
+        buttonEmail= view.findViewById(R.id.button_detailed_tenant_email);
+        buttonContact= view.findViewById(R.id.button_detailed_tenant_contact);
+        buttonIdType= view.findViewById(R.id.button_detailed_tenant_idtype);
+        buttonIDNo= view.findViewById(R.id.button_detailed_tenant_id_no);
+        buttonHouse= view.findViewById(R.id.button_detailed_tenant_house);
+        buttonDateEntered= view.findViewById(R.id.button_detailed_tenant_date_entered);
+        buttonDateDue= view.findViewById(R.id.button_detailed_tenant_due);
 
-        textViewFname= view.findViewById(R.id.textView_details_tenant_fname);
-        textViewONames= view.findViewById(R.id.textView_details_tenant_onames);
-        rowONames= view.findViewById(R.id.row_details_tenant_onames);
-        textViewEmail= view.findViewById(R.id.textView_details_tenant_email);
-        textViewContact= view.findViewById(R.id.textView_details_tenant_contact);
-        textViewIdType= view.findViewById(R.id.textView_details_tenant_idtype);
-        textViewIdNo= view.findViewById(R.id.textView_details_tenant_id_no);
-        textViewHouse= view.findViewById(R.id.textView_details_tenant_house);
-        textViewDateEntered= view.findViewById(R.id.textView_details_tenant_entering);
-        textViewDateDue= view.findViewById(R.id.textView_details_tenant_due);
+        textViewFname= view.findViewById(R.id.text_view_detailed_tenant_fname);
+        textViewONames= view.findViewById(R.id.text_view_detailed_tenant_onames);
+        rowONames= view.findViewById(R.id.row_detailed_tenant_onames);
+        textViewEmail= view.findViewById(R.id.text_view_detailed_tenant_email);
+        textViewContact= view.findViewById(R.id.text_view_detailed_tenant_contact);
+        textViewIdType= view.findViewById(R.id.text_view_detailed_tenant_idtype);
+        textViewIdNo= view.findViewById(R.id.text_view_detailed_tenant_id_no);
+        textViewHouse= view.findViewById(R.id.text_view_detailed_tenant_house);
+        textViewDateEntered= view.findViewById(R.id.text_view_detailed_tenant_date_entered);
+        textViewDateDue= view.findViewById(R.id.text_view_detailed_tenant_due);
 
-        editTextFname= view.findViewById(R.id.edit_text_details_tenant_fname);
-        editTextSurname= view.findViewById(R.id.edit_text_details_tenant_onames);
-        editTextEmail= view.findViewById(R.id.edit_text_details_tenant_email);
-        editTextContact= view.findViewById(R.id.edit_text_details_tenant_contact);
-        editTextIdType= view.findViewById(R.id.edit_text_details_tenant_idtype);
-        editTextIdNo= view.findViewById(R.id.edit_text_details_tenant_id_no);
-        editTextHouse= view.findViewById(R.id.edit_text_details_tenant_house);
-        datePickerDateEntered= view.findViewById(R.id.date_picker_details_tenant_entering);
-        datePickerDateDue= view.findViewById(R.id.date_picker_due_details_tenant);
+        editTextFname= view.findViewById(R.id.edit_text_detailed_tenant_fname);
+        editTextSurname= view.findViewById(R.id.edit_text_detailed_tenant_onames);
+        editTextEmail= view.findViewById(R.id.edit_text_detailed_tenant_email);
+        editTextContact= view.findViewById(R.id.edit_text_detailed_tenant_contact);
+        editTextIdType= view.findViewById(R.id.edit_text_detailed_tenant_idtype);
+        editTextIdNo= view.findViewById(R.id.edit_text_detailed_tenant_id_no);
+        editTextHouse= view.findViewById(R.id.edit_text_detailed_tenant_house);
+        datePickerDateEntered= view.findViewById(R.id.date_picker_detailed_tenant_date_entered);
+        datePickerDateDue= view.findViewById(R.id.date_picker_detailed_tenant_due);
 
         fab= view.findViewById(R.id.fab_detailed_tenant);
-        fab_delete= view.findViewById(R.id.fab_delete_detailed_tenant);
+        fab_delete= view.findViewById(R.id.fab_detailed_tenant_delete);
 
         previous_color= editTextFname.getCurrentTextColor();
         colored= editTextFname;
@@ -201,7 +200,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
         textViewFname.setText(tenantObject.getName());
         textViewONames.setText(tenantObject.getoNames());
         hide(rowONames);
-        ((TextView) view.findViewById(R.id.label_details_tenant_fname)).setText("Name");
+        ((TextView) view.findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("Name");
         textViewEmail.setText(tenantObject.getEmail());
         textViewContact.setText(tenantObject.getContact());
         textViewIdType.setText(tenantObject.getIdType());
@@ -312,7 +311,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
                     hide(buttonDateEntered);
                     hide(rowONames);
                     textViewFname.setText(tenantObject.getName());
-                    ((TextView) getView().findViewById(R.id.label_details_tenant_fname)).setText("Name");
+                    ((TextView) getView().findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("Name");
                 }
                 else{
                     fab.setImageResource(R.drawable.ic_close_black_24dp);
@@ -326,7 +325,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
                     show(buttonDateDue);
                     show(buttonDateEntered);
                     textViewFname.setText(tenantObject.getfName());
-                    ((TextView) getView().findViewById(R.id.label_details_tenant_fname)).setText("First Name");
+                    ((TextView) getView().findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("First Name");
                 }
                 return;
             }
@@ -597,7 +596,7 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
 
         if (editting.get("entered")){
             textViewDateEntered.setText(Helpers.dateToString(tenantObject.getEntered()));
-            onClick(buttonSurname);
+            onClick(buttonDateEntered);
         }
 
         tenantObject.save();

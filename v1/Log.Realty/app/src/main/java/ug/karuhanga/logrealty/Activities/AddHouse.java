@@ -51,11 +51,11 @@ public class AddHouse extends AppCompatActivity implements View.OnClickListener,
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fab = (FloatingActionButton) findViewById(R.id.fab_add_house);
-        checkBoxSingleHouse= (CheckBox) findViewById(R.id.checkBox_single_house_add_house);
-        checkBoxDefaultRent= (CheckBox) findViewById(R.id.checkBox_location_rent_add_house);
+        checkBoxSingleHouse= (CheckBox) findViewById(R.id.check_box_single_house_add_house);
+        checkBoxDefaultRent= (CheckBox) findViewById(R.id.check_box_add_house_location_rent);
         editTextLocation= (AutoCompleteTextView) findViewById(R.id.edit_text_add_house_location);
         editTextNumber= (EditText) findViewById(R.id.edit_text_add_house_number);
-        editTextRentPaid= (EditText) findViewById(R.id.editText_rent_paid_add_house);
+        editTextRentPaid= (EditText) findViewById(R.id.edit_text_add_house_rent_paid);
         description= (EditText) findViewById(R.id.edit_text_add_house_description);
         previousColor= editTextLocation.getCurrentTextColor();
         chosen= null;

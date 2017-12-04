@@ -28,7 +28,7 @@
             android:visibility="gone">
 
             <AutoCompleteTextView
-                android:id="@+id/text_view_search_gist"
+                android:id="@+id/text_view_gist_search"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="Search Term"

@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -97,7 +96,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
         inSelectionProcess= false;
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
         buttonLoadMore= (Button) view.findViewById(R.id.button_load_more_entity_interface_fragment);
-        listView= (ListView) view.findViewById(R.id.list_view_entity_interfaces);
+        listView= (ListView) view.findViewById(R.id.list_view_entity_interface);
         listAdapter= new ArrayAdapter<>(getContext(), R.layout.list_item_entity_interface, R.id.textView_list_item_entity_interface, data);
 
         listView.setAdapter((ListAdapter) listAdapter);

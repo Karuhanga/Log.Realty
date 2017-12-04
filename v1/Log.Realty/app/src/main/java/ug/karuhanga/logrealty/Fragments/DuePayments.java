@@ -27,7 +27,6 @@ import ug.karuhanga.logrealty.Listeners.GistInteractionListener;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.FALSE;
-import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_DELETE;
 import static ug.karuhanga.logrealty.Helpers.getLaterDate;
 
 /**
@@ -78,7 +77,7 @@ public class DuePayments extends Fragment implements Confirmation, GistInteracti
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
         view.findViewById(R.id.button_load_more_entity_interface_fragment).setVisibility(View.GONE);
 
-        listView= (ListView) view.findViewById(R.id.list_view_entity_interfaces);
+        listView= (ListView) view.findViewById(R.id.list_view_entity_interface);
         adapter= new ArrayAdapter<>(getContext(), R.layout.list_item_entity_interface, R.id.textView_list_item_entity_interface, defaulters);
 
         listView.setAdapter(adapter);

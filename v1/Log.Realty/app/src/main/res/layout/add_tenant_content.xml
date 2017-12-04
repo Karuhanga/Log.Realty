@@ -9,7 +9,7 @@
     tools:showIn="@layout/add_tenant_activity">
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -30,7 +30,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="First Name"
+                android:hint="@string/first_name"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -41,7 +41,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="Surname/Other Names"
+                android:hint="@string/surname_other_names"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -52,7 +52,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="Email Address"
+                android:hint="@string/email_address"
                 android:inputType="textEmailAddress" />
 
             <EditText
@@ -63,7 +63,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="Telephone Contact"
+                android:hint="@string/telephone_contact"
                 android:inputType="number" />
 
             <EditText
@@ -74,7 +74,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="ID Type"
+                android:hint="@string/id_type"
                 android:inputType="textAutoCorrect" />
 
             <EditText
@@ -85,7 +85,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center_horizontal"
-                android:hint="ID Number"
+                android:hint="@string/id_number"
                 android:inputType="text" />
 
             <AutoCompleteTextView
@@ -94,10 +94,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:hint="House Occupied" />
+                android:hint="@string/house_occupied" />
 
             <TextView
-                android:id="@+id/label_date_picker_add_tenant"
+                android:id="@+id/label_date_picker_add_tenant_entering"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -118,22 +118,22 @@
                 tools:calendarViewShown="false" />
 
             <TextView
-                android:id="@+id/label_date_picker_start_count_add_tenant"
+                android:id="@+id/label_date_picker_add_tenant_start_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:labelFor="@+id/date_picker_start_count_add_tenant"
-                android:text="Start rent count on:"
+                android:labelFor="@+id/date_picker_add_tenant_start_count"
+                android:text="@string/start_rent_count_on"
                 android:textSize="19sp" />
 
             <CheckBox
-                android:id="@+id/checkBox_use_for_start"
+                android:id="@+id/check_box_add_tenant_use_for_start"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use date of entry" />
+                android:text="@string/use_date_of_entry" />
 
             <DatePicker
-                android:id="@+id/date_picker_start_count_add_tenant"
+                android:id="@+id/date_picker_add_tenant_start_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

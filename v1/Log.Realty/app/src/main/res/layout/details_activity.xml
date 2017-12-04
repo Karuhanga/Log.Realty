@@ -11,7 +11,7 @@
     tools:context="ug.karuhanga.logrealty.Activities.Details">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+        android:id="@+id/container_detailed_activity"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -21,7 +21,7 @@
     </android.support.v4.view.ViewPager>
 
     <ImageButton
-        android:id="@+id/button_left_details_activity"
+        android:id="@+id/button_detailed_activity_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/Transparent"
@@ -32,7 +32,7 @@
         app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
 
     <ImageButton
-        android:id="@+id/button_right_details_activity"
+        android:id="@+id/button_detailed_activity_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/Transparent"
@@ -43,7 +43,7 @@
         app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
 
     <TextView
-        android:id="@+id/textView_details"
+        android:id="@+id/text_view_detailed_activity_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"

@@ -11,13 +11,10 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.orm.query.Select;
 
 import java.util.HashMap;
 
@@ -91,14 +88,14 @@ public class DetailedLocation extends Fragment implements TextWatcher, View.OnCl
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_location_fragment, container, false);
-        buttonLocation= view.findViewById(R.id.button_location_fragment_detailed_location);
-        buttonRent= view.findViewById(R.id.button_amount_fragment_detailed_location);
-        textViewLocation= view.findViewById(R.id.text_view_location_fragment_detailed_location);
-        textViewRent= view.findViewById(R.id.text_view_amount_fragment_detailed_location);
-        editTextLocation= view.findViewById(R.id.edit_text_location_fragment_detailed_location);
-        editTextRent= view.findViewById(R.id.edit_text_amount_fragment_detailed_location);
+        buttonLocation= view.findViewById(R.id.button_detailed_location_location);
+        buttonRent= view.findViewById(R.id.button_detailed_location_amount);
+        textViewLocation= view.findViewById(R.id.text_view_detailed_location_location);
+        textViewRent= view.findViewById(R.id.text_view_detailed_location_amount);
+        editTextLocation= view.findViewById(R.id.edit_text_detailed_location_location);
+        editTextRent= view.findViewById(R.id.edit_text_detailed_location_amount);
         fab= view.findViewById(R.id.fab_detailed_location);
-        fab_delete= view.findViewById(R.id.fab_delete_detailed_location);
+        fab_delete= view.findViewById(R.id.fab_detailed_location_delete);
 
         previous_color= editTextLocation.getCurrentTextColor();
         colored= editTextLocation;

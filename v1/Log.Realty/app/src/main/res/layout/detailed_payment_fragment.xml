@@ -28,6 +28,7 @@
             android:paddingBottom="10dp">
 
             <TableRow
+                android:id="@+id/row_detailed_payment_tenant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -48,7 +49,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/label_tenant_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_label_tenant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -56,7 +57,7 @@
                             android:textAlignment="center" />
 
                         <TextView
-                            android:id="@+id/textView_tenant_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_tenant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/tenant"
@@ -73,6 +74,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_payment_amount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
@@ -88,19 +90,19 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/label_amount_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_label_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/amount"
                             android:textAlignment="center" />
 
                         <TextView
-                            android:id="@+id/textView_amount_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/amount"
@@ -116,6 +118,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_payment_rate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
@@ -131,19 +134,19 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/label_rate_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_label_rate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/rate_considered_monthly"
                             android:textAlignment="center" />
 
                         <TextView
-                            android:id="@+id/textView_rate_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_rate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/rate"
@@ -159,6 +162,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_payment_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="100dp"
@@ -174,19 +178,19 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:id="@+id/label_date_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_label_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/date"
                             android:textAlignment="center" />
 
                         <TextView
-                            android:id="@+id/textView_date_detailed_payment"
+                            android:id="@+id/text_view_detailed_payment_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/date"
@@ -214,7 +218,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_delete_detailed_payment"
+            android:id="@+id/fab_detailed_payment_delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"

@@ -2,10 +2,7 @@ package ug.karuhanga.logrealty.Activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -83,9 +80,9 @@ public class AddTenant extends AppCompatActivity implements View.OnClickListener
         id_no= (EditText) findViewById(R.id.edit_text_add_tenant_idno);
         house_occupied= (AutoCompleteTextView) findViewById(R.id.edit_text_add_tenant_house);
         date_entered= (DatePicker) findViewById(R.id.date_picker_add_tenant_entering);
-        date_count_date= (DatePicker) findViewById(R.id.date_picker_start_count_add_tenant);
+        date_count_date= (DatePicker) findViewById(R.id.date_picker_add_tenant_start_count);
         fab= (FloatingActionButton) findViewById(R.id.fab_add_tenant);
-        checkBoxUseEntered= (CheckBox) findViewById(R.id.checkBox_use_for_start);
+        checkBoxUseEntered= (CheckBox) findViewById(R.id.check_box_add_tenant_use_for_start);
 
         previousColor= house_occupied.getCurrentTextColor();
         colored= first_name;

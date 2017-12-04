@@ -26,7 +26,6 @@ import java.util.List;
 
 import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Data.Tenant;
-import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helpers.FALSE;
@@ -52,7 +51,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         fab = (FloatingActionButton) findViewById(R.id.fab_add_payment);
         editTextTenant= (AutoCompleteTextView) findViewById(R.id.edit_text_add_payment_tenant);
         editTextAmount= (EditText) findViewById(R.id.edit_text_add_payment_amount);
-        checkBoxSingleMonth= (CheckBox) findViewById(R.id.checkbox_add_payment);
+        checkBoxSingleMonth= (CheckBox) findViewById(R.id.check_box_add_payment_single_month);
         previousColor= editTextTenant.getCurrentTextColor();
         chosen= null;
         adapter= null;
@@ -62,7 +61,7 @@ public class AddPayment extends AppCompatActivity implements View.OnClickListene
         editTextTenant.addTextChangedListener(this);
 
         results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).list();
-        adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.textView_listItem_dropDown, results);
+        adapter= new ArrayAdapter<>(this, R.layout.list_item_dropdown, R.id.text_view_list_item_drop_down, results);
         adapter.setNotifyOnChange(true);
         editTextTenant.setAdapter(adapter);
 

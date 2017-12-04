@@ -31,7 +31,7 @@
                 android:inputType="text" />
 
             <CheckBox
-                android:id="@+id/checkBox_single_house_add_house"
+                android:id="@+id/check_box_single_house_add_house"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Only one house in this location"
@@ -61,7 +61,7 @@
                 android:inputType="textImeMultiLine|textAutoCorrect" />
 
             <CheckBox
-                android:id="@+id/checkBox_location_rent_add_house"
+                android:id="@+id/check_box_add_house_location_rent"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Use default rent paid at this Location"
@@ -69,14 +69,14 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editText_rent_paid_add_house"
+                android:id="@+id/edit_text_add_house_rent_paid"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:gravity="center_horizontal"
-                android:hint="Rent paid"
+                android:hint="@string/rent_paid"
                 android:inputType="number|numberSigned" />
         </LinearLayout>
     </ScrollView>

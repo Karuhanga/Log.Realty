@@ -26,6 +26,7 @@
             android:paddingBottom="10dp">
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_fname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -38,7 +39,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_fname"
+                        android:id="@+id/text_view_detailed_tenant_label_fname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -49,7 +50,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_fname"
+                            android:id="@+id/text_view_detailed_tenant_fname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
@@ -60,10 +61,10 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_fname"
+                            android:id="@+id/edit_text_detailed_tenant_fname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="First Name"
+                            android:hint="@string/first_name"
                             android:inputType="textPersonName"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +72,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_fname"
+                            android:id="@+id/button_detailed_tenant_fname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -85,20 +86,21 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_onames"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp">
 
                 <LinearLayout
-                    android:id="@+id/row_details_tenant_onames"
+                    android:id="@+id/row_detailed_tenant_onames"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_onames"
+                        android:id="@+id/text_view_detailed_tenant_label_onames"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -109,7 +111,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_onames"
+                            android:id="@+id/text_view_detailed_tenant_onames"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
@@ -120,7 +122,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_onames"
+                            android:id="@+id/edit_text_detailed_tenant_onames"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="Surname/Other Names"
@@ -131,7 +133,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_onames"
+                            android:id="@+id/button_detailed_tenant_onames"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -145,6 +147,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -157,7 +160,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_email"
+                        android:id="@+id/text_view_detailed_tenant_label_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Email" />
@@ -167,7 +170,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_email"
+                            android:id="@+id/text_view_detailed_tenant_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:inputType="textEmailAddress"
@@ -178,10 +181,10 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_email"
+                            android:id="@+id/edit_text_detailed_tenant_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Email Address"
+                            android:hint="@string/email_address"
                             android:inputType="textEmailAddress"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -189,7 +192,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_email"
+                            android:id="@+id/button_detailed_tenant_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -203,6 +206,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -215,7 +219,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_contact"
+                        android:id="@+id/text_view_detailed_tenant_label_contact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Contact" />
@@ -225,7 +229,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_contact"
+                            android:id="@+id/text_view_detailed_tenant_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -236,10 +240,10 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_contact"
+                            android:id="@+id/edit_text_detailed_tenant_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Telephone Contact"
+                            android:hint="@string/telephone_contact"
                             android:inputType="number"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -247,7 +251,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_contact"
+                            android:id="@+id/button_detailed_tenant_contact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -261,6 +265,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_idtype"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -273,7 +278,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_idtype"
+                        android:id="@+id/text_view_detailed_tenant_label_idtype"
                         android:layout_width="416dp"
                         android:layout_height="wrap_content"
                         android:hint="ID Type"
@@ -285,20 +290,20 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_idtype"
+                            android:id="@+id/text_view_detailed_tenant_idtype"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ID Type"
+                            android:text="@string/id_type"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_idtype"
+                            android:id="@+id/edit_text_detailed_tenant_idtype"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="ID Type"
+                            android:hint="@string/id_type"
                             android:inputType="textAutoCorrect"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -306,7 +311,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_idtype"
+                            android:id="@+id/button_detailed_tenant_idtype"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -320,6 +325,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_idno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -332,10 +338,10 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_id_no"
+                        android:id="@+id/text_view_detailed_tenant_label_id_no"
                         android:layout_width="416dp"
                         android:layout_height="wrap_content"
-                        android:hint="ID Number"
+                        android:hint="@string/id_number"
                         tools:layout_editor_absoluteX="8dp"
                         tools:layout_editor_absoluteY="1348dp" />
 
@@ -344,20 +350,20 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_id_no"
+                            android:id="@+id/text_view_detailed_tenant_id_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ID Number"
+                            android:text="@string/id_number"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
-                            android:id="@+id/edit_text_details_tenant_id_no"
+                            android:id="@+id/edit_text_detailed_tenant_id_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="ID Number"
+                            android:hint="@string/id_number"
                             android:inputType="textAutoCorrect"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -365,7 +371,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_id_no"
+                            android:id="@+id/button_detailed_tenant_id_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -379,6 +385,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_house"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -391,30 +398,30 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/label_details_tenant_house"
+                        android:id="@+id/text_view_details_tenant_label_house"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="House Occupied" />
+                        android:hint="@string/house_occupied" />
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_house"
+                            android:id="@+id/text_view_detailed_tenant_house"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="House Occupied"
+                            android:hint="@string/house_occupied"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <AutoCompleteTextView
-                            android:id="@+id/edit_text_details_tenant_house"
+                            android:id="@+id/edit_text_detailed_tenant_house"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:hint="House Occupied"
+                            android:hint="@string/house_occupied"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:visibility="gone"
@@ -423,7 +430,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_house"
+                            android:id="@+id/button_detailed_tenant_house"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -437,6 +444,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_date_entered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -453,18 +461,18 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/label_date_picker_details_tenant"
+                            android:id="@+id/text_view_detailed_tenant_label_date_entered"
                             android:layout_width="544dp"
                             android:layout_height="wrap_content"
-                            android:labelFor="@+id/date_picker_details_tenant_entering"
-                            android:text="Date Entered"
+                            android:labelFor="@+id/date_picker_detailed_tenant_date_entered"
+                            android:text="@string/date_entered"
                             android:textAppearance="@android:style/TextAppearance.Holo.Small"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_details_tenant_date_entering"
+                            android:id="@+id/button_detailed_tenant_date_entered"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -481,17 +489,17 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_entering"
+                            android:id="@+id/text_view_detailed_tenant_date_entered"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Date Entering"
+                            android:text="@string/date_entered"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <DatePicker
-                            android:id="@+id/date_picker_details_tenant_entering"
+                            android:id="@+id/date_picker_detailed_tenant_date_entered"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:calendarViewShown="false"
@@ -509,6 +517,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_tenant_start_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="80dp"
@@ -525,10 +534,10 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/label_date_picker_start_count_details_tenant"
+                            android:id="@+id/text_view_detailed_tenant_label_start_count"
                             android:layout_width="544dp"
                             android:layout_height="wrap_content"
-                            android:hint="Rent Due"
+                            android:hint="@string/rent_due"
                             android:labelFor="@+id/date_picker_start_count_details_tenant"
                             android:textAppearance="@android:style/TextAppearance.Holo.Small"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -536,7 +545,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_due_details_tenant"
+                            android:id="@+id/button_detailed_tenant_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -553,17 +562,17 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/textView_details_tenant_due"
+                            android:id="@+id/text_view_detailed_tenant_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Date Entering"
+                            android:text="@string/date_rent_due"
                             android:textAppearance="@android:style/TextAppearance.Holo.Medium"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <DatePicker
-                            android:id="@+id/date_picker_due_details_tenant"
+                            android:id="@+id/date_picker_detailed_tenant_due"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:calendarViewShown="false"
@@ -606,7 +615,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_delete_detailed_tenant"
+            android:id="@+id/fab_detailed_tenant_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

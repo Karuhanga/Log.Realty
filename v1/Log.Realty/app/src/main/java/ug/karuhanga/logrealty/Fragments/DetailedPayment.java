@@ -1,43 +1,22 @@
 package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.orm.query.Condition;
 import com.orm.query.Select;
-import com.orm.util.NamingHelper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
-import ug.karuhanga.logrealty.Data.House;
 import ug.karuhanga.logrealty.Data.Payment;
 import ug.karuhanga.logrealty.Helpers;
 import ug.karuhanga.logrealty.Popups.Confirmation;
 import ug.karuhanga.logrealty.R;
-
-import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_EDIT;
-import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,12 +84,12 @@ public class DetailedPayment extends Fragment implements View.OnClickListener, u
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_payment_fragment, container, false);
 
-        textViewTenant= view.findViewById(R.id.textView_tenant_detailed_payment);
-        textViewAmount= view.findViewById(R.id.textView_amount_detailed_payment);
-        textViewDate= view.findViewById(R.id.textView_date_detailed_payment);
-        textViewRate= view.findViewById(R.id.textView_rate_detailed_payment);
+        textViewTenant= view.findViewById(R.id.text_view_detailed_payment_tenant);
+        textViewAmount= view.findViewById(R.id.text_view_detailed_payment_amount);
+        textViewDate= view.findViewById(R.id.text_view_detailed_payment_date);
+        textViewRate= view.findViewById(R.id.text_view_detailed_payment_rate);
 
-        fab_delete= view.findViewById(R.id.fab_delete_detailed_payment);
+        fab_delete= view.findViewById(R.id.fab_detailed_payment_delete);
 
         paymentObject= Payment.findById(Payment.class, payment);
 

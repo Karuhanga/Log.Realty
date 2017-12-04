@@ -2,7 +2,6 @@ package ug.karuhanga.logrealty.Fragments;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -123,32 +121,32 @@ public class DetailedHouse extends Fragment implements TextWatcher, View.OnClick
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_house_fragment, container, false);
-        buttonLocation= view.findViewById(R.id.button_location_fragment_detailed_house);
-        buttonInfo= view.findViewById(R.id.button_house_information_fragment_detailed_house);
-        buttonRent= view.findViewById(R.id.button_amount_fragment_detailed_house);
-        textViewLocation= view.findViewById(R.id.text_view_location_fragment_detailed_house);
-        textViewNumber= view.findViewById(R.id.text_view_number_fragment_detailed_house);
-        textViewDescription= view.findViewById(R.id.text_view_description_fragment_detailed_house);
-        textViewRent= view.findViewById(R.id.text_view_amount_fragment_detailed_house);
-        textViewSingleHouse= view.findViewById(R.id.text_view_single_house_fragment_detailed_house);
+        buttonLocation= view.findViewById(R.id.button_detailed_house_location);
+        buttonInfo= view.findViewById(R.id.button_detailed_house_house_information);
+        buttonRent= view.findViewById(R.id.button_detailed_house_amount);
+        textViewLocation= view.findViewById(R.id.text_view_detailed_house_location);
+        textViewNumber= view.findViewById(R.id.text_view_detailed_house_number);
+        textViewDescription= view.findViewById(R.id.text_view_detailed_house_description);
+        textViewRent= view.findViewById(R.id.text_view_detailed_house_amount);
+        textViewSingleHouse= view.findViewById(R.id.text_view_detailed_house_single_house);
 
-        rowSingleHouse= view.findViewById(R.id.row_single_house_detailed_house);
-        rowDefaultRent= view.findViewById(R.id.row_default_rent_detailed_house);
-        labelNumber= view.findViewById(R.id.text_view_label_number_fragment_detailed_house);
-        labelDescription= view.findViewById(R.id.text_view_label_description_fragment_detailed_house);
-        labelRent= view.findViewById(R.id.text_view_label_amount_fragment_detailed_house);
-        checkBoxSingleHouse= view.findViewById(R.id.checkBox_single_house_add_house);
-        checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
+        rowSingleHouse= view.findViewById(R.id.row_detailed_house_single_house);
+        rowDefaultRent= view.findViewById(R.id.row_detailed_house_default_rent);
+        labelNumber= view.findViewById(R.id.text_view_detailed_house_label_number);
+        labelDescription= view.findViewById(R.id.text_view_detailed_house_label_description);
+        labelRent= view.findViewById(R.id.text_view_detailed_house_label_amount);
+        checkBoxSingleHouse= view.findViewById(R.id.check_box_single_house_add_house);
+        checkBoxDefaultRent= view.findViewById(R.id.check_box_detailed_house_default_rent);
 
-        editTextLocation= view.findViewById(R.id.edit_text_location_fragment_detailed_house);
-        editTextNumber= view.findViewById(R.id.edit_text_number_fragment_detailed_house);
-        editTextDescription= view.findViewById(R.id.edit_text_description_fragment_detailed_house);
-        editTextRent= view.findViewById(R.id.edit_text_amount_fragment_detailed_house);
+        editTextLocation= view.findViewById(R.id.edit_text_detailed_house_location);
+        editTextNumber= view.findViewById(R.id.edit_text_detailed_house_number);
+        editTextDescription= view.findViewById(R.id.edit_text_detailed_house_description);
+        editTextRent= view.findViewById(R.id.edit_text_detailed_house_amount);
 
         fab= view.findViewById(R.id.fab_detailed_location);
-        fab_delete= view.findViewById(R.id.fab_delete_detailed_location);
-        checkBoxSingleHouse= view.findViewById(R.id.checkbox_single_house_detailed_house);
-        checkBoxDefaultRent= view.findViewById(R.id.checkbox_default_rent_fragment_detailed_house);
+        fab_delete= view.findViewById(R.id.fab_detailed_location_delete);
+        checkBoxSingleHouse= view.findViewById(R.id.check_box_detailed_house_single_house);
+        checkBoxDefaultRent= view.findViewById(R.id.check_box_detailed_house_default_rent);
 
         results= Select.from(Location.class).list();
         adapter= new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, results);

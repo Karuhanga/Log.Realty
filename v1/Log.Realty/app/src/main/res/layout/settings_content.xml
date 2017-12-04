@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
+                android:id="@+id/card_settings_personal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="3dp">
@@ -85,6 +86,7 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/card_settings_notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -202,42 +204,42 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="Frequency"
+                            android:text="@string/frequency"
                             android:textStyle="bold"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <CheckBox
-                            android:id="@+id/check_box_day_to"
+                            android:id="@+id/check_box_settings_day_to"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="One day to"
+                            android:text="@string/one_day_to"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_settings_label_frequency" />
 
                         <CheckBox
-                            android:id="@+id/check_box_actual_day"
+                            android:id="@+id/check_box_settings_actual_day"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Day Rent is due"
+                            android:text="@string/day_rent_is_due"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/check_box_day_to" />
+                            app:layout_constraintTop_toBottomOf="@+id/check_box_settings_day_to" />
 
                         <CheckBox
-                            android:id="@+id/check_box_day_after"
+                            android:id="@+id/check_box_settings_day_after"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="One day after"
+                            android:text="@string/one_day_after"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/check_box_actual_day" />
+                            app:layout_constraintTop_toBottomOf="@+id/check_box_settings_actual_day" />
 
                         <CheckBox
-                            android:id="@+id/check_box_five_days"
+                            android:id="@+id/check_box_settings_five_days"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Every five days after that"
+                            android:text="@string/every_five_days_after_that"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/check_box_day_after" />
+                            app:layout_constraintTop_toBottomOf="@+id/check_box_settings_day_after" />
 
 
                     </android.support.constraint.ConstraintLayout>
@@ -245,6 +247,7 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
+                android:id="@+id/card_settings_backup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="3dp">
@@ -275,7 +278,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:text="Permission"
+                            android:text="@string/permission"
                             android:textStyle="bold"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -284,7 +287,7 @@
                             android:id="@+id/check_box_backup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Allow Data Backup"
+                            android:text="@string/allow_data_backup"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/text_view_settings_label_permission" />
 
