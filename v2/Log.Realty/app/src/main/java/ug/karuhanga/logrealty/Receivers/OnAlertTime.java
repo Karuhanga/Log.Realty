@@ -7,9 +7,9 @@ import android.content.Intent;
 
 import java.util.Date;
 
-import ug.karuhanga.logrealty.Data.Notification;
+import ug.karuhanga.logrealty.Models.Notification;
 
-import static ug.karuhanga.logrealty.Data.Notification.displayNotification;
+import static ug.karuhanga.logrealty.Models.Notification.displayNotification;
 
 /**
  * Created by karuhanga on 10/26/17.

@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-
     package="ug.karuhanga.logrealty">
 
     <application
@@ -9,7 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".Views.AddPayment" />
+        <activity
+            android:name=".Views.Gist"
+            android:label="@string/title_activity_gist"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Views.AddLocation" />
+        <activity android:name=".Views.AddHouse" />
+        <activity android:name=".Views.AddTenant"></activity>
     </application>
 
 </manifest>
