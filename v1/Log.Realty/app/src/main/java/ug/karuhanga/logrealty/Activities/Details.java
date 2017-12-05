@@ -109,8 +109,8 @@ public class Details extends AppCompatActivity implements DetailedPayment.OnFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
 
-        button_left= (ImageButton) findViewById(R.id.button_left_details_activity);
-        button_right= (ImageButton) findViewById(R.id.button_right_details_activity);
+        button_left= (ImageButton) findViewById(R.id.button_detailed_activity_left);
+        button_right= (ImageButton) findViewById(R.id.button_detailed_activity_right);
         button_left.setAlpha(0.3f);
         button_right.setAlpha(0.3f);
 
@@ -128,7 +128,7 @@ public class Details extends AppCompatActivity implements DetailedPayment.OnFrag
         mItemsStatePagerAdapter = new ItemsStatePagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container_detailed_activity);
         mViewPager.setAdapter(mItemsStatePagerAdapter);
         mViewPager.setCurrentItem(ids.indexOf(current_id));
 
@@ -174,8 +174,8 @@ public class Details extends AppCompatActivity implements DetailedPayment.OnFrag
     private void onNoData() {
         button_left.setVisibility(View.INVISIBLE);
         button_right.setVisibility(View.INVISIBLE);
-        findViewById(R.id.textView_details).setVisibility(View.VISIBLE);
-        ((TextView)findViewById(R.id.textView_details)).setText("Please add a few "+Helpers.getStringByName(this, "fragment_label_"+String.valueOf(ENTITY))+" to begin");
+        findViewById(R.id.text_view_detailed_activity_details).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.text_view_detailed_activity_details)).setText("Please add a few "+Helpers.getStringByName(this, "fragment_label_"+String.valueOf(ENTITY))+" to begin");
     }
 
     @Override

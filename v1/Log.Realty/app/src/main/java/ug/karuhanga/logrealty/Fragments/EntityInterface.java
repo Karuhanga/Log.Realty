@@ -95,7 +95,7 @@ public class EntityInterface extends Fragment implements View.OnClickListener, L
         // Inflate the layout for this fragment
         inSelectionProcess= false;
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
-        buttonLoadMore= (Button) view.findViewById(R.id.button_load_more_entity_interface_fragment);
+        buttonLoadMore= (Button) view.findViewById(R.id.button_entity_interface_load_more);
         listView= (ListView) view.findViewById(R.id.list_view_entity_interface);
         listAdapter= new ArrayAdapter<>(getContext(), R.layout.list_item_entity_interface, R.id.textView_list_item_entity_interface, data);
 

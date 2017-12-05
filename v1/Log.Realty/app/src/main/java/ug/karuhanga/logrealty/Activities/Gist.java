@@ -98,11 +98,11 @@ public class Gist extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_gist);
         navigationView.setNavigationItemSelectedListener(this);
         List<Setting> ewrp= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helpers.SETTINGS_EMAIL)).list();
         String dxrs= ewrp.isEmpty()? getStringByName(this, "email_default") : ewrp.get(0).getData();
-        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.text_view_user_name)).setText(dxrs);
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.text_view_2_nav)).setText(dxrs);
 
         displayFragment(Helpers.FRAGMENT_DUE_PAYMENTS);
     }
@@ -158,7 +158,7 @@ public class Gist extends AppCompatActivity
     private void doStartSearchStuff() {
         coreData= ((GistInteractionListener) currentFrag).getCoreData();
         ArrayAdapter<MinifiedRecord> adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, coreData);
-        AutoCompleteTextView search_text_view= ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_search_gist));
+        AutoCompleteTextView search_text_view= ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_gist_search));
         search_text_view.setAdapter(adapter);
         search_text_view.setThreshold(1);
         search_text_view.requestFocus();
@@ -275,14 +275,14 @@ public class Gist extends AppCompatActivity
 
         //if there was no fragment, nothing to save, just display
         if (currentFragment==Helpers.FRAGMENT_NONE){
-            fragmentTransaction.add(R.id.layout_fragment_holder, fragment);
+            fragmentTransaction.add(R.id.container_gist, fragment);
         }
         else{
             //something to save, check if it is possibly already saved, to prevent multiple additions
             if (fragmentManager.findFragmentByTag(String.valueOf(currentFragment))==null){
                 fragmentTransaction.addToBackStack(String.valueOf(currentFragment));
             }
-            fragmentTransaction.replace(R.id.layout_fragment_holder, fragment);
+            fragmentTransaction.replace(R.id.container_gist, fragment);
         }
 
         fragmentTransaction.commit();
@@ -405,7 +405,7 @@ public class Gist extends AppCompatActivity
         if (searchView.getVisibility()==View.VISIBLE){
             searchView.startAnimation(close);
             searchView.setVisibility(View.GONE);
-            ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_search_gist)).setText("");
+            ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_gist_search)).setText("");
             findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
             return;
         }

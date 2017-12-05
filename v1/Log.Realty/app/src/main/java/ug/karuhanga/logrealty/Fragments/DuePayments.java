@@ -75,7 +75,7 @@ public class DuePayments extends Fragment implements Confirmation, GistInteracti
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.entity_interface_fragment, container, false);
-        view.findViewById(R.id.button_load_more_entity_interface_fragment).setVisibility(View.GONE);
+        view.findViewById(R.id.button_entity_interface_load_more).setVisibility(View.GONE);
 
         listView= (ListView) view.findViewById(R.id.list_view_entity_interface);
         adapter= new ArrayAdapter<>(getContext(), R.layout.list_item_entity_interface, R.id.textView_list_item_entity_interface, defaulters);
