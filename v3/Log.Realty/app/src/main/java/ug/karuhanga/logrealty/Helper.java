@@ -40,7 +40,11 @@ public class Helper {
     public static final String TRUE= "1";
     public static final String FALSE= "0";
 
-    public static final int AMOUNT_MINIMUM_RENT= 250000;
+    public static final long AMOUNT_MINIMUM_RENT= 250000;
+
+    public static final String ERROR_REQUIRED= "This is a required field";
+    public static final String ERROR_BELOW_MIN= "Rent must be at least "+toCurrency(AMOUNT_MINIMUM_RENT);
+
 
     public static final String REGEX_EMAIL= "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 

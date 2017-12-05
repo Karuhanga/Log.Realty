@@ -1,3 +1,7 @@
+##
+#@author Karuhanga Lincoln
+#Simple utility script for copying a desired icon to each of the respective desired android dpi folders
+
 import os
 import shutil
 

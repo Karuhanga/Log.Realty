@@ -1,3 +1,7 @@
+##
+#@author Karuhanga Lincoln
+#Simple utility script for deleting a desired icon from ech of the respective android dpi folders
+
 import os
 
 SLASH= "/"

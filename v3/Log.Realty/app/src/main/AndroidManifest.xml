@@ -14,7 +14,9 @@
             android:name=".Views.Gist"
             android:label="@string/title_activity_gist"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Views.AddLocation"></activity>
+        <activity android:name=".Views.AddLocation" />
+        <activity android:name=".Views.AddHouse" />
+        <activity android:name=".Views.AddTenant"></activity>
     </application>
 
 </manifest>

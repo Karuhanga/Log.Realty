@@ -39,14 +39,14 @@ public class House extends Record {
         this.description= "Single House";
     }
 
-    public House(Location location, int rent) {
+    public House(Location location, long rent) {
         this.location = location.getId();
         this.number= 0;
         this.rent= rent;
         this.description= "Single House";
     }
 
-    public House(int number, String description, Location location, int rent) {
+    public House(int number, String description, Location location, long rent) {
         this.number = number;
         this.rent = rent;
         this.description= description;
@@ -112,7 +112,7 @@ public class House extends Record {
         return true;
     }
 
-    static long getHouseCountAtLocation(Location location){
+    public static long getHouseCountAtLocation(Location location){
         long result= 0;
         try {
            result= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(location)).count();
