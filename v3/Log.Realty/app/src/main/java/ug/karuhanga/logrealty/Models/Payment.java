@@ -22,7 +22,7 @@ public class Payment extends Record {
     public Payment() {
     }
 
-    public Payment(Date date, long amount, Tenant tenant) {
+    public Payment(Date date, Tenant tenant, long amount) {
         this.date = date;
         this.amount = amount;
         this.tenant = tenant.getId();

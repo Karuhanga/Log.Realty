@@ -48,6 +48,7 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_house_activity);
+        controller= Controller.injectAddHouseActivityExternalInterface(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextLocation.setOnItemClickListener(this);
