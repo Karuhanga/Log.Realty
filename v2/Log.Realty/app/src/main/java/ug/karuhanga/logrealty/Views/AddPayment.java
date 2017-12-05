@@ -28,7 +28,7 @@ public class AddPayment extends AppCompatActivity implements Controller.AddPayme
 
     //Activity Visual Components
     @BindView(R.id.edit_text_add_payment_tenant) AutoCompleteTextView editTextTenant;
-    @BindView(R.id.check_box_add_payment_single_month) private CheckBox checkBoxSingleMonth;
+    @BindView(R.id.check_box_add_payment_single_month) CheckBox checkBoxSingleMonth;
     @BindView(R.id.edit_text_add_payment_amount) EditText editTextAmount;
 
     //Module Controller
