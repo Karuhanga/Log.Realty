@@ -15,6 +15,7 @@ import android.widget.EditText;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Helper;
@@ -39,7 +40,7 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
     @BindView(R.id.edit_text_add_house_description) EditText editTextDescription;
     @BindView(R.id.check_box_add_house_location_rent) CheckBox checkBoxDefaultRent;
     @BindView(R.id.edit_text_add_house_rent_paid) EditText editTextRentPaid;
-    @BindView(R.id.toolbar_add_house) Toolbar toolbar;
+//    @BindView(R.id.toolbar_add_house) Toolbar toolbar;
 
     //Module Controller
     AddHouseActivityExternalInterface controller;
@@ -48,8 +49,8 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_house_activity);
+        ButterKnife.bind(this);
         controller= Controller.injectAddHouseActivityExternalInterface(this);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextLocation.setOnItemClickListener(this);
         editTextLocation.setThreshold(1);

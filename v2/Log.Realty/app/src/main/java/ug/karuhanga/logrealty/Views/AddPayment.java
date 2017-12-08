@@ -14,6 +14,7 @@ import android.widget.EditText;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
@@ -38,6 +39,7 @@ public class AddPayment extends AppCompatActivity implements Controller.AddPayme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_payment_activity);
+        ButterKnife.bind(this);
         controller= Controller.injectAddPaymentActivityExternalInterface(this);
         editTextTenant.setOnItemClickListener(this);
         editTextTenant.setThreshold(1);

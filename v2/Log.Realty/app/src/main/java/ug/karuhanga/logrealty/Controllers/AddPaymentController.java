@@ -63,6 +63,6 @@ public class AddPaymentController implements AddPayment.AddPaymentActivityExtern
     }
 
     private void finish(long id, String item){
-        dashboard.finish(id, "Added:\n"+item);
+        dashboard.finish(id, item);
     }
 }

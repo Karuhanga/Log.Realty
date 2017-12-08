@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ug.karuhanga.logrealty.Activities.AddPayment"
+    tools:context="ug.karuhanga.logrealty.Views.AddPayment"
     tools:showIn="@layout/add_payment_activity">
 
     <LinearLayout

@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--TODO Change Search Icon-->
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_item_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="Search"
+        app:showAsAction="ifRoom|collapseActionView"></item>
+    <item
+        android:id="@+id/menu_item_sync"
+        android:title="Sync"
+        android:visible="false"></item>
+    <item
+        android:id="@+id/menu_item_backup_offline"
+        android:title="Backup"
+        android:visible="false"></item>
+    <item
+        android:id="@+id/menu_item_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />

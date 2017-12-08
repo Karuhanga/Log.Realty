@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Helper;
@@ -22,7 +23,7 @@ public class AddLocation extends AppCompatActivity implements Controller.AddLoca
     //Activity Visual Components
     @BindView(R.id.edit_text_add_location_location) EditText editTextLocation;
     @BindView(R.id.edit_text_add_location_amount) EditText editTextRent;
-    @BindView(R.id.toolbar_add_location) Toolbar toolbar;
+//    @BindView(R.id.toolbar_add_location) Toolbar toolbar;
     //Module Controller
     private AddLocation.AddLocationActivityExternalInterface controller;
 
@@ -30,7 +31,8 @@ public class AddLocation extends AppCompatActivity implements Controller.AddLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_location_activity);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+        getSupportActionBar().setTitle("Add Location");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         controller= Controller.injectAddLocationActivityExternalInterface(this);
     }

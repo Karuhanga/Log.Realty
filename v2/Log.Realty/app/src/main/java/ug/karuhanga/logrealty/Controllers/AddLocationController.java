@@ -35,6 +35,6 @@ public class AddLocationController implements AddLocation.AddLocationActivityExt
     }
 
     private void finish(long id, String item){
-        dashboard.finish(id, "Added:\n"+item);
+        dashboard.finish(id, item);
     }
 }

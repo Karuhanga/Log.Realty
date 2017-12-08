@@ -18,6 +18,20 @@ import java.util.List;
 public class Helper {
     public static final String APP_TAG= "Log.Realty";
 
+    public static final int FRAGMENT_DUE_PAYMENTS= 1001;
+    public static final int FRAGMENT_LOCATIONS= 1002;
+    public static final int FRAGMENT_HOUSES= 1003;
+    public static final int FRAGMENT_TENANTS= 1004;
+    public static final int FRAGMENT_PAYMENTS= 1005;
+    public static final int FRAGMENT_NONE= -1000;
+
+    public static final int RESULT_CODE_ADD_PAYMENT= 100;
+    public static final int RESULT_CODE_SETTINGS= 101;
+    public static final int RESULT_CODE_ADD_LOCATION= 102;
+    public static final int RESULT_CODE_ADD_HOUSE= 103;
+    public static final int RESULT_CODE_ADD_TENANT= 104;
+
+    public static final int RESULT_CODE_REFRESH= 105;
 
     public static final int FLAG_NO_FLAGS= 0;
     public static final int FLAG_ONE_DAY_TO= -1;

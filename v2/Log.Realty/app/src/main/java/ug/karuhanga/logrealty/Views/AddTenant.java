@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Helper;
@@ -49,6 +50,7 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_tenant_activity);
+        ButterKnife.bind(this);
         controller= Controller.injectAddTenantActivityExternalInterface(this);
         editTextHouseOccupied.setOnItemClickListener(this);
         editTextHouseOccupied.setThreshold(1);
