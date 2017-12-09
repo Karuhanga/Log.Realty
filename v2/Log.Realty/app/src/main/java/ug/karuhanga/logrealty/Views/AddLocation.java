@@ -17,6 +17,7 @@ import ug.karuhanga.logrealty.R;
 import static ug.karuhanga.logrealty.Helper.APP_TAG;
 import static ug.karuhanga.logrealty.Helper.ERROR_REQUIRED;
 import static ug.karuhanga.logrealty.Helper.TAG_APP_NAME;
+import static ug.karuhanga.logrealty.Helper.log;
 
 public class AddLocation extends AppCompatActivity implements Controller.AddLocationControllerExternalInterface {
 
@@ -90,7 +91,8 @@ public class AddLocation extends AppCompatActivity implements Controller.AddLoca
 
     @Override
     public void raise(String message) {
-        editTextLocation.setError(message);
+        editTextRent.setError(message);
+        editTextRent.requestFocus();
     }
 
     @Override

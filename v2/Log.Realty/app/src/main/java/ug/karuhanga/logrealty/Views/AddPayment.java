@@ -1,5 +1,6 @@
 package ug.karuhanga.logrealty.Views;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class AddPayment extends AppCompatActivity implements Controller.AddPayme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_payment_activity);
         ButterKnife.bind(this);
+        getSupportActionBar().setTitle("Add Payment");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         controller= Controller.injectAddPaymentActivityExternalInterface(this);
         editTextTenant.setOnItemClickListener(this);
         editTextTenant.setThreshold(1);
@@ -62,6 +65,17 @@ public class AddPayment extends AppCompatActivity implements Controller.AddPayme
         finisher.putExtra("details", summary);
         finisher.putExtra("id", id);
         finish();
+    }
+
+    @Override
+    public Context requestContext() {
+        return this;
+    }
+
+    @Override
+    public void complainAboutRent(String message) {
+        editTextAmount.setError(message);
+        editTextAmount.requestFocus();
     }
 
     @Override

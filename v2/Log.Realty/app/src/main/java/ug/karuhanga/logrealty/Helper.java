@@ -3,6 +3,8 @@ package ug.karuhanga.logrealty;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,7 +59,6 @@ public class Helper {
     public static final long AMOUNT_MINIMUM_RENT= 250000;
 
     public static final String ERROR_REQUIRED= "This is a required field";
-    public static final String ERROR_BELOW_MIN= "Rent must be at least "+toCurrency(AMOUNT_MINIMUM_RENT);
 
 
     public static final String REGEX_EMAIL= "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
@@ -67,21 +68,30 @@ public class Helper {
     public static String toCurrency(long number){
         String[] result= String.valueOf(number).split("");
         List<String> letters=  new ArrayList<>();
-        int length= result.length;
+        int absLength= result.length-1;
         int count= 0;
         int tracker= 0;
-        while (tracker<length){
+        while (tracker<absLength){
             if (count==3){
                 letters.add(0, ",");
                 count= 0;
             }
             else{
-                letters.add(0, result[length-tracker-1]);
+                letters.add(0, result[absLength-tracker]);
                 count++;
                 tracker++;
             }
         }
-        return letters.toString()+"/=";
+        StringBuilder requested= new StringBuilder();
+        for (String letter : letters) {
+            requested.append(letter);
+        }
+        requested.append("/=");
+        return requested.toString();
+    }
+
+    public static String getRentBelowMinNotif(){
+        return "Rent must be at least "+toCurrency(AMOUNT_MINIMUM_RENT);
     }
 
     public static Date getLaterDateByMonths(Date oldDate, long months){
@@ -190,5 +200,25 @@ public class Helper {
             result= null;
         }
         return result;
+    }
+
+    public static void hide(final View view) {
+        view.animate().scaleY(0f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                view.setScaleY(1f);
+                view.setVisibility(View.GONE);
+            }
+        }).start();
+    }
+
+    public static void show(View view) {
+        view.setScaleY(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().scaleY(1f);
+    }
+
+    public static void log(String message){
+        Log.d(TAG_APP_NAME, message);
     }
 }

@@ -5,7 +5,7 @@ import ug.karuhanga.logrealty.Models.Location;
 import ug.karuhanga.logrealty.Views.AddLocation;
 
 import static ug.karuhanga.logrealty.Helper.AMOUNT_MINIMUM_RENT;
-import static ug.karuhanga.logrealty.Helper.ERROR_BELOW_MIN;
+import static ug.karuhanga.logrealty.Helper.getRentBelowMinNotif;
 
 /**
  * Created by karuhanga on 12/5/17.
@@ -22,7 +22,7 @@ public class AddLocationController implements AddLocation.AddLocationActivityExt
     @Override
     public void onSubmit(String location, long rent) {
         if (belowThreshold(rent)){
-            dashboard.raise(ERROR_BELOW_MIN);
+            dashboard.raise(getRentBelowMinNotif());
             return;
         }
 

@@ -23,11 +23,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import ug.karuhanga.logrealty.Helper;
 import ug.karuhanga.logrealty.Models.House;
 import ug.karuhanga.logrealty.Models.Listable;
 import ug.karuhanga.logrealty.Models.Location;
 import ug.karuhanga.logrealty.Models.Payment;
+import ug.karuhanga.logrealty.Models.Summarizable;
 import ug.karuhanga.logrealty.Models.Tenant;
 import ug.karuhanga.logrealty.R;
 
@@ -73,24 +73,19 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
     // TODO: Rename and change types and number of parameters
     public static EntitySummary newInstance(int entity) {
         EntitySummary fragment = new EntitySummary();
-        Bundle args = new Bundle();
-        args.putInt("ENTITY", entity);
-        fragment.setArguments(args);
+        fragment.setENTITY(entity);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            ENTITY  = getArguments().getInt("ENTITY");
-        }
-        displayNumber= 10;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.entity_summary_fragment, container, false);
         listAdapter= new ArrayAdapter<>(getContext(), R.layout.entity_summary_list_item, R.id.textView_list_item_entity_interface, data);
@@ -98,9 +93,9 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this);
-
+        displayNumber=10;
         fetchData(displayNumber);
-
+        onSearchDataReady();
         int data_amount= data.size();
         if (displayNumber>data_amount){
             displayNumber= data_amount;
@@ -155,10 +150,15 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
     }
 
     private List<Listable> getData(){
-        if (data==null){
+        if (data==null || data.size()==0){
+            displayNumber= 10;
             fetchData(displayNumber);
         }
-        return data;
+        List<Listable> summarizables= new ArrayList<>();
+        for (Listable item :data) {
+            summarizables.add(new Summarizable(item.getId(), item.summarize(), item.toString()));
+        }
+        return summarizables;
     }
 
     /**
@@ -174,11 +174,18 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onDetailsRequested(Long id);
+        void onSearchDataReady();
     }
 
     public void onDetailsRequested(Long id) {
         if (mListener != null) {
             mListener.onDetailsRequested(id);
+        }
+    }
+
+    public void onSearchDataReady() {
+        if (mListener != null) {
+            mListener.onSearchDataReady();
         }
     }
 
@@ -189,39 +196,39 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
                 List<Location> results;
                 results= Select.from(Location.class).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("name")).list();
                 for (Location result : results) {
-                    data.add(result);
+                    data.add(new Summarizable(result.getId(), result.summarize(), result.toString()));
                 }
                 break;
             case FRAGMENT_HOUSES:
                 List<House> results2;
                 results2= Select.from(House.class).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("number")).orderBy(NamingHelper.toSQLNameDefault("location")).list();
                 for (House result : results2) {
-                    data.add(result);
+                    data.add(new Summarizable(result.getId(), result.summarize(), result.toString()));
                 }
                 break;
             case FRAGMENT_TENANTS:
                 List<Tenant> results3;
                 results3= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).limit(String.valueOf(limit)).orderBy(NamingHelper.toSQLNameDefault("rentDue")).list();
                 for (Tenant result : results3) {
-                    data.add(result);
+                    data.add(new Summarizable(result.getId(), result.summarize(), result.toString()));
                 }
                 break;
             case FRAGMENT_PAYMENTS:
                 List<Payment> results4;
                 results4= Select.from(Payment.class).limit(String.valueOf(limit)).list();
                 for (Payment result : results4) {
-                    data.add(result);
+                    data.add(new Summarizable(result.getId(), result.summarize(), result.toString()));
                 }
                 break;
             default:
                 List<Payment> results5;
                 results5= Select.from(Payment.class).limit(String.valueOf(limit)).list();
                 for (Payment result : results5) {
-                    data.add(result);
+                    data.add(new Summarizable(result.getId(), result.summarize(), result.toString()));
                 }
                 break;
         }
-        listAdapter.notifyDataSetChanged();
+        getListAdapter().notifyDataSetChanged();
     }
 
     @OnClick(R.id.button_entity_interface_load_more)
@@ -233,5 +240,20 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
             displayNumber= data_amount;
             buttonLoadMore.setVisibility(View.GONE);
         }
+    }
+
+    public int getENTITY() {
+        return ENTITY;
+    }
+
+    public void setENTITY(int ENTITY) {
+        this.ENTITY = ENTITY;
+    }
+
+    public ArrayAdapter getListAdapter() {
+        if (listAdapter==null){
+            listAdapter= new ArrayAdapter<>(getContext(), R.layout.entity_summary_list_item, R.id.textView_list_item_entity_interface, data);
+        }
+        return listAdapter;
     }
 }

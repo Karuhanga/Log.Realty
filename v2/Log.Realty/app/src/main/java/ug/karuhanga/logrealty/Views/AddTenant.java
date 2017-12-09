@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Helper;
@@ -25,7 +27,10 @@ import ug.karuhanga.logrealty.Models.House;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helper.REGEX_EMAIL;
+import static ug.karuhanga.logrealty.Helper.hide;
+import static ug.karuhanga.logrealty.Helper.log;
 import static ug.karuhanga.logrealty.Helper.makeDate;
+import static ug.karuhanga.logrealty.Helper.show;
 
 public class AddTenant extends AppCompatActivity implements Controller.AddTenantControllerExternalInterface, AdapterView.OnItemClickListener {
 
@@ -40,8 +45,8 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
     @BindView(R.id.date_picker_add_tenant_entering) DatePicker datePickerEntering;
     @BindView(R.id.check_box_add_tenant_use_for_start) CheckBox checkBoxUseEntered;
     @BindView(R.id.date_picker_add_tenant_start_count) DatePicker datePickerCountDate;
-    //Text Views group
-    EditText[] inputs= {editTextFirstName, editTextOtherNames, editTextEmail, editTextContact, editTextIdType, editTextIdNo, editTextHouseOccupied};
+    //Edit texts group
+    EditText[] inputs= {};
 
     //Module Controller
     AddTenantActivityExternalInterface controller;
@@ -52,8 +57,12 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
         setContentView(R.layout.add_tenant_activity);
         ButterKnife.bind(this);
         controller= Controller.injectAddTenantActivityExternalInterface(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTextHouseOccupied.setOnItemClickListener(this);
         editTextHouseOccupied.setThreshold(1);
+
+        EditText[] editTexts= {editTextFirstName, editTextOtherNames, editTextEmail, editTextContact, editTextIdType, editTextIdNo, editTextHouseOccupied};
+        inputs= editTexts;
     }
 
     @Override
@@ -86,10 +95,26 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
         return this;
     }
 
+    @Override
+    public void complainAboutHouse(String message) {
+        editTextHouseOccupied.setError(message);
+        editTextHouseOccupied.requestFocus();
+    }
+
     @OnClick(R.id.fab_add_tenant)
     public void attemptSubmit(){
         if (input_is_valid()){
             getController().submit(getData(0), getData(1), getData(2), getData(3), getData(4), getData(5), getDateEntered(), getDateStartCount());
+        }
+    }
+
+    @OnCheckedChanged(R.id.check_box_add_tenant_use_for_start)
+    public void useDateEnteredToggle(CompoundButton compoundButton, boolean b){
+        if (b){
+            hide(datePickerCountDate);
+        }
+        else{
+            show(datePickerCountDate);
         }
     }
 
@@ -105,6 +130,7 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
         for (EditText input : inputs) {
             if (empty(input)){
                 input.setError(Helper.ERROR_REQUIRED);
+                input.requestFocus();
                 return false;
             }
         }
@@ -112,6 +138,7 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
         //validate email
         if (!editTextEmail.getText().toString().matches(REGEX_EMAIL)){
             editTextEmail.setError("Please input a valid email address");
+            editTextEmail.requestFocus();
             return false;
         }
 
@@ -119,12 +146,14 @@ public class AddTenant extends AppCompatActivity implements Controller.AddTenant
         String contact= editTextContact.getText().toString();
         if (contact.length()!=10){
             editTextContact.setError("Invalid contact");
+            editTextContact.requestFocus();
             return false;
         }
         try {
             Long.parseLong(contact);
         }catch(Exception e){
             editTextContact.setError("Invalid contact");
+            editTextContact.requestFocus();
             return false;
         }
 

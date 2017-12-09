@@ -11,6 +11,7 @@ import java.util.List;
 import ug.karuhanga.logrealty.Helper;
 
 import static ug.karuhanga.logrealty.Helper.APP_TAG;
+import static ug.karuhanga.logrealty.Helper.log;
 
 /**
  * Created by karuhanga on 8/25/17.
@@ -58,7 +59,7 @@ public class House extends Record {
         if (number==0){
             return getLocation().getName();
         }
-        return getLocation()+"\nHouse "+String.valueOf(number)+": "+description;
+        return getLocation()+": House "+String.valueOf(number)+" ("+description+")";
     }
 
     @Override
@@ -117,7 +118,7 @@ public class House extends Record {
         try {
            result= Select.from(House.class).where(Condition.prop(NamingHelper.toSQLNameDefault("location")).eq(location)).count();
         }catch (Exception e){
-            Log.d(APP_TAG, e.toString());
+            log(e.toString());
         }
         return result;
     }

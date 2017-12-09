@@ -10,12 +10,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Helper;
@@ -23,6 +25,8 @@ import ug.karuhanga.logrealty.Models.Location;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helper.APP_TAG;
+import static ug.karuhanga.logrealty.Helper.hide;
+import static ug.karuhanga.logrealty.Helper.show;
 
 public class AddHouse extends AppCompatActivity implements Controller.AddHouseControllerExternalInterface, AdapterView.OnItemClickListener {
 
@@ -58,7 +62,7 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
 
     @Override
     protected void onResume(){
-        editTextLocation.setAdapter(new ArrayAdapter<Location>(this, R.layout.support_simple_spinner_dropdown_item, getController().getLocationData()));
+        editTextLocation.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, getController().getLocationData()));
         super.onResume();
     }
 
@@ -82,19 +86,44 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
         }
     }
 
-    @Override
-    public void raise(String message) {
+    @OnCheckedChanged({R.id.check_box_add_house_location_rent, R.id.check_box_add_house_single_house})
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton==checkBoxSingleHouse){
+            if (b){
+                hide(editTextNumber);
+                hide(editTextDescription);
+            }
+            else{
+                show(editTextNumber);
+                show(editTextDescription);
+            }
+        }
+        else if (compoundButton==checkBoxDefaultRent){
+            if (b){
+                hide(editTextRentPaid);
+            }
+            else{
+                show(editTextRentPaid);
+            }
+        }
+    }
 
+    @Override
+    public void complainAboutLocation(String message) {
+        editTextLocation.setError(message);
+        editTextLocation.requestFocus();
     }
 
     @Override
     public void complainAboutHouse(String message) {
         editTextNumber.setError(message);
+        editTextNumber.requestFocus();
     }
 
     @Override
     public void complainAboutRent(String message) {
         editTextRentPaid.setError(message);
+        editTextRentPaid.requestFocus();
     }
 
     @Override
@@ -128,6 +157,7 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
             else{
                 if (empty(editTextRentPaid)){
                     editTextRentPaid.setError(Helper.ERROR_REQUIRED);
+                    editTextRentPaid.requestFocus();
                     return INVALID_INPUT;
                 }
                 return SINGLE_HOUSE_UNIQUE_RENT;
@@ -136,11 +166,13 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
         else{
             if (empty(editTextNumber)){
                 editTextNumber.setError(Helper.ERROR_REQUIRED);
+                editTextNumber.requestFocus();
                 return INVALID_INPUT;
             }
 
             if (empty(editTextDescription)){
                 editTextDescription.setError(Helper.ERROR_REQUIRED);
+                editTextDescription.requestFocus();
                 return INVALID_INPUT;
             }
 
@@ -150,6 +182,7 @@ public class AddHouse extends AppCompatActivity implements Controller.AddHouseCo
             else{
                 if (empty(editTextRentPaid)){
                     editTextRentPaid.setError(Helper.ERROR_REQUIRED);
+                    editTextRentPaid.requestFocus();
                     return INVALID_INPUT;
                 }
                 return MULTIPLE_HOUSE_UNIQUE_RENT;

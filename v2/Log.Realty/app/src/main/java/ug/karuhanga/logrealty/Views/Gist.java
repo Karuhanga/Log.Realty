@@ -1,3 +1,4 @@
+//TODO FUTURE: Improve search interface and options
 package ug.karuhanga.logrealty.Views;
 
 import android.content.Intent;
@@ -38,10 +39,8 @@ import ug.karuhanga.logrealty.Models.Setting;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helper.FRAGMENT_DUE_PAYMENTS;
-import static ug.karuhanga.logrealty.Helper.REQUEST_CODE_DETAILS;
-import static ug.karuhanga.logrealty.Helper.RESULT_CODE_REFRESH;
-import static ug.karuhanga.logrealty.Helper.RESULT_CODE_SETTINGS;
 import static ug.karuhanga.logrealty.Helper.getStringByName;
+import static ug.karuhanga.logrealty.Helper.log;
 
 
 public class Gist extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, EntitySummary.OnFragmentInteractionListener, AdapterView.OnItemClickListener {
@@ -68,19 +67,12 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        getNavView().setNavigationItemSelectedListener(this);
 
-        //Set user name
-        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.text_view_2_nav)).setText(getUserName());
+        setUserName();
 
-        currentFragment= null;
+        setCurrentFragment(null);
         displayFragment(FRAGMENT_DUE_PAYMENTS);
-    }
-
-    private String getUserName(){
-        List<Setting> userName= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helper.SETTINGS_EMAIL)).list();
-        String name= userName.isEmpty()? getStringByName(this, "email_default") : userName.get(0).getData();
-        return name;
     }
 
     @Override
@@ -91,12 +83,10 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-
         if (searchView.getVisibility()==View.VISIBLE){
             closeSearch();
             return;
         }
-
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
@@ -116,30 +106,15 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_item_settings) {
-            startActivityForResult(new Intent(Gist.this, Setting.class), RESULT_CODE_SETTINGS);
+            launchSettings();
         }
         else if (id == R.id.menu_item_search){
-            doStartSearchStuff();
+            startSearchStuff();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void doStartSearchStuff() {
-        searchTextView.requestFocus();
-        searchTextView.setOnItemClickListener(this);
-        searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.open));
-        searchView.setVisibility(View.VISIBLE);
-        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
-    }
-
-    private void refreshSearchData(){
-        ArrayAdapter<Listable> adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, currentFragment.getCoreData());
-        searchTextView.setAdapter(adapter);
-        searchTextView.setThreshold(1);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -166,7 +141,7 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         super.onActivityResult(requestCode, resultCode, data);
         //TODO Find less crude manner of notifying data update
         //TODO find out why data is not being passed
-        displayFragment(currentFragment.getType());
+        displayFragment(getCurrentFragment().getType());
         switch (requestCode){
             case Helper.RESULT_CODE_ADD_PAYMENT:
                 if (resultCode==RESULT_OK){
@@ -178,20 +153,6 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
                     }
                 }
                 return;
-            case RESULT_CODE_SETTINGS:
-                if (resultCode==RESULT_OK){
-                    Snackbar.make(snackBarHoister, "Changed:\n"+data.getStringExtra("details"), Snackbar.LENGTH_LONG);
-                }
-                else{
-                    Snackbar.make(snackBarHoister, "Failed :(, please try again", Snackbar.LENGTH_SHORT);
-                }
-                return;
-            case REQUEST_CODE_DETAILS:
-                if (resultCode==RESULT_CODE_REFRESH){
-                    displayFragment(currentFragment.getType());
-                }
-                return;
-
             default:
                 return;
         }
@@ -200,7 +161,7 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
 
     @OnClick(R.id.fab_gist_add)
     protected void commenceAddition(){
-        switch (currentFragment.getType()){
+        switch (getCurrentFragment().getType()){
             case FRAGMENT_DUE_PAYMENTS:
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helper.RESULT_CODE_ADD_PAYMENT);
                 return;
@@ -221,9 +182,33 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         }
     }
 
+    @OnClick(R.id.button_gist_close_search)
+    public void closeSearch(){
+        if (searchView.getVisibility()==View.VISIBLE){
+            searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.close));
+            searchView.setVisibility(View.GONE);
+            ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_gist_search)).setText("");
+            findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+            return;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        closeSearch();
+        onDetailsRequested(((Listable) adapterView.getItemAtPosition(i)).getId());
+    }
+
+    @Override
+    public void onDetailsRequested(Long id) {
+        if (getCurrentFragment().getType()==FRAGMENT_DUE_PAYMENTS){
+            log("In Gist: Requesting details on due payments!");
+        }
+//        startActivityForResult(new Intent(this, Details.class).putExtra("entity", getCurrentFragment().getType()).putExtra("id", id), REQUEST_CODE_DETAILS);
+    }
+
     private void displayFragment(int entity) {
         //TODO Test Fragment Transitions
-
         if (searchView.getVisibility()==View.VISIBLE){
             closeSearch();
         }
@@ -250,43 +235,82 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         }
         else{
             //something to save, check if it is possibly already saved, to prevent multiple additions
-            if (fragmentManager.findFragmentByTag(String.valueOf(currentFragment.getType()))==null){
-                fragmentTransaction.addToBackStack(String.valueOf(currentFragment.getType()));
+            if (fragmentManager.findFragmentByTag(String.valueOf(getCurrentFragment().getType()))==null){
+                fragmentTransaction.addToBackStack(String.valueOf(getCurrentFragment().getType()));
             }
             fragmentTransaction.replace(R.id.container_gist, fragment);
         }
 
         fragmentTransaction.commit();
-        currentFragment= (Interfaces.GistExternalInterface) fragment;
-        String label= Helper.getStringByName(this, "fragment_label_"+String.valueOf(entity));
+        setCurrentFragment((Interfaces.GistExternalInterface) fragment);
+        setGistTitle();
+
+        refreshSearchData();
+        return;
+    }
+
+    private void startSearchStuff() {
+        searchTextView.requestFocus();
+        searchTextView.setOnItemClickListener(this);
+        searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.open));
+        searchView.setVisibility(View.VISIBLE);
+        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onSearchDataReady(){
+        refreshSearchData();
+    }
+
+    private void refreshSearchData(){
+        ArrayAdapter<Listable> adapter;
+        try {
+            adapter= new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, getCurrentFragment().getCoreData());
+        }catch (NullPointerException e){
+            return;
+        }
+        searchTextView.setAdapter(adapter);
+        searchTextView.setThreshold(1);
+    }
+
+
+    private String getUserName(){
+        List<Setting> userName= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helper.SETTINGS_EMAIL)).list();
+        String name= userName.isEmpty()? getStringByName(this, "email_default") : userName.get(0).getData();
+        return name;
+    }
+
+    private void setGistTitle(){
+        String label= Helper.getStringByName(this, "fragment_label_"+String.valueOf(getCurrentFragment().getType()));
+        log(String.valueOf(getCurrentFragment().getType()));
         if (label==null){
             label= getString(R.string.app_name);
         }
 
         getSupportActionBar().setTitle(label);
-        refreshSearchData();
-        return;
     }
 
-    @Override
-    public void onDetailsRequested(Long id) {
-//        startActivityForResult(new Intent(this, Details.class).putExtra("entity", currentFragment.getType()).putExtra("id", id), REQUEST_CODE_DETAILS);
+    private void setUserName(){
+        ((TextView) getNavView().getHeaderView(0).findViewById(R.id.text_view_2_nav)).setText(getUserName());
     }
 
-    @OnClick(R.id.button_gist_close_search)
-    public void closeSearch(){
-        if (searchView.getVisibility()==View.VISIBLE){
-            searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.close));
-            searchView.setVisibility(View.GONE);
-            ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_gist_search)).setText("");
-            findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
-            return;
+    private NavigationView getNavView(){
+        return navigationView;
+    }
+
+    public Interfaces.GistExternalInterface getCurrentFragment() {
+        if (currentFragment==null){
+            displayFragment(FRAGMENT_DUE_PAYMENTS);
         }
+        return currentFragment;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        closeSearch();
-        onDetailsRequested(((Listable) adapterView.getItemAtPosition(i)).getId());
+    public void setCurrentFragment(Interfaces.GistExternalInterface fragment) {
+        this.currentFragment = fragment;
+    }
+
+    private void launchSettings(){
+        //TODO Implement settings open up
+//        startActivityForResult(new Intent(Gist.this, Settings.class), RESULT_CODE_SETTINGS);
     }
 }

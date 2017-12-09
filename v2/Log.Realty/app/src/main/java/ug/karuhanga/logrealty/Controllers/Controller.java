@@ -23,7 +23,7 @@ public class Controller {
     }
 
     public interface AddHouseControllerExternalInterface{
-        void raise(String message);
+        void complainAboutLocation(String message);
 
         void complainAboutHouse(String message);
 
@@ -42,6 +42,8 @@ public class Controller {
         void finish(long id, String summary);
 
         Context requestContext();
+
+        void complainAboutHouse(String message);
     }
 
     public static AddTenantActivityExternalInterface injectAddTenantActivityExternalInterface(AddTenantControllerExternalInterface dashboard){
@@ -52,6 +54,10 @@ public class Controller {
         void raise(String message);
 
         void finish(long id, String summary);
+
+        Context requestContext();
+
+        void complainAboutRent(String message);
     }
 
     public static AddPayment.AddPaymentActivityExternalInterface injectAddPaymentActivityExternalInterface(AddPaymentControllerExternalInterface dashboard){

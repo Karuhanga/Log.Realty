@@ -82,13 +82,13 @@ public class Tenant extends Record {
 
     @Override
     public String toString(){
-        return getfName()+" "+getoNames()+"\n"+getHouse().getLocation().getName()+"\nDue: "+dateToString(rentDue);
+        return getfName()+"\n"+getHouse().getLocation().getName()+"\nDue: "+dateToString(rentDue);
     }
 
     @Override
     public String summarize(){
         House houseObject= getHouse();
-        return getfName()+" "+getoNames()+"\n"+houseObject.getLocation().getName()+"\n"+toCurrency(houseObject.getRent());
+        return getName()+"\n"+houseObject.getLocation().getName()+"\n"+toCurrency(houseObject.getRent());
     }
 
     public String getfName() {
@@ -108,7 +108,7 @@ public class Tenant extends Record {
     }
 
     public String getName(){
-        return this.fName+" "+this.getoNames();
+        return getfName()+" "+getoNames();
     }
 
     public String getEmail() {

@@ -11,6 +11,9 @@ import ug.karuhanga.logrealty.Models.Payment;
 import ug.karuhanga.logrealty.Models.Tenant;
 import ug.karuhanga.logrealty.Views.AddPayment;
 
+import static ug.karuhanga.logrealty.Helper.getRentBelowMinNotif;
+import static ug.karuhanga.logrealty.Helper.toCurrency;
+
 /**
  * Created by karuhanga on 12/5/17.
  */
@@ -48,6 +51,10 @@ public class AddPaymentController implements AddPayment.AddPaymentActivityExtern
         }
 
         Payment created= new Payment(Helper.getTodaysDate(), chosen, 1);
+        if (!created.onNewPaymentAdded(dashboard.requestContext())){
+            dashboard.raise("Unable to add payment");
+            return;
+        }
         finish(created.save(), created.toString());
     }
 
@@ -58,8 +65,32 @@ public class AddPaymentController implements AddPayment.AddPaymentActivityExtern
             return;
         }
 
+        if (!amount_is_valid(amount)){
+            return;
+        }
+
         Payment created= new Payment(Helper.getTodaysDate(), chosen, amount);
+        if (!created.onNewPaymentAdded(dashboard.requestContext())){
+            dashboard.raise("Unable to add payment");
+            return;
+        }
         finish(created.save(), created.toString());
+    }
+
+    private boolean amount_is_valid(long rent){
+        long houseRent= getChosen().getHouse().getRent();
+        boolean valid= rent>= houseRent;
+        if (valid){
+            return valid;
+        }
+        else{
+            dashboard.complainAboutRent("Payment must be at least "+toCurrency(houseRent));
+            return false;
+        }
+    }
+
+    public Tenant getChosen() {
+        return chosen;
     }
 
     private void finish(long id, String item){

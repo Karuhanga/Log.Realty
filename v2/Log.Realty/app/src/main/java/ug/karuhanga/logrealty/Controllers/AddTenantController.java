@@ -50,22 +50,26 @@ public class AddTenantController implements AddTenant.AddTenantActivityExternalI
 
     @Override
     public List<House> getHouseData() {
-        return null;
+        return Select.from(House.class).list();
     }
 
     @Override
     public void submit(String fName, String oNames, String email, String contact, String idType, String idNo, Date entered, Date startCount) {
+        if (chosen==null){
+            dashboard.complainAboutHouse(ERROR_REQUIRED);
+            return;
+        }
         if (replace){
             List<Tenant> current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(Helper.FALSE)).list();
             if (current.size()>0){
                 current.get(0).setEx(true);
                 current.get(0).save();
             }
-            Tenant tenant= new Tenant(fName, oNames, email, contact, entered, startCount, idType, idNo, chosen);
-            tenant.save();
-            schedule(dashboard.requestContext(), tenant, true);
-            finish(tenant.getId(), tenant.toString());
         }
+        Tenant tenant= new Tenant(fName, oNames, email, contact, entered, startCount, idType, idNo, chosen);
+        tenant.save();
+        schedule(dashboard.requestContext(), tenant, true);
+        finish(tenant.getId(), tenant.toString());
     }
 
     @Override

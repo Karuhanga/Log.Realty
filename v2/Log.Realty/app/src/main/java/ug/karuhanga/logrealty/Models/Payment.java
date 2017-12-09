@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.Date;
 
 import static ug.karuhanga.logrealty.Helper.dateToString;
+import static ug.karuhanga.logrealty.Helper.log;
 import static ug.karuhanga.logrealty.Helper.toCurrency;
 
 /**
@@ -81,7 +82,10 @@ public class Payment extends Record {
 
     public boolean onNewPaymentAdded(Context context){
         Tenant tenant= getTenant();
-        tenant.updateRentDue(this);
+        if (!tenant.updateRentDue(this)){
+            log("Payment Model: On new payment added update failed!");
+            return false;
+        }
         Notification.schedule(context, tenant, true);
         return true;
     }
