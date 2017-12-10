@@ -1,12 +1,14 @@
 package ug.karuhanga.logrealty.Views;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -40,7 +42,7 @@ import static ug.karuhanga.logrealty.Helper.getLaterDateByDays;
 public class DuePayments extends Fragment implements Interfaces.GistExternalInterface {
 
     @BindView(R.id.list_view_entity_interface) ListView listView;
-    @BindView(R.id.button_entity_interface_load_more) View buttonLoadMore;
+    Button buttonLoadMore;
 
     private List<Listable> defaulters= new ArrayList<>();
     private ListAdapter adapter;
@@ -75,10 +77,11 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
         View view= inflater.inflate(R.layout.entity_summary_fragment, container, false);
         unbinder= ButterKnife.bind(this, view);
 
+        setupLoadMoreButton();
         fetchData(10);
         displayNumber= defaulters.size();
         if (displayNumber<10){
-            buttonLoadMore.setVisibility(View.GONE);
+            listView.removeFooterView(buttonLoadMore);
         }
         updateAdapter();
 
@@ -130,8 +133,22 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
         displayNumber+=5;
         fetchData(displayNumber);
         if (defaulters.size()<displayNumber){
-            buttonLoadMore.setVisibility(View.GONE);
+            listView.removeFooterView(buttonLoadMore);
         }
         updateAdapter();
+    }
+
+    private void setupLoadMoreButton() {
+        buttonLoadMore= new Button(getContext());
+        buttonLoadMore.setText("Load More");
+        buttonLoadMore.setAllCaps(false);
+        buttonLoadMore.setTypeface(buttonLoadMore.getTypeface(), Typeface.BOLD_ITALIC);
+        buttonLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addData();
+            }
+        });
+        listView.addFooterView(buttonLoadMore);
     }
 }

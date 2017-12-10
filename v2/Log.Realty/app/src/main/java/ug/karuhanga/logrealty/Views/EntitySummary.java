@@ -1,9 +1,10 @@
 package ug.karuhanga.logrealty.Views;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import ug.karuhanga.logrealty.Models.House;
 import ug.karuhanga.logrealty.Models.Listable;
@@ -45,11 +45,11 @@ import static ug.karuhanga.logrealty.Helper.FRAGMENT_TENANTS;
  * Use the {@link EntitySummary#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EntitySummary extends Fragment implements ListView.OnItemClickListener, ListView.OnItemLongClickListener, Interfaces.GistExternalInterface {
+public class EntitySummary extends Fragment implements ListView.OnItemClickListener, ListView.OnItemLongClickListener, Interfaces.GistExternalInterface, Runnable {
     // TODO: Rename parameter arguments, choose names that match
     //TODO: BETTER FRGAMENT MANAGEMENT
 
-    @BindView(R.id.button_entity_interface_load_more) Button buttonLoadMore;
+    Button buttonLoadMore;
     @BindView(R.id.list_view_entity_interface) ListView listView;
     private int ENTITY;
     private List<Listable> data= new ArrayList<>();
@@ -93,13 +93,16 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
 
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this);
+
+        setupLoadMoreButton();
         displayNumber=10;
         fetchData(displayNumber);
-        onSearchDataReady();
+        //Notify parent that data is ready
+        run();
         int data_amount= data.size();
         if (displayNumber>data_amount){
             displayNumber= data_amount;
-            buttonLoadMore.setVisibility(View.GONE);
+            listView.removeFooterView(buttonLoadMore);
         }
 
         return view;
@@ -159,6 +162,13 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
             summarizables.add(new Summarizable(item.getId(), item.summarize(), item.toString()));
         }
         return summarizables;
+    }
+
+    @Override
+    public void run() {
+        //background
+        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        onSearchDataReady();
     }
 
     /**
@@ -231,15 +241,28 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
         getListAdapter().notifyDataSetChanged();
     }
 
-    @OnClick(R.id.button_entity_interface_load_more)
     public void loadMore(){
         displayNumber+=10;
         fetchData(displayNumber);
         int data_amount= data.size();
         if (displayNumber>data_amount){
             displayNumber= data_amount;
-            buttonLoadMore.setVisibility(View.GONE);
+            listView.removeFooterView(buttonLoadMore);
         }
+    }
+
+    private void setupLoadMoreButton() {
+        buttonLoadMore= new Button(getContext());
+        buttonLoadMore.setText("Load More");
+        buttonLoadMore.setAllCaps(false);
+        buttonLoadMore.setTypeface(buttonLoadMore.getTypeface(), Typeface.BOLD_ITALIC);
+        buttonLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMore();
+            }
+        });
+        listView.addFooterView(buttonLoadMore);
     }
 
     public int getENTITY() {
