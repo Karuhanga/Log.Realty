@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -220,5 +221,9 @@ public class Helper {
 
     public static void log(String message){
         Log.d(TAG_APP_NAME, message);
+    }
+
+    public static boolean empty(EditText element){
+        return element.getText().toString().length() == 0;
     }
 }

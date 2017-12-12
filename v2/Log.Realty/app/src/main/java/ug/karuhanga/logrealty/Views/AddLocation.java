@@ -17,6 +17,7 @@ import ug.karuhanga.logrealty.R;
 import static ug.karuhanga.logrealty.Helper.APP_TAG;
 import static ug.karuhanga.logrealty.Helper.ERROR_REQUIRED;
 import static ug.karuhanga.logrealty.Helper.TAG_APP_NAME;
+import static ug.karuhanga.logrealty.Helper.empty;
 import static ug.karuhanga.logrealty.Helper.log;
 
 public class AddLocation extends AppCompatActivity implements Controller.AddLocationControllerExternalInterface {
@@ -78,10 +79,6 @@ public class AddLocation extends AppCompatActivity implements Controller.AddLoca
         return rent;
     }
 
-    private boolean empty(EditText element){
-        return element.getText().toString().length() == 0;
-    }
-
     private AddLocationActivityExternalInterface getController(){
         if (controller == null){
             controller= Controller.injectAddLocationActivityExternalInterface(this);
@@ -101,6 +98,11 @@ public class AddLocation extends AppCompatActivity implements Controller.AddLoca
         finisher.putExtra("details", summary);
         finisher.putExtra("id", id);
         finish();
+    }
+
+    @Override
+    public void complainAboutLocation(String message) {
+        editTextLocation.setError(message);
     }
 
     public interface AddLocationActivityExternalInterface{

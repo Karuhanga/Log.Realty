@@ -4,8 +4,10 @@ import android.content.Context;
 
 import ug.karuhanga.logrealty.Views.AddHouse.AddHouseActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.AddLocation.AddLocationActivityExternalInterface;
-import ug.karuhanga.logrealty.Views.AddPayment;
+import ug.karuhanga.logrealty.Views.AddPayment.AddPaymentActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.AddTenant.AddTenantActivityExternalInterface;
+import ug.karuhanga.logrealty.Views.DetailedLocation;
+import ug.karuhanga.logrealty.Views.Details.DetailsActivityExternalInterface;
 
 /**
  * Created by karuhanga on 12/5/17.
@@ -16,6 +18,8 @@ public class Controller {
         void raise(String message);
 
         void finish(long id, String summary);
+
+        void complainAboutLocation(String message);
     }
 
     public static AddLocationActivityExternalInterface injectAddLocationActivityExternalInterface(AddLocationControllerExternalInterface dashboard){
@@ -60,7 +64,35 @@ public class Controller {
         void complainAboutRent(String message);
     }
 
-    public static AddPayment.AddPaymentActivityExternalInterface injectAddPaymentActivityExternalInterface(AddPaymentControllerExternalInterface dashboard){
+    public static AddPaymentActivityExternalInterface injectAddPaymentActivityExternalInterface(AddPaymentControllerExternalInterface dashboard){
         return new AddPaymentController(dashboard);
+    }
+
+    public interface DetailsControllerExternalInterface{
+
+        void swipeLeft();
+
+        void notifyNoData();
+
+        void swipeRight();
+    }
+
+    public static DetailsActivityExternalInterface injectDetailsActivityExternalInterface(DetailsControllerExternalInterface dashboard){
+        return new DetailsController(dashboard);
+    }
+
+    public interface DetailedLocationControllerExternalInterface{
+
+        Context requestContext();
+
+        void onLocationDeleted(long id);
+
+        void complainAboutRent(String message);
+
+        void complainAboutLocation(String message);
+    }
+
+    public static DetailedLocation.DetailedLocationActivityExternalInterface injectDetailedLocationActivityExternalInterface(DetailedLocationControllerExternalInterface dashboard){
+        return new DetailedLocationController(dashboard);
     }
 }
