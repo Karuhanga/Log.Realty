@@ -1,4 +1,4 @@
-package ug.karuhanga.logrealty.Activities;
+package ug.karuhanga.logrealty.Views;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,9 +15,16 @@ import com.orm.query.Select;
 import java.util.ArrayList;
 import java.util.List;
 
-import ug.karuhanga.logrealty.Data.Setting;
-import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Models.Setting;
 import ug.karuhanga.logrealty.R;
+
+import static ug.karuhanga.logrealty.Helper.ALLOW_BACKUP;
+import static ug.karuhanga.logrealty.Helper.SETTINGS_EMAIL;
+import static ug.karuhanga.logrealty.Helper.SETTINGS_REMINDER_1;
+import static ug.karuhanga.logrealty.Helper.SETTINGS_REMINDER_2;
+import static ug.karuhanga.logrealty.Helper.hide;
+import static ug.karuhanga.logrealty.Helper.log;
+import static ug.karuhanga.logrealty.Helper.show;
 
 public class Settings extends AppCompatActivity {
     private boolean editting;
@@ -39,7 +46,11 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.settings_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }catch (NullPointerException e){
+            log("Settings View: Action Bar access issue");
+        }
 
         editting= false;
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -99,16 +110,16 @@ public class Settings extends AppCompatActivity {
         List<Setting> settings= Select.from(Setting.class).list();
         for (Setting setting:settings){
             switch (setting.getName()){
-                case Helpers.SETTINGS_EMAIL:
+                case SETTINGS_EMAIL:
                     setting.setData(editTextEmail.getText().toString()).save();
                     break;
-                case Helpers.SETTINGS_REMINDER_1:
+                case SETTINGS_REMINDER_1:
                     setting.setData(editTextMessage1.getText().toString()).save();
                     break;
-                case Helpers.SETTINGS_REMINDER_2:
+                case SETTINGS_REMINDER_2:
                     setting.setData(editTextMessage2.getText().toString()).save();
                     break;
-                case Helpers.ALLOW_BACKUP:
+                case ALLOW_BACKUP:
                     setting.setStatus(checkBoxBackup.isChecked()).save();
                     break;
                 default:
@@ -126,41 +137,25 @@ public class Settings extends AppCompatActivity {
         List<Setting> settings= Select.from(Setting.class).list();
         for (Setting setting:settings){
             switch (setting.getName()){
-                case Helpers.SETTINGS_EMAIL:
+                case SETTINGS_EMAIL:
                     editTextEmail.setText(setting.getData());
                     textViewEmail.setText(setting.getData());
                     break;
-                case Helpers.SETTINGS_REMINDER_1:
+                case SETTINGS_REMINDER_1:
                     editTextMessage1.setText(setting.getData());
                     textViewMessage1.setText(setting.getData());
                     break;
-                case Helpers.SETTINGS_REMINDER_2:
+                case SETTINGS_REMINDER_2:
                     editTextMessage2.setText(setting.getData());
                     textViewMessage2.setText(setting.getData());
                     break;
-                case Helpers.ALLOW_BACKUP:
+                case ALLOW_BACKUP:
                     checkBoxBackup.setChecked(setting.getStatus());
                     break;
                 default:
                     break;
             }
         }
-    }
-
-    private void hide(final View view) {
-        view.animate().scaleY(0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                view.setScaleY(1f);
-                view.setVisibility(View.GONE);
-            }
-        }).start();
-    }
-
-    private void show(View view) {
-        view.setScaleY(0f);
-        view.setVisibility(View.VISIBLE);
-        view.animate().scaleY(1f);
     }
 
 }

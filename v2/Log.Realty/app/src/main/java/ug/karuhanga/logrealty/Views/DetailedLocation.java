@@ -15,7 +15,9 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.R;
 
@@ -35,7 +37,6 @@ import static ug.karuhanga.logrealty.Helper.show;
  * create an instance of this fragment.
  */
 public class DetailedLocation extends Fragment implements Controller.DetailedLocationControllerExternalInterface {
-    // TODO: Rename parameter arguments, choose names that match
 
     @BindView(R.id.button_detailed_location_location) ImageButton buttonLocation;
     @BindView(R.id.button_detailed_location_amount) ImageButton buttonAmount;
@@ -49,9 +50,12 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
     private final int DONE= R.drawable.ic_check_black_24dp;
     private final int CLOSE= R.drawable.ic_close_black_24dp;
 
-    private DetailedLocationActivityExternalInterface controller;
+    private final String LOCATION= "location";
+    private final String RENT= "rent";
 
-    private int editCount;
+    private DetailedLocationActivityExternalInterface controller= null;
+    private Unbinder unbinder;
+
     private HashMap<String, Boolean> editing = new HashMap<>();
 
     private OnFragmentInteractionListener mListener;
@@ -66,7 +70,6 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
      *
      * @return A new instance of fragment DetailedLocation.
      */
-    // TODO: Rename and change types and number of parameters
     public static DetailedLocation newInstance(Long id) {
         DetailedLocation fragment = new DetailedLocation();
         Bundle args = new Bundle();
@@ -75,15 +78,17 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
         return fragment;
     }
 
+    /**
+     * Lifecycle Methods
+     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        controller= Controller.injectDetailedLocationActivityExternalInterface(this);
+        setController();
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            controller.setLocation(getArguments().getLong("id"));
+            getController().setLocation(getArguments().getLong("id"));
         }
-        editing.put("location", false);
-        editing.put("rent", false);
     }
 
     @Override
@@ -91,6 +96,7 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_location_fragment, container, false);
+        unbinder= ButterKnife.bind(this, view);
 
         refresh();
         return view;
@@ -113,9 +119,50 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    /**
+     * Major Event Starters
+     */
+
+    private void deleteLocation() {
+        getController().delete();
+    }
+
+    private void commenceEdit() {
+        if (allEditsComplete()){
+            refresh();
+            return;
+        }
+
+        if (editing.get(LOCATION)){
+            if (empty(editTextLocation)){
+                editTextLocation.setError(ERROR_REQUIRED);
+                return;
+            }
+            getController().editName(getLocation());
+        }
+
+        if (editing.get(RENT)){
+            if (empty(editTextAmount)){
+                editTextAmount.setError(ERROR_REQUIRED);
+                return;
+            }
+            getController().editAmount(getAmount());
+        }
+    }
+
+    /**
+     * UI Interactions
+     */
+
     @OnClick(R.id.fab_detailed_location_edit)
     public void onEditFabClick() {
-        if (editCount==0){
+        if (allEditsComplete()){
             if (buttonLocation.getVisibility()==View.VISIBLE){
                 fabEdit.setImageResource(EDIT);
                 hide(buttonLocation);
@@ -129,7 +176,6 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
             return;
         }
         commenceEdit();
-        return;
     }
 
     @OnClick(R.id.fab_detailed_location_delete)
@@ -139,57 +185,53 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
 
     @OnClick(R.id.button_detailed_location_location)
     public void onEditLocationClick(){
-        if (editing.get("location")){
-            editCount--;
-            textViewLocation.setText(controller.getLocation());
-            editTextLocation.setText(controller.getLocation());
+        if (editing.get(LOCATION)){
+            editTextLocation.setText(getController().getLocation());
             hide(editTextLocation);
             show(textViewLocation);
             buttonLocation.setImageResource(EDIT);
-            editing.remove("location");
-            editing.put("location", false);
-            if (editCount<1){
+            editing.put(LOCATION, false);
+            if (allEditsComplete()){
                 fabEdit.setImageResource(CLOSE);
             }
             return;
         }
-        editCount++;
         fabEdit.setImageResource(DONE);
         hide(textViewLocation);
         show(editTextLocation);
         buttonLocation.setImageResource(CLOSE);
         editing.remove("location");
         editing.put("location", true);
-        return;
+        if (!allEditsComplete()){
+            fabEdit.setImageResource(DONE);
+        }
     }
 
     @OnClick(R.id.button_detailed_location_amount)
     public void onEditAmountClick(){
         if (editing.get("rent")){
-            editCount--;
             hide(editTextAmount);
             show(textViewAmount);
-            textViewAmount.setText(controller.getAmount());
-            editTextAmount.setText(controller.getAmount());
+            editTextAmount.setText(getController().getNumericalAmount());
             buttonAmount.setImageResource(EDIT);
-            editing.remove("rent");
             editing.put("rent", false);
-            if (editCount==0){
+            if (allEditsComplete()){
                 fabEdit.setImageResource(CLOSE);
             }
             return;
         }
-        editCount++;
-        if (editCount==1){
-            fabEdit.setImageResource(DONE);
-        }
         hide(textViewAmount);
         show(editTextAmount);
         buttonAmount.setImageResource(CLOSE);
-        editing.remove("rent");
         editing.put("rent", true);
-        return;
+        if (!allEditsComplete()){
+            fabEdit.setImageResource(DONE);
+        }
     }
+
+    /**
+     * External Interaction Methods and Interfaces
+     */
 
     @Override
     public Context requestContext() {
@@ -201,28 +243,7 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
         mListener.onItemDeleted(id);
     }
 
-    @Override
-    public void complainAboutRent(String message) {
-        editTextAmount.setError(message);
-    }
-
-    @Override
-    public void complainAboutLocation(String message) {
-        editTextLocation.setError(message);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+    interface OnFragmentInteractionListener {
         void onItemDeleted(Long id);
 
         Context requestContext();
@@ -238,56 +259,70 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
 
         void delete();
 
-        boolean editName(String location);
+        void editName(String location);
 
-        boolean editAmount(long amount);
+        void editAmount(long amount);
+
+        String getNumericalAmount();
     }
 
-    private void deleteLocation() {
-        controller.delete();
+    /**
+     * Error Notifiers
+     */
+
+    @Override
+    public void complainAboutRent(String message) {
+        editTextAmount.setError(message);
     }
 
-    private void commenceEdit() {
-        if (editCount<1){
-            refresh();
-            return;
-        }
-
-        if (editing.get("location")){
-            if (empty(editTextLocation)){
-                editTextLocation.setError(ERROR_REQUIRED);
-                return;
-            }
-            controller.editName(getLocation());
-            onEditLocationClick();
-        }
-
-        if (editing.get("rent")){
-            if (empty(editTextAmount)){
-                editTextAmount.setError(ERROR_REQUIRED);
-                return;
-            }
-            if (!controller.editAmount(getAmount())){
-                return;
-            }
-            onEditAmountClick();
-        }
-
-
-        Toast.makeText(mListener.requestContext(), "Complete!", Toast.LENGTH_SHORT).show();
-        onEditFabClick();
+    @Override
+    public void complainAboutLocation(String message) {
+        editTextLocation.setError(message);
     }
+
+
+    /**
+     * Post the fact methods
+     */
+
+    private void onAllEditsDone() {
+        if (allEditsComplete()){
+            onEditFabClick();
+        }
+        Toast.makeText(requestContext(), "Completed!", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean allEditsComplete(){
+        return (!editing.get(LOCATION)) && (!editing.get(RENT));
+    }
+
+    @Override
+    public void onEditLocationComplete() {
+        textViewLocation.setText(getController().getLocation());
+        onEditLocationClick();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditAmountComplete() {
+        textViewAmount.setText(getController().getAmount());
+        onEditAmountClick();
+        onAllEditsDone();
+    }
+
+    /**
+     * UI Change methods
+     */
 
     private void refresh() {
-        editCount= 0;
         editing.clear();
-        editing.put("location", false);
-        editing.put("rent", false);
+        editing.put(LOCATION, false);
+        editing.put(RENT, false);
 
-        textViewLocation.setText(controller.getLocation());
-        textViewAmount.setText(controller.getAmount());
-        editTextLocation.setText(controller.getLocation());
-        editTextAmount.setText(controller.getAmount());
+        textViewLocation.setText(getController().getLocation());
+        textViewAmount.setText(getController().getAmount());
+        editTextLocation.setText(getController().getLocation());
+        editTextAmount.setText(getController().getNumericalAmount());
 
         buttonLocation.setImageResource(EDIT);
         buttonAmount.setImageResource(EDIT);
@@ -300,17 +335,32 @@ public class DetailedLocation extends Fragment implements Controller.DetailedLoc
         hide(editTextAmount);
     }
 
+    /**
+     * Getters and setters
+     */
+
     private String getLocation(){
         String name= editTextLocation.getText().toString();
         name= cleaner(name);
         if (name==null){
+            log("In DetailedLocationActivity, error getting location!");
             editTextLocation.setError(ERROR_REQUIRED);
         }
-        log("In DetailedLocationActivity, error getting location!");
-        return "";
+        return name;
     }
 
     private long getAmount(){
         return Integer.valueOf(editTextAmount.getText().toString());
+    }
+
+    private DetailedLocationActivityExternalInterface getController(){
+        if (controller==null){
+            setController();
+        }
+        return controller;
+    }
+
+    private void setController(){
+        this.controller= Controller.injectDetailedLocationActivityExternalInterface(this);
     }
 }

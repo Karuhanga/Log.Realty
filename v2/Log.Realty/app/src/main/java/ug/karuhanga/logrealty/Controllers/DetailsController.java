@@ -76,6 +76,7 @@ public class DetailsController implements Details.DetailsActivityExternalInterfa
     public void notifyItemDeleted(Long item) {
         int previous_index= ids.indexOf(item);
         ids.remove(previous_index);
+        dashboard.notifyDataSetChanged();
 
         //Deletion does not remove item from display, so hard refresh with either left or right swipe
         try {

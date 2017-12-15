@@ -1,13 +1,9 @@
 package ug.karuhanga.logrealty.Views;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,24 +16,27 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.orm.query.Condition;
-import com.orm.query.Select;
-import com.orm.util.NamingHelper;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import ug.karuhanga.logrealty.Data.House;
-import ug.karuhanga.logrealty.Data.Tenant;
-import ug.karuhanga.logrealty.Helpers;
-import ug.karuhanga.logrealty.Popups.Confirmation;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import ug.karuhanga.logrealty.Controllers.Controller;
+import ug.karuhanga.logrealty.Models.House;
 import ug.karuhanga.logrealty.R;
 
-import static ug.karuhanga.logrealty.Helpers.FALSE;
-import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_EDIT;
-import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
+import static ug.karuhanga.logrealty.Helper.ERROR_REQUIRED;
+import static ug.karuhanga.logrealty.Helper.REGEX_EMAIL;
+import static ug.karuhanga.logrealty.Helper.cleaner;
+import static ug.karuhanga.logrealty.Helper.empty;
+import static ug.karuhanga.logrealty.Helper.hide;
+import static ug.karuhanga.logrealty.Helper.log;
+import static ug.karuhanga.logrealty.Helper.makeDate;
+import static ug.karuhanga.logrealty.Helper.show;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,61 +46,59 @@ import static ug.karuhanga.logrealty.Helpers.REQUEST_CODE_REPLACE;
  * Use the {@link DetailedTenant#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailedTenant extends Fragment implements TextWatcher, View.OnClickListener, ug.karuhanga.logrealty.Listeners.Confirmation, AdapterView.OnItemClickListener {
-    // TODO: Rename parameter arguments, choose names that match
+public class DetailedTenant extends Fragment implements AdapterView.OnItemClickListener, Controller.DetailedTenantControllerExternalInterface {
 
-    private Long tenant;
+    @BindView(R.id.row_detailed_tenant_onames) View rowONames;
+    @BindView(R.id.text_view_detailed_tenant_label_fname) TextView textViewLabelFName;
     
-    private ImageButton buttonFname;
-    private ImageButton buttonSurname;
-    private ImageButton buttonEmail;
-    private ImageButton buttonContact;
-    private ImageButton buttonIdType;
-    private ImageButton buttonIDNo;
-    private ImageButton buttonHouse;
-    private ImageButton buttonDateEntered;
-    private ImageButton buttonDateDue;
+    @BindView(R.id.button_detailed_tenant_name) ImageButton buttonName;
+    @BindView(R.id.button_detailed_tenant_email) ImageButton buttonEmail;
+    @BindView(R.id.button_detailed_tenant_contact) ImageButton buttonContact;
+    @BindView(R.id.button_detailed_tenant_idtype) ImageButton buttonIdType;
+    @BindView(R.id.button_detailed_tenant_id_no) ImageButton buttonIDNo;
+    @BindView(R.id.button_detailed_tenant_house) ImageButton buttonHouse;
+    @BindView(R.id.button_detailed_tenant_date_entered) ImageButton buttonDateEntered;
+    @BindView(R.id.button_detailed_tenant_date_due) ImageButton buttonDateDue;
 
-    private TextView textViewFname;
-    private TextView textViewONames;
-    private View rowONames;
-    private TextView textViewEmail;
-    private TextView textViewContact;
-    private TextView textViewIdType;
-    private TextView textViewIdNo;
-    private TextView textViewHouse;
-    private TextView textViewDateEntered;
-    private TextView textViewDateDue;
+    @BindView(R.id.text_view_detailed_tenant_fname) TextView textViewName;
+    @BindView(R.id.text_view_detailed_tenant_email) TextView textViewEmail;
+    @BindView(R.id.text_view_detailed_tenant_contact) TextView textViewContact;
+    @BindView(R.id.text_view_detailed_tenant_idtype) TextView textViewIdType;
+    @BindView(R.id.text_view_detailed_tenant_id_no) TextView textViewIdNo;
+    @BindView(R.id.text_view_detailed_tenant_house) TextView textViewHouse;
+    @BindView(R.id.text_view_detailed_tenant_date_entered) TextView textViewDateEntered;
+    @BindView(R.id.text_view_detailed_tenant_date_due) TextView textViewDateDue;
 
+    @BindView(R.id.edit_text_detailed_tenant_fname) EditText editTextFName;
+    @BindView(R.id.edit_text_detailed_tenant_surname) EditText editTextSurname;
+    @BindView(R.id.edit_text_detailed_tenant_email) EditText editTextEmail;
+    @BindView(R.id.edit_text_detailed_tenant_contact) EditText editTextContact;
+    @BindView(R.id.edit_text_detailed_tenant_idtype) EditText editTextIdType;
+    @BindView(R.id.edit_text_detailed_tenant_id_no) EditText editTextIdNo;
+    @BindView(R.id.edit_text_detailed_tenant_house) AutoCompleteTextView editTextHouse;
+    @BindView(R.id.date_picker_detailed_tenant_date_entered) DatePicker datePickerDateEntered;
+    @BindView(R.id.date_picker_detailed_tenant_date_due) DatePicker datePickerDateDue;
 
-    private EditText editTextFname;
-    private EditText editTextSurname;
-    private EditText editTextEmail;
-    private EditText editTextContact;
-    private EditText editTextIdType;
-    private EditText editTextIdNo;
-    private AutoCompleteTextView editTextHouse;
-    private DatePicker datePickerDateEntered;
-    private DatePicker datePickerDateDue;
+    @BindView(R.id.fab_detailed_tenant_edit) FloatingActionButton fabEdit;
 
-    private EditText colored;
+    private final int EDIT= R.drawable.ic_edit_black_24dp;
+    private final int DONE= R.drawable.ic_check_black_24dp;
+    private final int CLOSE= R.drawable.ic_close_black_24dp;
 
-    private FloatingActionButton fab;
-    private FloatingActionButton fab_delete;
+    private final String NAME= "name";
+    private final String EMAIL= "email";
+    private final String CONTACT= "contact";
+    private final String IDTYPE= "idtype";
+    private final String IDNO= "idno";
+    private final String HOUSE= "house";
+    private final String ENTERED= "entered";
+    private final String DUE= "due";
 
-    private int previous_color;
-    private int editCount;
-    private Tenant tenantObject;
-    private List<House> results;
-    private ArrayAdapter<House> adapter;
-    private House chosen;
-    List<Tenant> current;
-    boolean house_confirmed;
-    boolean due_confirmed;
-
-    private HashMap<String, Boolean> editting= new HashMap<>();
+    private HashMap<String, Boolean> editing = new HashMap<>();
 
     private OnFragmentInteractionListener mListener;
+    private Unbinder unbinder;
+    private DetailedTenantActivityExternalInterface controller;
 
     public DetailedTenant() {
         // Required empty public constructor
@@ -113,7 +110,6 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
      *
      * @return A new instance of fragment DetailedTenant.
      */
-    // TODO: Rename and change types and number of parameters
     public static DetailedTenant newInstance(Long id) {
         DetailedTenant fragment = new DetailedTenant();
         Bundle args = new Bundle();
@@ -127,154 +123,385 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            tenant = getArguments().getLong("id");
-        }
-        else{
-            List<Tenant> results= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).list();
-            if (results.size()>0){
-                tenant= results.get(0).getId();
-            }
-            else{
-                return;
-            }
+            getController().setTenant(getArguments().getLong("id"));
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        editting.put("fname", false);
-        editting.put("surname", false);
-        editting.put("email", false);
-        editting.put("contact", false);
-        editting.put("idtype", false);
-        editting.put("idno", false);
-        editting.put("house", false);
-        editting.put("entered", false);
-        editting.put("due", false);
 
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_tenant_fragment, container, false);
-        
-        buttonFname= view.findViewById(R.id.button_detailed_tenant_fname);
-        buttonSurname= view.findViewById(R.id.button_detailed_tenant_onames);
-        buttonEmail= view.findViewById(R.id.button_detailed_tenant_email);
-        buttonContact= view.findViewById(R.id.button_detailed_tenant_contact);
-        buttonIdType= view.findViewById(R.id.button_detailed_tenant_idtype);
-        buttonIDNo= view.findViewById(R.id.button_detailed_tenant_id_no);
-        buttonHouse= view.findViewById(R.id.button_detailed_tenant_house);
-        buttonDateEntered= view.findViewById(R.id.button_detailed_tenant_date_entered);
-        buttonDateDue= view.findViewById(R.id.button_detailed_tenant_due);
+        unbinder= ButterKnife.bind(this, view);
 
-        textViewFname= view.findViewById(R.id.text_view_detailed_tenant_fname);
-        textViewONames= view.findViewById(R.id.text_view_detailed_tenant_onames);
-        rowONames= view.findViewById(R.id.row_detailed_tenant_onames);
-        textViewEmail= view.findViewById(R.id.text_view_detailed_tenant_email);
-        textViewContact= view.findViewById(R.id.text_view_detailed_tenant_contact);
-        textViewIdType= view.findViewById(R.id.text_view_detailed_tenant_idtype);
-        textViewIdNo= view.findViewById(R.id.text_view_detailed_tenant_id_no);
-        textViewHouse= view.findViewById(R.id.text_view_detailed_tenant_house);
-        textViewDateEntered= view.findViewById(R.id.text_view_detailed_tenant_date_entered);
-        textViewDateDue= view.findViewById(R.id.text_view_detailed_tenant_due);
+        refreshViews();
 
-        editTextFname= view.findViewById(R.id.edit_text_detailed_tenant_fname);
-        editTextSurname= view.findViewById(R.id.edit_text_detailed_tenant_onames);
-        editTextEmail= view.findViewById(R.id.edit_text_detailed_tenant_email);
-        editTextContact= view.findViewById(R.id.edit_text_detailed_tenant_contact);
-        editTextIdType= view.findViewById(R.id.edit_text_detailed_tenant_idtype);
-        editTextIdNo= view.findViewById(R.id.edit_text_detailed_tenant_id_no);
-        editTextHouse= view.findViewById(R.id.edit_text_detailed_tenant_house);
-        datePickerDateEntered= view.findViewById(R.id.date_picker_detailed_tenant_date_entered);
-        datePickerDateDue= view.findViewById(R.id.date_picker_detailed_tenant_due);
-
-        fab= view.findViewById(R.id.fab_detailed_tenant);
-        fab_delete= view.findViewById(R.id.fab_detailed_tenant_delete);
-
-        previous_color= editTextFname.getCurrentTextColor();
-        colored= editTextFname;
-        editCount= 0;
-        tenantObject= Tenant.findById(Tenant.class, tenant);
-        house_confirmed= false;
-        due_confirmed= false;
-
-        textViewFname.setText(tenantObject.getName());
-        textViewONames.setText(tenantObject.getoNames());
-        hide(rowONames);
-        ((TextView) view.findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("Name");
-        textViewEmail.setText(tenantObject.getEmail());
-        textViewContact.setText(tenantObject.getContact());
-        textViewIdType.setText(tenantObject.getIdType());
-        textViewIdNo.setText(tenantObject.getIdNo());
-        textViewHouse.setText(tenantObject.getHouse().toString());
-        textViewDateEntered.setText(Helpers.dateToString(tenantObject.getEntered()));
-        textViewDateDue.setText(Helpers.dateToString(tenantObject.getRentDue()));
-
-        editTextFname.setText(tenantObject.getfName());
-        editTextSurname.setText(tenantObject.getoNames());
-        editTextEmail.setText(tenantObject.getEmail());
-        editTextContact.setText(tenantObject.getContact());
-        editTextIdType.setText(tenantObject.getIdType());
-        editTextIdNo.setText(tenantObject.getIdNo());
-        editTextHouse.setText(tenantObject.getHouse().toString());
-        ArrayList<Integer> date= Helpers.breakDate(tenantObject.getEntered());
-        datePickerDateEntered.updateDate(date.get(2), date.get(1), date.get(0));
-        date= Helpers.breakDate(tenantObject.getRentDue());
-        datePickerDateDue.updateDate(date.get(2), date.get(1), date.get(0));
-
-        buttonFname.setOnClickListener(this);
-        buttonSurname.setOnClickListener(this);
-        buttonEmail.setOnClickListener(this);
-        buttonContact.setOnClickListener(this);
-        buttonIdType.setOnClickListener(this);
-        buttonIDNo.setOnClickListener(this);
-        buttonHouse.setOnClickListener(this);
-        buttonDateEntered.setOnClickListener(this);
-        buttonDateDue.setOnClickListener(this);
-        fab.setOnClickListener(this);
-        fab_delete.setOnClickListener(this);
-
-        editTextFname.addTextChangedListener(this);
-        editTextSurname.addTextChangedListener(this);
-        editTextEmail.addTextChangedListener(this);
-        editTextContact.addTextChangedListener(this);
-        editTextIdType.addTextChangedListener(this);
-        editTextIdNo.addTextChangedListener(this);
-        editTextHouse.addTextChangedListener(this);
-
-        results= Select.from(House.class).list();
-        adapter= new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, results);
+        ArrayAdapter<House> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, getController().getHouses());
         adapter.setNotifyOnChange(true);
         editTextHouse.setAdapter(adapter);
         editTextHouse.setThreshold(1);
         editTextHouse.setOnItemClickListener(this);
-        chosen= null;
 
         return view;
     }
 
-    private void hide(final View view) {
-        view.animate().scaleY(0f).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                view.setScaleY(1f);
-                view.setVisibility(View.GONE);
+    /**
+     * Major Process Starters
+     */
+
+    private void commenceEdit() {
+        if (allEditsComplete()){
+            return;
+        }
+
+        //Name
+        if (editing.get(NAME)){
+            if (empty(editTextFName)){
+                editTextFName.setError(ERROR_REQUIRED);
+                return;
             }
-        }).start();
-    }
 
-    private void show(View view) {
-        view.setScaleY(0f);
-        view.setVisibility(View.VISIBLE);
-        view.animate().scaleY(1f);
-    }
+            if (empty(editTextSurname)){
+                editTextSurname.setError(ERROR_REQUIRED);
+                return;
+            }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            getController().editName(getFirstName(), getSurname());
+        }
+
+        //Email
+        if (editing.get(EMAIL)){
+            if (!email_is_valid()){
+                return;
+            }
+            getController().editEmail(getEmail());
+        }
+
+        //Contact
+        if (editing.get(CONTACT)){
+            if (!contact_is_valid()){
+                return;
+            }
+            getController().editContact(getContact());
+        }
+
+        //IdType
+        if (editing.get(IDTYPE)){
+            if (empty(editTextIdType)){
+                editTextIdType.setError(ERROR_REQUIRED);
+                return;
+            }
+            getController().editIdType(getIdType());
+        }
+
+        //IdNo.
+        if (editing.get(IDNO)){
+            if (empty(editTextIdNo)){
+                editTextIdNo.setError(ERROR_REQUIRED);
+                return;
+            }
+            getController().editIdNo(getIdNo());
+        }
+
+        if (editing.get("house")){
+            getController().editHouse();
+        }
+
+        //Date Entered
+        if (editing.get("entered")){
+            getController().editDateEntered(getDateEntered());
+        }
+
+        if (editing.get("due")){
+            getController().editDateDue(getDateDue());
         }
     }
 
+    private void deleteTenant() {
+        getController().deleteTenant();
+    }
+
+    /**
+     * UI Updaters
+     */
+
+    private void refreshViews(){
+        hide(rowONames);
+        textViewName.setText(getController().getName());
+        textViewEmail.setText(getController().getEmail());
+        textViewContact.setText(getController().getContact());
+        textViewIdType.setText(getController().getIdType());
+        textViewIdNo.setText(getController().getIdNo());
+        textViewHouse.setText(getController().getHouse());
+        textViewDateEntered.setText(getController().getDateEntered());
+        textViewDateDue.setText(getController().getDateDue());
+
+        editTextFName.setText(getController().getFName());
+        editTextSurname.setText(getController().getSurname());
+        editTextEmail.setText(getController().getEmail());
+        editTextContact.setText(getController().getContact());
+        editTextIdType.setText(getController().getIdType());
+        editTextIdNo.setText(getController().getIdNo());
+        editTextHouse.setText(getController().getHouse());
+        ArrayList<Integer> date= getController().getDatePickerDateEntered();
+        datePickerDateEntered.updateDate(date.get(2), date.get(1), date.get(0));
+        date= getController().getDatePickerDateDue();
+        datePickerDateDue.updateDate(date.get(2), date.get(1), date.get(0));
+
+        editing.put(NAME, false);
+        editing.put(EMAIL, false);
+        editing.put(CONTACT, false);
+        editing.put(IDTYPE, false);
+        editing.put(IDNO, false);
+        editing.put(HOUSE, false);
+        editing.put(ENTERED, false);
+        editing.put(DUE, false);
+    }
+
+    private void onEditActions(ImageButton button, String editKey, EditText editText, TextView textView, String defaultText){
+        if (editing.get(editKey)){
+            hide(editText);
+            show(textView);
+            editText.setText(defaultText);
+            button.setImageResource(EDIT);
+            editing.put(editKey, false);
+            if (allEditsComplete()){
+                fabEdit.setImageResource(CLOSE);
+            }
+            return;
+        }
+        hide(textView);
+        show(editText);
+        button.setImageResource(CLOSE);
+        editing.put(editKey, true);
+        if (!allEditsComplete()){
+            fabEdit.setImageResource(DONE);
+        }
+    }
+
+    private void onEditSurname(){
+        if (editing.get(NAME)){
+            hide(rowONames);
+            editTextSurname.setText(getController().getSurname());
+            textViewLabelFName.setText(getString(R.string.name));
+            return;
+        }
+        show(rowONames);
+        textViewLabelFName.setText(getString(R.string.first_name));
+    }
+
+    /**
+     * UI Interactions
+     */
+
+    @OnClick(R.id.fab_detailed_tenant_edit)
+    public void onEditFabClicked(){
+        //if not editing
+        if (allEditsComplete()){
+            //if buttons visible
+            if (buttonName.getVisibility()==View.VISIBLE){
+                fabEdit.setImageResource(EDIT);
+                hide(buttonName);
+                hide(buttonContact);
+                hide(buttonEmail);
+                hide(buttonHouse);
+                hide(buttonIdType);
+                hide(buttonIDNo);
+                hide(buttonDateDue);
+                hide(buttonDateEntered);
+            }
+            else{
+                fabEdit.setImageResource(CLOSE);
+                show(buttonName);
+                show(buttonContact);
+                show(buttonEmail);
+                show(buttonHouse);
+                show(buttonIdType);
+                show(buttonIDNo);
+                show(buttonDateDue);
+                show(buttonDateEntered);
+            }
+            return;
+        }
+        commenceEdit();
+    }
+
+    @OnClick(R.id.fab_detailed_tenant_delete)
+    public void onDeleteFabClicked(){
+        deleteTenant();
+    }
+
+    @OnClick(R.id.button_detailed_tenant_name)
+    public void onNameButtonClicked(){
+        onEditSurname();
+        onEditActions(buttonName, NAME, editTextFName, textViewName, getController().getFName());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_email)
+    public void onEmailButtonClicked(){
+        onEditActions(buttonEmail, EMAIL, editTextEmail, textViewEmail, getController().getEmail());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_contact)
+    public void onContactButtonClicked(){
+        onEditActions(buttonContact, CONTACT, editTextContact, textViewContact, getController().getContact());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_idtype)
+    public void onIdTypeButtonClicked(){
+        onEditActions(buttonIdType, IDTYPE, editTextIdType, textViewIdType, getController().getIdType());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_id_no)
+    public void onIdNoButtonClicked(){
+        onEditActions(buttonIDNo, IDNO, editTextIdNo, textViewIdNo, getController().getIdNo());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_house)
+    public void onHouseButtonClicked(){
+        onEditActions(buttonHouse, HOUSE, editTextHouse, textViewHouse, getController().getHouse());
+    }
+
+    @OnClick(R.id.button_detailed_tenant_date_entered)
+    public void onDateEnteredButtonClicked(){
+        if (editing.get("entered")){
+            hide(datePickerDateEntered);
+            show(textViewDateEntered);
+            ArrayList<Integer> date= getController().getDatePickerDateEntered();
+            datePickerDateEntered.updateDate(date.get(2), date.get(1), date.get(0));
+            buttonDateEntered.setImageResource(EDIT);
+            editing.put("entered", false);
+            if (allEditsComplete()){
+                fabEdit.setImageResource(CLOSE);
+            }
+            return;
+        }
+        hide(textViewDateEntered);
+        show(datePickerDateEntered);
+        buttonDateEntered.setImageResource(CLOSE);
+        editing.put("entered", true);
+        if (!allEditsComplete()){
+            fabEdit.setImageResource(DONE);
+        }
+    }
+
+    @OnClick(R.id.button_detailed_tenant_date_due)
+    public void onDateDueButtonClicked(){
+        if (editing.get("due")){
+            hide(datePickerDateDue);
+            show(textViewDateDue);
+            ArrayList<Integer> date= getController().getDatePickerDateDue();
+            datePickerDateDue.updateDate(date.get(2), date.get(1), date.get(0));
+            buttonDateDue.setImageResource(EDIT);
+            editing.put("due", false);
+            if (allEditsComplete()){
+                fabEdit.setImageResource(CLOSE);
+            }
+            return;
+        }
+        hide(textViewDateDue);
+        show(datePickerDateDue);
+        buttonDateDue.setImageResource(CLOSE);
+        editing.put("due", true);
+        if (!allEditsComplete()){
+            fabEdit.setImageResource(DONE);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        getController().setNewHouse((House) adapterView.getItemAtPosition(i));
+    }
+
+    /**
+     * Post the fact methods
+     */
+    private void onAllEditsDone() {
+        if (allEditsComplete()){
+            onEditFabClicked();
+        }
+        Toast.makeText(requestContext(), "Completed!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTenantDeleted(long id) {
+        if (mListener != null) {
+            mListener.onItemDeleted(id);
+        }
+    }
+
+    @Override
+    public void onHouseEditComplete() {
+        textViewHouse.setText(getController().getHouse());
+        onHouseButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditContactComplete() {
+        textViewContact.setText(getController().getContact());
+        onContactButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditIdTypeComplete() {
+        textViewIdType.setText(getController().getIdType());
+        onIdTypeButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditEmailComplete() {
+        textViewEmail.setText(getController().getEmail());
+        onEmailButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditNameComplete() {
+        textViewName.setText(getController().getName());
+        onNameButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditIdNoComplete() {
+        textViewIdNo.setText(getController().getIdNo());
+        onIdNoButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditEnteredComplete() {
+        textViewDateEntered.setText(getController().getDateEntered());
+        onDateEnteredButtonClicked();
+        onAllEditsDone();
+    }
+
+    @Override
+    public void onEditDueComplete() {
+        textViewDateDue.setText(getController().getDateDue());
+        onDateDueButtonClicked();
+        onAllEditsDone();
+    }
+
+    private boolean allEditsComplete() {
+        return  !editing.get(NAME) &&
+                !editing.get(EMAIL) &&
+                !editing.get(CONTACT) &&
+                !editing.get(IDTYPE) &&
+                !editing.get(IDNO) &&
+                !editing.get(HOUSE) &&
+                !editing.get(ENTERED) &&
+                !editing.get(DUE);
+    }
+
+
+    /**
+     * Lifecycle methods
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -293,422 +520,238 @@ public class DetailedTenant extends Fragment implements TextWatcher, View.OnClic
     }
 
     @Override
-    public void onClick(View view) {
-        if (view==fab){
-            //if not editting
-            if (editCount==0){
-                //if buttons visible
-                if (buttonFname.getVisibility()==View.VISIBLE){
-                    fab.setImageResource(R.drawable.icon_edit);
-                    hide(buttonFname);
-                    hide(rowONames);
-                    hide(buttonContact);
-                    hide(buttonEmail);
-                    hide(buttonHouse);
-                    hide(buttonIdType);
-                    hide(buttonIDNo);
-                    hide(buttonDateDue);
-                    hide(buttonDateEntered);
-                    hide(rowONames);
-                    textViewFname.setText(tenantObject.getName());
-                    ((TextView) getView().findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("Name");
-                }
-                else{
-                    fab.setImageResource(R.drawable.ic_close_black_24dp);
-                    show(buttonFname);
-                    show(rowONames);
-                    show(buttonContact);
-                    show(buttonEmail);
-                    show(buttonHouse);
-                    show(buttonIdType);
-                    show(buttonIDNo);
-                    show(buttonDateDue);
-                    show(buttonDateEntered);
-                    textViewFname.setText(tenantObject.getfName());
-                    ((TextView) getView().findViewById(R.id.text_view_detailed_tenant_label_fname)).setText("First Name");
-                }
-                return;
-            }
-            completeEdit();
-            return;
-        }
-        if (view==buttonFname){
-            onEditActions(buttonFname, "fname", editTextFname, textViewFname, tenantObject.getfName());
-            return;
-        }
-
-        if (view==buttonSurname){
-            onEditActions(buttonSurname, "surname", editTextSurname, textViewONames, tenantObject.getoNames());
-            return;
-        }
-
-        if (view==buttonIdType){
-            onEditActions(buttonIdType, "idtype", editTextIdType, textViewIdType, tenantObject.getIdType());
-            return;
-        }
-
-        if (view==buttonIDNo){
-            onEditActions(buttonIDNo, "idno", editTextIdNo, textViewIdNo, tenantObject.getIdNo());
-            return;
-        }
-
-        if (view==buttonHouse){
-            onEditActions(buttonHouse, "house", editTextHouse, textViewHouse, tenantObject.getHouse().toString());
-            return;
-        }
-
-        if (view==buttonEmail){
-            onEditActions(buttonEmail, "email", editTextEmail, textViewEmail, tenantObject.getEmail());
-            return;
-        }
-
-        if (view==buttonContact){
-            onEditActions(buttonContact, "contact", editTextContact, textViewContact, tenantObject.getContact());
-            return;
-        }
-
-        if (view==buttonFname){
-            onEditActions(buttonFname, "fname", editTextFname, textViewFname, tenantObject.getfName());
-            return;
-        }
-
-        if (view==buttonDateEntered){
-            if (editting.get("entered")){
-                editCount--;
-                hide(datePickerDateEntered);
-                show(textViewDateEntered);
-                ArrayList<Integer> date= Helpers.breakDate(tenantObject.getEntered());
-                datePickerDateEntered.updateDate(date.get(2), date.get(1), date.get(0));
-                buttonDateEntered.setImageResource(R.drawable.icon_edit);
-                editting.remove("entered");
-                editting.put("entered", false);
-                if (editCount==0){
-                    fab.setImageResource(R.drawable.ic_close_black_24dp);
-                }
-                return;
-            }
-            editCount++;
-            if (editCount==1){
-                fab.setImageResource(R.drawable.ic_check_black_24dp);
-            }
-            hide(textViewDateEntered);
-            show(datePickerDateEntered);
-            buttonDateEntered.setImageResource(R.drawable.ic_close_black_24dp);
-            editting.remove("entered");
-            editting.put("entered", true);
-            return;
-        }
-
-        if (view==buttonDateDue){
-            if (editting.get("due")){
-                editCount--;
-                hide(datePickerDateDue);
-                show(textViewDateDue);
-                ArrayList<Integer> date= Helpers.breakDate(tenantObject.getRentDue());
-                datePickerDateDue.updateDate(date.get(2), date.get(1), date.get(0));
-                buttonDateDue.setImageResource(R.drawable.icon_edit);
-                editting.remove("due");
-                editting.put("due", false);
-                if (editCount==0){
-                    fab.setImageResource(R.drawable.ic_close_black_24dp);
-                }
-                return;
-            }
-            editCount++;
-            if (editCount==1){
-                fab.setImageResource(R.drawable.ic_check_black_24dp);
-            }
-            hide(textViewDateDue);
-            show(datePickerDateDue);
-            buttonDateDue.setImageResource(R.drawable.ic_close_black_24dp);
-            editting.remove("due");
-            editting.put("due", true);
-            return;
-        }
-
-        if (view==fab_delete){
-            deleteTenant();
-        }
+    public void onDestroyView(){
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
-    private void deleteTenant() {
-        new Confirmation(getContext(), this, "Are you sure?", "Delete this tenant and all related payments:\n"+tenantObject.getName()+"\n"+tenantObject.getHouse().toString(), R.drawable.ic_delete_black_24dp, "Yes", "Cancel", Helpers.REQUEST_CODE_DELETE).show();
+
+    /**
+     * Getters and Setters
+     */
+    public void setController() {
+        this.controller = Controller.injectDetailedTenantActivityExternalInterface(this);
     }
 
-    private void completeEdit() {
-        Tenant temp= Tenant.findById(Tenant.class, tenantObject.getId());
-
-        if (editCount==0){
-            return;
-        }
-        if (editting.get("fname")){
-            String name= editTextFname.getText().toString();
-            name= Helpers.cleaner(name);
-            if (name==null){
-                onError("Please input the Tenant's first name", editTextFname);
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setfName(name);
-        }
-
-        if (editting.get("surname")){
-            String name= editTextSurname.getText().toString();
-            name= Helpers.cleaner(name);
-            if (name==null){
-                onError("Please input the Tenant's surname", editTextFname);
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setoNames(name);
-        }
-
-        if (editting.get("email")){
-            String email= editTextEmail.getText().toString();
-            if (!email.matches(Helpers.REGEX_EMAIL)){
-                onError("Please provide a valid email address", editTextEmail);
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setEmail(email);
-        }
-
-        if (editting.get("contact")){
-            String contact= editTextContact.getText().toString();
-            if (contact.length()!=10){
-                onError("Please input a valid contact", editTextContact);
-                tenantObject= temp;
-                return;
-            }
-            try {
-                Long.parseLong(contact);
-            }catch(Exception e){
-                onError("Please input a valid contact", editTextContact);
-                return;
-            }
-            tenantObject.setContact(contact);
-        }
-
-        if (editting.get("idtype")){
-            String idtype= editTextIdType.getText().toString();
-            idtype= Helpers.cleaner(idtype);
-            if (idtype==null){
-                onError("Please input the type of ID this Tenant presented", editTextIdType);
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setIdType(idtype);
-        }
-
-        if (editting.get("idno")){
-            String idno= editTextIdNo.getText().toString();
-            idno= Helpers.cleaner(idno);
-            if (idno==null){
-                onError("Please input this Tenant's ID number", editTextIdNo);
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setIdNo(idno);
-        }
-
-        if (editting.get("entered")){
-            Date entered= Helpers.makeDate(datePickerDateEntered.getDayOfMonth(), datePickerDateEntered.getMonth(), datePickerDateEntered.getYear());
-            if (entered==null){
-                Toast.makeText(getContext(), "Please input an entry date", Toast.LENGTH_SHORT).show();
-                tenantObject= temp;
-                return;
-            }
-            tenantObject.setEntered(entered);
-        }
-
-        if (editting.get("due")){
-            Date due= Helpers.makeDate(datePickerDateDue.getDayOfMonth(), datePickerDateDue.getMonth(), datePickerDateDue.getYear());
-            if (due==null){
-                Toast.makeText(getContext(), "Please pick a new due date", Toast.LENGTH_SHORT).show();
-                tenantObject= temp;
-                return;
-            }
-            if (!due_confirmed){
-                new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Change this Tenant's due date:\n"+tenantObject.getName()+"\n"+tenantObject.getHouse().toString(), R.drawable.ic_edit_black_24dp, "Yes", "No, leave as is", REQUEST_CODE_EDIT).show();
-                return;
-            }
-            tenantObject.setRentDue(due);
-        }
-
-        if (editting.get("house")){
-            if (chosen==null) {
-                onError("Please pick a house for this tenant", editTextFname);
-                tenantObject = temp;
-                return;
-            }
-            if (!house_confirmed){
-                current= Select.from(Tenant.class).where(Condition.prop(NamingHelper.toSQLNameDefault("house")).eq(chosen)).and(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq("0")).list();
-                if (current.size()>0){
-                    new ug.karuhanga.logrealty.Popups.Confirmation(getContext(), this, "Are you sure?", "Replace:\n"+current.get(0).getName()+" in "+current.get(0).getHouse().getLocation().getName(), R.drawable.ic_edit_black_24dp, "Yes", "Pick a different House", REQUEST_CODE_REPLACE).show();
-                    return;
-                }
-            }
-            tenantObject.setHouse(chosen);
-            current.get(0).setEx(true);
-            current.get(0).save();
-        }
-
-        if (editting.get("house")){
-            house_confirmed= false;
-            textViewHouse.setText(tenantObject.getHouse().toString());
-            onClick(buttonHouse);
-        }
-
-        if (editting.get("fname")){
-            textViewFname.setText(tenantObject.getfName());
-            onClick(buttonFname);
-        }
-
-        if (editting.get("surname")){
-            textViewONames.setText(tenantObject.getoNames());
-            onClick(buttonSurname);
-        }
-
-        if (editting.get("email")){
-            textViewEmail.setText(tenantObject.getEmail());
-            onClick(buttonEmail);
-        }
-
-        if (editting.get("contact")){
-            textViewContact.setText(tenantObject.getContact());
-            onClick(buttonContact);
-        }
-
-        if (editting.get("idtype")){
-            textViewIdType.setText(tenantObject.getIdType());
-            onClick(buttonIdType);
-        }
-
-        if (editting.get("idno")){
-            textViewIdNo.setText(tenantObject.getIdNo());
-            onClick(buttonIDNo);
-        }
-
-        if (editting.get("due")){
-            textViewDateDue.setText(Helpers.dateToString(tenantObject.getRentDue()));
-            onClick(buttonDateDue);
-        }
-
-        if (editting.get("entered")){
-            textViewDateEntered.setText(Helpers.dateToString(tenantObject.getEntered()));
-            onClick(buttonDateEntered);
-        }
-
-        tenantObject.save();
-        onClick(fab);
-        Toast.makeText(getContext(), "Completed!", Toast.LENGTH_SHORT).show();
+    public String getEmail() {
+        return editTextEmail.getText().toString();
     }
 
-    private void onEditActions(ImageButton button, String editKey, EditText editText, TextView textView, String defaultText){
-        if (editting.get(editKey)){
-            editCount--;
-            hide(editText);
-            show(textView);
-            editText.setText(defaultText);
-            button.setImageResource(R.drawable.icon_edit);
-            editting.remove(editKey);
-            editting.put(editKey, false);
-            if (editCount==0){
-                fab.setImageResource(R.drawable.ic_close_black_24dp);
-            }
-            return;
+    private String getFirstName() {
+        String name= editTextFName.getText().toString();
+        name= cleaner(name);
+        if (name==null){
+            log("Detailed Tenant View: Problem Cleaning Text");
         }
-        editCount++;
-        if (editCount==1){
-            fab.setImageResource(R.drawable.ic_check_black_24dp);
-        }
-        hide(textView);
-        show(editText);
-        button.setImageResource(R.drawable.ic_close_black_24dp);
-        editting.remove(editKey);
-        editting.put(editKey, true);
-        return;
+        return name;
     }
 
-    private void onError(String notif, EditText item) {
-        item.setTextColor(Color.RED);
-        Toast.makeText(getContext(), notif, Toast.LENGTH_SHORT).show();
-        colored= item;
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        colored.setTextColor(previous_color);
-    }
-
-    @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    @Override
-    public void onReceiveResult(boolean result, int requestCode) {
-        if (result &&(requestCode==Helpers.REQUEST_CODE_DELETE)){
-            tenantObject.delete();
-            scrollToNext();
-            return;
+    private String getSurname() {
+        String name= editTextSurname.getText().toString();
+        name= cleaner(name);
+        if (name==null){
+            log("Detailed Tenant View: Problem Cleaning Text");
         }
-
-        if (requestCode==Helpers.REQUEST_CODE_REPLACE){
-            if (result){
-                house_confirmed= true;
-                completeEdit();
-            }
-            return;
-        }
-
-        if (requestCode== REQUEST_CODE_EDIT){
-            if (result){
-                due_confirmed= true;
-                completeEdit();
-            }
-            else{
-                onClick(buttonDateDue);
-                completeEdit();
-            }
-            return;
-        }
+        return name;
     }
 
-    private void scrollToNext() {
-        if (mListener != null) {
-            mListener.onItemDeleted(tenant);
-        }
+    private String getContact() {
+        return editTextContact.getText().toString();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        chosen= (House) adapterView.getItemAtPosition(i);
-        if (chosen.equals(tenantObject.getHouse())){
-            chosen= null;
-            onClick(buttonHouse);
+    private String getIdType() {
+        String idtype = editTextIdType.getText().toString();
+        idtype = cleaner(idtype);
+        if (idtype == null) {
+            log("Detailed Tenant: Problem cleaning idType");
         }
+        return idtype;
+    }
+
+    private Date getDateEntered() {
+        Date entered = makeDate(datePickerDateEntered.getDayOfMonth(), datePickerDateEntered.getMonth(), datePickerDateEntered.getYear());
+        if (entered == null) {
+            log("Detailed Tenant: Problem making date entered");
+        }
+        return entered;
+    }
+
+    private Date getDateDue() {
+        Date due= makeDate(datePickerDateDue.getDayOfMonth(), datePickerDateDue.getMonth(), datePickerDateDue.getYear());
+        if (due==null){
+            log("Detailed Tenant: Problem making date due");
+        }
+        return due;
+    }
+
+    private String getIdNo() {
+        String idno= editTextIdNo.getText().toString();
+        idno= cleaner(idno);
+        if (idno==null){
+            log("Detailed Tenant View: Failed to clean IdNo.");
+        }
+        return idno;
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Validators
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
 
+    private boolean email_is_valid(){
+        if (empty(editTextEmail)){
+            editTextEmail.setError(ERROR_REQUIRED);
+            return false;
+        }
+
+        String email= editTextEmail.getText().toString();
+        if (!email.matches(REGEX_EMAIL)){
+            editTextEmail.setError("Invalid Email Address");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean contact_is_valid(){
+        if (empty(editTextContact)){
+            editTextContact.setError(ERROR_REQUIRED);
+            return false;
+        }
+
+        String contact= getContact();
+
+        if (contact.length() != 10) {
+            editTextContact.setError("Invalid Contact");
+            return false;
+        }
+
+        try {
+            Long.parseLong(contact);
+        } catch (Exception e) {
+            editTextContact.setError("Invalid Contact");
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Error Notifiers
+     */
+    @Override
+    public void complainAboutHouse(String message) {
+        editTextHouse.setError(message);
+    }
+
+    @Override
+    public void complainAboutRentDue(String message) {
+        Toast.makeText(requestContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void complainAboutFName(String message) {
+        editTextFName.setError(message);
+    }
+
+    @Override
+    public void complainAboutSurname(String message) {
+        editTextSurname.setError(message);
+    }
+
+    @Override
+    public void complainAboutEmail(String message) {
+        editTextEmail.setError(message);
+    }
+
+    @Override
+    public void complainAboutContact(String message) {
+        editTextContact.setError(message);
+    }
+
+    @Override
+    public void complainAboutIdType(String message) {
+        editTextIdType.setError(message);
+    }
+
+    @Override
+    public void complainAboutIdNo(String message) {
+        editTextIdNo.setError(message);
+    }
+
+
+    /**
+     * External Interaction Methods Interfaces
+     */
+
+    interface OnFragmentInteractionListener {
         void onItemDeleted(Long id);
+
+        Context requestContext();
+    }
+
+    public interface DetailedTenantActivityExternalInterface{
+
+        void setTenant(long id);
+
+        List<House> getHouses();
+
+        String getFName();
+
+        String getSurname();
+
+        String getEmail();
+
+        String getContact();
+
+        String getIdType();
+
+        String getIdNo();
+
+        String getHouse();
+
+        void deleteTenant();
+
+        void editName(String firstName, String surname);
+
+        void editEmail(String email);
+
+        void editContact(String contact);
+
+        void editIdType(String idType);
+
+        void editIdNo(String idNo);
+
+        void editDateDue(Date dateDue);
+
+        void editDateEntered(Date dateEntered);
+
+        void editHouse();
+
+        void setNewHouse(House newHouse);
+
+        String getDateEntered();
+
+        String getDateDue();
+
+        ArrayList<Integer> getDatePickerDateEntered();
+
+        ArrayList<Integer> getDatePickerDateDue();
+
+        String getName();
+    }
+
+    public DetailedTenantActivityExternalInterface getController() {
+        if (this.controller== null){
+            setController();
+        }
+
+        return this.controller;
+    }
+
+    @Override
+    public Context requestContext() {
+        if (mListener==null){
+            return null;
+        }
+        return mListener.requestContext();
     }
 }

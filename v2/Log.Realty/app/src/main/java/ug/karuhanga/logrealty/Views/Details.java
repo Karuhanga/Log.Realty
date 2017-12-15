@@ -11,13 +11,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.View;
 
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.Controllers.Controller.DetailsControllerExternalInterface;
@@ -27,7 +27,7 @@ import static ug.karuhanga.logrealty.Helper.FRAGMENT_LOCATIONS;
 import static ug.karuhanga.logrealty.Helper.getStringByName;
 
 
-public class Details extends AppCompatActivity implements DetailsControllerExternalInterface, DetailedLocation.OnFragmentInteractionListener {
+public class Details extends AppCompatActivity implements DetailsControllerExternalInterface, DetailedLocation.OnFragmentInteractionListener, DetailedHouse.OnFragmentInteractionListener, DetailedTenant.OnFragmentInteractionListener, DetailedPayment.OnFragmentInteractionListener {
 
     @BindView(R.id.button_detailed_activity_left) ImageButton buttonLeft;
     @BindView(R.id.button_detailed_activity_right) ImageButton buttonRight;
@@ -45,6 +45,7 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
+        ButterKnife.bind(this);
 
         //Hazy look for arrow buttons
         buttonLeft.setAlpha(0.3f);
@@ -69,9 +70,9 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class ItemsStatePagerAdapter extends FragmentStatePagerAdapter {
+    private class ItemsStatePagerAdapter extends FragmentStatePagerAdapter {
 
-        public ItemsStatePagerAdapter(FragmentManager fm) {
+        ItemsStatePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -114,7 +115,6 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
         }
         if (view== buttonRight){
             mViewPager.arrowScroll(View.FOCUS_RIGHT);
-            return;
         }
     }
 
@@ -129,6 +129,12 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        mItemsStatePagerAdapter = new ItemsStatePagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mItemsStatePagerAdapter);
+    }
+
+    @Override
     public void notifyNoData() {
         buttonLeft.setVisibility(View.INVISIBLE);
         buttonRight.setVisibility(View.INVISIBLE);
@@ -138,8 +144,6 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
 
     public void onItemDeleted(Long item) {
         controller.notifyItemDeleted(item);
-        mItemsStatePagerAdapter = new ItemsStatePagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mItemsStatePagerAdapter);
     }
 
     @Override
@@ -149,7 +153,8 @@ public class Details extends AppCompatActivity implements DetailsControllerExter
 
     @Override
     public void finish(){
-        Intent finisher= new Intent();
+//        Intent finisher= new Intent();
+        new Intent();
         super.finish();
     }
 }

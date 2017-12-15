@@ -117,6 +117,7 @@
     <string name="default_rent_paid_here">Default Rent Paid Here</string>
     <string name="add_one_month">Add one month</string>
     <string name="first_name">First Name</string>
+    <string name="name">Name</string>
     <string name="surname_other_names">Surname/Other Names</string>
     <string name="email_address">Email Address</string>
     <string name="telephone_contact">Telephone Contact</string>

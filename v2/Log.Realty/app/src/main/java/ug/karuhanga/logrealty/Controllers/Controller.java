@@ -6,7 +6,10 @@ import ug.karuhanga.logrealty.Views.AddHouse.AddHouseActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.AddLocation.AddLocationActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.AddPayment.AddPaymentActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.AddTenant.AddTenantActivityExternalInterface;
-import ug.karuhanga.logrealty.Views.DetailedLocation;
+import ug.karuhanga.logrealty.Views.DetailedHouse.DetailedHouseActivityExternalInterface;
+import ug.karuhanga.logrealty.Views.DetailedLocation.DetailedLocationActivityExternalInterface;
+import ug.karuhanga.logrealty.Views.DetailedPayment.DetailedPaymentActivityExternalInterface;
+import ug.karuhanga.logrealty.Views.DetailedTenant.DetailedTenantActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.Details.DetailsActivityExternalInterface;
 
 /**
@@ -75,6 +78,8 @@ public class Controller {
         void notifyNoData();
 
         void swipeRight();
+
+        void notifyDataSetChanged();
     }
 
     public static DetailsActivityExternalInterface injectDetailsActivityExternalInterface(DetailsControllerExternalInterface dashboard){
@@ -90,9 +95,90 @@ public class Controller {
         void complainAboutRent(String message);
 
         void complainAboutLocation(String message);
+
+        void onEditLocationComplete();
+
+        void onEditAmountComplete();
     }
 
-    public static DetailedLocation.DetailedLocationActivityExternalInterface injectDetailedLocationActivityExternalInterface(DetailedLocationControllerExternalInterface dashboard){
+    public static DetailedLocationActivityExternalInterface injectDetailedLocationActivityExternalInterface(DetailedLocationControllerExternalInterface dashboard){
         return new DetailedLocationController(dashboard);
+    }
+
+    public interface DetailedPaymentControllerExternalInterface{
+
+        Context requestContext();
+
+        void onPaymentDeleted(long id);
+    }
+
+    public static DetailedPaymentActivityExternalInterface injectDetailedPaymentActivityExternalInterface(DetailedPaymentControllerExternalInterface dashboard){
+        return new DetailedPaymentController(dashboard);
+    }
+
+    public interface DetailedHouseControllerExternalInterface{
+
+        Context requestContext();
+
+        void onHouseDeleted(long id);
+
+        void complainAboutLocation(String message);
+
+        void onLocationEditComplete();
+
+        void onInfoEditComplete();
+
+        void onRentEditComplete();
+
+        void complainAboutRent(String message);
+
+        void complainAboutHouseInformation(String message);
+    }
+
+    public static DetailedHouseActivityExternalInterface injectDetailedHouseActivityExternalInterface(DetailedHouseControllerExternalInterface dashboard){
+        return new DetailedHouseController(dashboard);
+    }
+
+    public interface DetailedTenantControllerExternalInterface{
+
+        Context requestContext();
+
+        void onTenantDeleted(long id);
+
+        void onEditDueComplete();
+
+        void complainAboutHouse(String message);
+
+        void onHouseEditComplete();
+
+        void complainAboutRentDue(String message);
+
+        void complainAboutFName(String message);
+
+        void complainAboutSurname(String message);
+
+        void onEditNameComplete();
+
+        void complainAboutEmail(String message);
+
+        void onEditEmailComplete();
+
+        void complainAboutContact(String message);
+
+        void onEditContactComplete();
+
+        void complainAboutIdType(String message);
+
+        void onEditIdTypeComplete();
+
+        void complainAboutIdNo(String message);
+
+        void onEditIdNoComplete();
+
+        void onEditEnteredComplete();
+    }
+
+    public static DetailedTenantActivityExternalInterface injectDetailedTenantActivityExternalInterface(DetailedTenantControllerExternalInterface dashboard){
+        return new DetailedTenantController(dashboard);
     }
 }

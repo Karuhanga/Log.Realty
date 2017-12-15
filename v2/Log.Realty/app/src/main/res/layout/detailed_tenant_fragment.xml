@@ -9,7 +9,7 @@
     android:animateLayoutChanges="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:theme="@style/AppTheme"
-    tools:context="ug.karuhanga.logrealty.Fragments.DetailedTenant">
+    tools:context="ug.karuhanga.logrealty.Views.DetailedTenant">
 
     <ScrollView
         android:layout_width="0dp"
@@ -43,7 +43,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:hint="First Name" />
+                        android:text="Name" />
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_detailed_tenant_fname"
+                            android:id="@+id/button_detailed_tenant_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -97,6 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <TextView
@@ -110,38 +111,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/text_view_detailed_tenant_onames"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:inputType="textPersonName"
-                            android:text="Surname/Other Names"
-                            android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
                         <EditText
-                            android:id="@+id/edit_text_detailed_tenant_onames"
+                            android:id="@+id/edit_text_detailed_tenant_surname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="Surname/Other Names"
                             android:inputType="textPersonName"
-                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <ImageButton
-                            android:id="@+id/button_detailed_tenant_onames"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/Transparent"
-                            android:src="@drawable/ic_edit_black_24dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
                     </android.support.constraint.ConstraintLayout>
                 </LinearLayout>
             </TableRow>
@@ -545,7 +524,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageButton
-                            android:id="@+id/button_detailed_tenant_due"
+                            android:id="@+id/button_detailed_tenant_date_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/Transparent"
@@ -562,7 +541,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/text_view_detailed_tenant_due"
+                            android:id="@+id/text_view_detailed_tenant_date_due"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/date_rent_due"
@@ -572,7 +551,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <DatePicker
-                            android:id="@+id/date_picker_detailed_tenant_due"
+                            android:id="@+id/date_picker_detailed_tenant_date_due"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:calendarViewShown="false"
@@ -601,7 +580,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_detailed_tenant"
+            android:id="@+id/fab_detailed_tenant_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

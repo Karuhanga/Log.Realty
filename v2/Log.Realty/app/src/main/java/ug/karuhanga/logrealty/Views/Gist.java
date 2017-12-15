@@ -39,6 +39,7 @@ import ug.karuhanga.logrealty.Models.Setting;
 import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helper.FRAGMENT_DUE_PAYMENTS;
+import static ug.karuhanga.logrealty.Helper.REQUEST_CODE_DETAILS;
 import static ug.karuhanga.logrealty.Helper.getStringByName;
 import static ug.karuhanga.logrealty.Helper.log;
 
@@ -204,7 +205,7 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         if (getCurrentFragment().getType()==FRAGMENT_DUE_PAYMENTS){
             log("In Gist: Requesting details on due payments!");
         }
-//        startActivityForResult(new Intent(this, Details.class).putExtra("entity", getCurrentFragment().getType()).putExtra("id", id), REQUEST_CODE_DETAILS);
+        startActivityForResult(new Intent(this, Details.class).putExtra("entity", getCurrentFragment().getType()).putExtra("id", id), REQUEST_CODE_DETAILS);
     }
 
     private void displayFragment(int entity) {

@@ -7,7 +7,7 @@
     android:paddingRight="20dp"
     app:theme="@style/AppTheme"
     android:animateLayoutChanges="true"
-    tools:context="ug.karuhanga.logrealty.Fragments.DetailedHouse">
+    tools:context="ug.karuhanga.logrealty.Views.DetailedHouse">
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
@@ -264,6 +264,31 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_detailed_house_label_amount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/text_view_detailed_house_label_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/rent_paid"
+                        android:textAppearance="@android:style/TextAppearance.Holo.Small"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </TableRow>
+
+            <TableRow
                 android:id="@+id/row_detailed_house_default_rent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -291,33 +316,7 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/row_detailed_house_label_amount"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:labelFor="@+id/text_view_detailed_house_amount">
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/text_view_detailed_house_label_amount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/rent_paid"
-                        android:textAppearance="@android:style/TextAppearance.Holo.Small"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </android.support.constraint.ConstraintLayout>
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/row_detailed_house__amount"
+                android:id="@+id/row_detailed_house_amount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="80dp">
@@ -328,7 +327,7 @@
                     android:layout_weight="1">
 
                     <EditText
-                        android:id="@+id/edit_text_detailed_house_amount"
+                        android:id="@+id/edit_text_detailed_house_rent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="@string/rent_amount"
@@ -339,7 +338,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/text_view_detailed_house_amount"
+                        android:id="@+id/text_view_detailed_house_rent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/rent_amount"
@@ -349,7 +348,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/button_detailed_house_amount"
+                        android:id="@+id/button_detailed_house_rent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/Transparent"
@@ -390,7 +389,7 @@
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_detailed_location_delete"
+            android:id="@+id/fab_detailed_house_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

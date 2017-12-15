@@ -16,24 +16,24 @@ import static ug.karuhanga.logrealty.Helper.toCurrency;
 
 /**
  * Created by karuhanga on 12/12/17.
+ * Logic Controller for {@link DetailedLocation}
  */
 
-public class DetailedLocationController implements DetailedLocation.DetailedLocationActivityExternalInterface, Confirmation.ConfirmationExternalInterface {
+class DetailedLocationController implements DetailedLocation.DetailedLocationActivityExternalInterface, Confirmation.ConfirmationExternalInterface {
     Controller.DetailedLocationControllerExternalInterface dashboard;
-    Long id;
-    Location location;
+    private Location location;
 
-    public DetailedLocationController(Controller.DetailedLocationControllerExternalInterface dashboard) {
+    DetailedLocationController(Controller.DetailedLocationControllerExternalInterface dashboard) {
         this.dashboard= dashboard;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     @Override
     public void setLocation(long id) {
-        this.location= Location.findById(Location.class, id);
+        try {
+            this.location= Location.findById(Location.class, id);
+        }catch (Exception e){
+            this.location= Select.from(Location.class).limit("1").first();
+        }
     }
 
     @Override
@@ -43,7 +43,7 @@ public class DetailedLocationController implements DetailedLocation.DetailedLoca
 
     @Override
     public String getLocation() {
-        return null;
+        return location.getName();
     }
 
     @Override
@@ -52,33 +52,34 @@ public class DetailedLocationController implements DetailedLocation.DetailedLoca
     }
 
     @Override
-    public boolean editName(String location) {
+    public void editName(String location) {
         if (locationExists(location)){
             dashboard.complainAboutLocation("Already added location");
-            return false;
+            return;
         }
-
         this.location.setName(location);
         this.location.save();
-        return true;
+        dashboard.onEditLocationComplete();
     }
 
     @Override
-    public boolean editAmount(long amount) {
+    public void editAmount(long amount) {
         if (amount<AMOUNT_MINIMUM_RENT){
             dashboard.complainAboutRent(getRentBelowMinNotif());
-            return false;
+            return;
         }
         location.setDefaultRent(amount);
         location.save();
-        return true;
+        dashboard.onEditAmountComplete();
+    }
+
+    @Override
+    public String getNumericalAmount() {
+        return String.valueOf(location.getDefaultRent());
     }
 
     private boolean locationExists(String location){
-        if (Select.from(Location.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(location)).count()>0){
-            return true;
-        }
-        return false;
+        return Select.from(Location.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(location)).count() > 0;
     }
 
     @Override

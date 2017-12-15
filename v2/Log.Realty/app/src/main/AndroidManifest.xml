@@ -28,10 +28,9 @@
             android:value="ug.karuhanga.logrealty" />
 
         <activity
-            android:name=".Activities.SplashScreen"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme">
+            android:name=".Views.Gist"
+            android:label="Upcoming Payments"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,53 +38,33 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.Gist"
-            android:label="Upcoming Payments"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+            android:name=".Views.AddPayment"
+            android:label="@string/title_activity_add_payment">
         </activity>
         <activity
-            android:name=".Activities.AddPayment"
-            android:label="@string/title_activity_add_payment"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".Activities.Settings"
+            android:name=".Views.Settings"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Activities.Gist"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".Views.Gist"/>
         <activity
-            android:name=".Activities.AddLocation"
+            android:name=".Views.AddLocation"
             android:label="@string/title_activity_add_location"
-            android:parentActivityName=".Activities.Gist"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".Views.Gist" />
         <activity
-            android:name=".Activities.AddHouse"
+            android:name=".Views.AddHouse"
             android:label="@string/title_activity_add_house"
-            android:parentActivityName=".Activities.Gist"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".Views.Gist" />
         <activity
-            android:name=".Activities.AddTenant"
+            android:name=".Views.AddTenant"
             android:label="@string/title_activity_add_tenant"
-            android:parentActivityName=".Activities.Gist"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".Views.Gist"/>
         <activity
-            android:name=".Activities.Details"
+            android:name=".Views.Details"
             android:label="Details"
-            android:parentActivityName=".Activities.Gist"
+            android:parentActivityName=".Views.Gist"
             android:theme="@style/ActivityPopups">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ug.karuhanga.logrealty.Activities.Gist" />
+                android:value="ug.karuhanga.logrealty.Views.Gist" />
         </activity>
 
         <receiver
@@ -94,7 +73,7 @@
             android:exported="true"
             android:process=":remote" />
         <receiver
-            android:name=".Receivers.OnRestoreNotifs"
+            android:name=".Receivers.OnRestoreNotifications"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

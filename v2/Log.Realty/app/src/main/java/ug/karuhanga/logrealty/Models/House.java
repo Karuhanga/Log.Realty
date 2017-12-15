@@ -74,7 +74,7 @@ public class House extends Record {
         return rent;
     }
 
-    public void setRent(int rent) {
+    public void setRent(long rent) {
         this.rent = rent;
     }
 

@@ -2,20 +2,17 @@ package ug.karuhanga.logrealty.Views;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.orm.query.Select;
-
-import java.util.List;
-
-import ug.karuhanga.logrealty.Data.Payment;
-import ug.karuhanga.logrealty.Helpers;
-import ug.karuhanga.logrealty.Popups.Confirmation;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import ug.karuhanga.logrealty.Controllers.Controller;
 import ug.karuhanga.logrealty.R;
 
 /**
@@ -26,19 +23,16 @@ import ug.karuhanga.logrealty.R;
  * Use the {@link DetailedPayment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailedPayment extends Fragment implements View.OnClickListener, ug.karuhanga.logrealty.Listeners.Confirmation {
+public class DetailedPayment extends Fragment implements Controller.DetailedPaymentControllerExternalInterface {
 
-    private Long payment;
-
-    private TextView textViewTenant;
-    private TextView textViewDate;
-    private TextView textViewRate;
-    private TextView textViewAmount;
-    private FloatingActionButton fab_delete;
-
-    private Payment paymentObject;
+    @BindView(R.id.text_view_detailed_payment_tenant) TextView textViewTenant;
+    @BindView(R.id.text_view_detailed_payment_date) TextView textViewDate;
+    @BindView(R.id.text_view_detailed_payment_rate) TextView textViewRate;
+    @BindView(R.id.text_view_detailed_payment_amount) TextView textViewAmount;
 
     private OnFragmentInteractionListener mListener;
+    private DetailedPaymentActivityExternalInterface controller;
+    private Unbinder unbinder;
 
     public DetailedPayment() {
         // Required empty public constructor
@@ -50,7 +44,6 @@ public class DetailedPayment extends Fragment implements View.OnClickListener, u
      *
      * @return A new instance of fragment DetailedPayment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DetailedPayment newInstance(Long id) {
         DetailedPayment fragment = new DetailedPayment();
         Bundle args = new Bundle();
@@ -60,20 +53,16 @@ public class DetailedPayment extends Fragment implements View.OnClickListener, u
         return fragment;
     }
 
+    /**
+     * Lifecycle methods
+     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        controller= Controller.injectDetailedPaymentActivityExternalInterface(this);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            payment = getArguments().getLong("id");
-        }
-        else{
-            List<Payment> results= Select.from(Payment.class).list();
-            if (results.size()>0){
-                payment= results.get(0).getId();
-            }
-            else{
-                return;
-            }
+            controller.setPayment(getArguments().getLong("id"));
         }
     }
 
@@ -83,22 +72,12 @@ public class DetailedPayment extends Fragment implements View.OnClickListener, u
 
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.detailed_payment_fragment, container, false);
+        unbinder= ButterKnife.bind(this, view);
 
-        textViewTenant= view.findViewById(R.id.text_view_detailed_payment_tenant);
-        textViewAmount= view.findViewById(R.id.text_view_detailed_payment_amount);
-        textViewDate= view.findViewById(R.id.text_view_detailed_payment_date);
-        textViewRate= view.findViewById(R.id.text_view_detailed_payment_rate);
-
-        fab_delete= view.findViewById(R.id.fab_detailed_payment_delete);
-
-        paymentObject= Payment.findById(Payment.class, payment);
-
-        textViewTenant.setText(paymentObject.getTenant().getName());
-        textViewAmount.setText(Helpers.toCurrency(paymentObject.getAmount()));
-        textViewDate.setText(Helpers.dateToString(paymentObject.getDate()));
-        textViewRate.setText(Helpers.toCurrency(paymentObject.getRate()));
-
-        fab_delete.setOnClickListener(this);
+        textViewTenant.setText(controller.getTenant());
+        textViewAmount.setText(controller.getAmount());
+        textViewDate.setText(controller.getDate());
+        textViewRate.setText(controller.getRate());
 
         return view;
     }
@@ -121,41 +100,80 @@ public class DetailedPayment extends Fragment implements View.OnClickListener, u
     }
 
     @Override
-    public void onClick(View view) {
-        if (view==fab_delete){
-            deletePayment();
-        }
-    }
-
-    private void deletePayment() {
-        new Confirmation(getContext(), this, "Are you sure?", "Delete this payment:\n"+paymentObject.getSummary(), R.drawable.ic_delete_black_24dp, "Yes", "Cancel", Helpers.REQUEST_CODE_DELETE).show();
-    }
-
-    @Override
-    public void onReceiveResult(boolean result, int requestCode) {
-        if (result &&(requestCode==Helpers.REQUEST_CODE_DELETE)){
-            paymentObject.delete();
-            scrollToNext();
-        }
-    }
-
-    private void scrollToNext() {
-        if (mListener != null) {
-            mListener.onItemDeleted(payment);
-        }
+    public void onDestroyView(){
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * UI Interaction Handlers
      */
-    public interface OnFragmentInteractionListener {
+
+    @OnClick(R.id.fab_detailed_payment_delete)
+    public void onFabDeleteClick() {
+        deletePayment();
+    }
+
+    /**
+     * External Interaction Handlers
+     */
+
+    @Override
+    public Context requestContext() {
+        return mListener.requestContext();
+    }
+
+    interface OnFragmentInteractionListener {
         void onItemDeleted(Long id);
+
+        Context requestContext();
+    }
+
+    public interface DetailedPaymentActivityExternalInterface{
+
+        void setPayment(long id);
+
+        String getTenant();
+
+        void deletePayment();
+
+        String getAmount();
+
+        String getDate();
+
+        String getRate();
+    }
+
+    /**
+     * Major Event Starters
+     */
+
+    private void deletePayment() {
+        getController().deletePayment();
+    }
+
+    /**
+     * Post the fact methods
+     */
+
+    @Override
+    public void onPaymentDeleted(long id) {
+        mListener.onItemDeleted(id);
+    }
+
+
+    /**
+     * Getters and setters
+     */
+
+    public DetailedPaymentActivityExternalInterface getController() {
+        if (controller==null){
+            setController();
+        }
+        return controller;
+    }
+
+    public void setController() {
+        this.controller = Controller.injectDetailedPaymentActivityExternalInterface(this);
     }
 }

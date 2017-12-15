@@ -10,13 +10,13 @@ import com.orm.query.Select;
 import java.util.ArrayList;
 import java.util.List;
 
-import ug.karuhanga.logrealty.Data.House;
-import ug.karuhanga.logrealty.Data.Location;
-import ug.karuhanga.logrealty.Data.Notification;
-import ug.karuhanga.logrealty.Data.Payment;
-import ug.karuhanga.logrealty.Data.Setting;
-import ug.karuhanga.logrealty.Data.Tenant;
-import ug.karuhanga.logrealty.Helpers;
+import ug.karuhanga.logrealty.Models.House;
+import ug.karuhanga.logrealty.Models.Location;
+import ug.karuhanga.logrealty.Models.Notification;
+import ug.karuhanga.logrealty.Models.Payment;
+import ug.karuhanga.logrealty.Models.Setting;
+import ug.karuhanga.logrealty.Models.Tenant;
+import ug.karuhanga.logrealty.Helper;
 
 public class Backup extends Service {
     private List<String> final_data= new ArrayList<>();
@@ -39,7 +39,7 @@ public class Backup extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
-        final_data.add("Backup_"+ String.valueOf(Helpers.getTodaysDate().getTime()));
+        final_data.add("Backup_"+ String.valueOf(Helper.getTodaysDate().getTime()));
         appendData(LOCATIONS);
         appendData(HOUSES);
         appendData(TENANTS);
