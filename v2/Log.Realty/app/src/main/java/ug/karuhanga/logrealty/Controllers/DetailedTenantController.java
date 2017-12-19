@@ -157,7 +157,7 @@ class DetailedTenantController implements DetailedTenant.DetailedTenantActivityE
             return;
         }
 
-        tenant.setIdType(idNo);
+        tenant.setIdNo(idNo);
         tenant.save();
         dashboard.onEditIdNoComplete();
     }

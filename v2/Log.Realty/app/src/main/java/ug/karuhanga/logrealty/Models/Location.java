@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by karuhanga on 8/25/17.
+ * Default Data Type and POJO for locations
  */
 
 public class Location extends Record {

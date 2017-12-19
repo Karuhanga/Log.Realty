@@ -28,8 +28,8 @@
             android:value="ug.karuhanga.logrealty" />
 
         <activity
-            android:name=".Views.Gist"
-            android:label="Upcoming Payments"
+            android:name=".Views.Starter"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,13 +38,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Views.AddPayment"
-            android:label="@string/title_activity_add_payment">
+            android:name=".Views.Gist"
+            android:label="Upcoming Payments"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".Views.AddPayment"
+            android:label="@string/title_activity_add_payment" />
         <activity
             android:name=".Views.Settings"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Views.Gist"/>
+            android:parentActivityName=".Views.Gist" />
         <activity
             android:name=".Views.AddLocation"
             android:label="@string/title_activity_add_location"
@@ -56,7 +63,7 @@
         <activity
             android:name=".Views.AddTenant"
             android:label="@string/title_activity_add_tenant"
-            android:parentActivityName=".Views.Gist"/>
+            android:parentActivityName=".Views.Gist" />
         <activity
             android:name=".Views.Details"
             android:label="Details"
@@ -68,12 +75,12 @@
         </activity>
 
         <receiver
-            android:name=".Receivers.OnAlertTime"
+            android:name=".Receivers.OnCheckForNotificationsTime"
             android:enabled="true"
             android:exported="true"
             android:process=":remote" />
         <receiver
-            android:name=".Receivers.OnRestoreNotifications"
+            android:name=".Receivers.OnBootCompleted"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -88,7 +95,15 @@
         <service
             android:name=".Services.Restore"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+        <service
+            android:name=".Services.Notifier"
+            android:exported="false" />
+
+        <receiver
+            android:name=".Receivers.OnBackupTime"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

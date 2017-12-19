@@ -3,6 +3,7 @@ package ug.karuhanga.logrealty.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import ug.karuhanga.logrealty.R;
 
 import static ug.karuhanga.logrealty.Helper.FRAGMENT_DUE_PAYMENTS;
 import static ug.karuhanga.logrealty.Helper.REQUEST_CODE_DETAILS;
+import static ug.karuhanga.logrealty.Helper.RESULT_CODE_SETTINGS;
 import static ug.karuhanga.logrealty.Helper.getStringByName;
 import static ug.karuhanga.logrealty.Helper.log;
 
@@ -117,7 +119,7 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -155,7 +157,6 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
                 }
                 return;
             default:
-                return;
         }
 
     }
@@ -179,8 +180,23 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
                 startActivityForResult(new Intent(Gist.this, AddPayment.class), Helper.RESULT_CODE_ADD_PAYMENT);
                 return;
             default:
-                return;
         }
+    }
+
+    private void startSearchStuff() {
+        searchTextView.requestFocus();
+        searchTextView.setOnItemClickListener(this);
+        searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.open));
+        searchView.setVisibility(View.VISIBLE);
+        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
+    }
+
+    private void showSearchIcon() {
+        findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
+    }
+
+    private void hideSearchIcon() {
+        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
     }
 
     @OnClick(R.id.button_gist_close_search)
@@ -190,7 +206,6 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
             searchView.setVisibility(View.GONE);
             ((AutoCompleteTextView) searchView.findViewById(R.id.text_view_gist_search)).setText("");
             findViewById(R.id.menu_item_search).setVisibility(View.VISIBLE);
-            return;
         }
     }
 
@@ -247,15 +262,6 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         setGistTitle();
 
         refreshSearchData();
-        return;
-    }
-
-    private void startSearchStuff() {
-        searchTextView.requestFocus();
-        searchTextView.setOnItemClickListener(this);
-        searchView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.open));
-        searchView.setVisibility(View.VISIBLE);
-        findViewById(R.id.menu_item_search).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -272,13 +278,26 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
         }
         searchTextView.setAdapter(adapter);
         searchTextView.setThreshold(1);
+        searchIconAppearOrNot();
+    }
+
+    private void searchIconAppearOrNot() {
+        try {
+            if (currentFragment.getType()==FRAGMENT_DUE_PAYMENTS){
+                hideSearchIcon();
+            }
+            else{
+                showSearchIcon();
+            }
+        }catch (Exception e){
+            log("Gist: Hiding Search Icon Failed");
+        }
     }
 
 
     private String getUserName(){
-        List<Setting> userName= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helper.SETTINGS_EMAIL)).list();
-        String name= userName.isEmpty()? getStringByName(this, "email_default") : userName.get(0).getData();
-        return name;
+        List<Setting> userName= Select.from(Setting.class).where(Condition.prop(NamingHelper.toSQLNameDefault("name")).eq(Helper.SETTINGS_USER_NAME)).list();
+        return userName.isEmpty()? getStringByName(this, "email_default") : userName.get(0).getData();
     }
 
     private void setGistTitle(){
@@ -288,7 +307,11 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
             label= getString(R.string.app_name);
         }
 
-        getSupportActionBar().setTitle(label);
+        try {
+            getSupportActionBar().setTitle(label);
+        }catch (NullPointerException e){
+            log("Gist: Setting Title Failed");
+        }
     }
 
     private void setUserName(){
@@ -311,7 +334,6 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void launchSettings(){
-        //TODO Implement settings open up
-//        startActivityForResult(new Intent(Gist.this, Settings.class), RESULT_CODE_SETTINGS);
+        startActivityForResult(new Intent(Gist.this, Settings.class), RESULT_CODE_SETTINGS);
     }
 }

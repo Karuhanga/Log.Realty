@@ -7,6 +7,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,13 +53,19 @@ public class Helper {
     public static final int REQUEST_CODE_REPLACE= 302;
     public static final int REQUEST_CODE_EDIT= 303;
     public static final int REQUEST_CODE_NOTIFY= 304;
+    public static final int REQUEST_CODE_BACKUP= 305;
 
     public static final String SETTINGS_FIRST_TIME= "First_Time";
-    public static final String SETTINGS_EMAIL= "Email";
+    public static final String SETTINGS_USER_NAME= "Email";
     public static final String SETTINGS_REMINDER_1= "Reminder_1";
     public static final String SETTINGS_REMINDER_2= "Reminder_2";
-    public static final String ALLOW_BACKUP= "Backup";
+    public static final String SETTINGS_ALLOW_BACKUP = "Backup";
     public static final String TAG_APP_NAME= "Log.Realty";
+    public static final String EX= "ex";
+    public static final String RENT_DUE= "rentDue";
+
+    public static final String BACKUP_DIR= "Backups";
+    public static final String SPECIAL_CRLF= "\nLog\n.\nRealty\n";
 
     public static final String TRUE= "1";
     public static final String FALSE= "0";
@@ -225,5 +238,79 @@ public class Helper {
 
     public static boolean empty(EditText element){
         return element.getText().toString().length() == 0;
+    }
+
+    public static String readFromFile(String path) {
+        String finalInput= "";
+        File file= new File(path);
+        if (!file.exists()){
+            log("Helpers: The file at "+path+" does not exist.");
+            return finalInput;
+        }
+
+        try {
+            InputStream inputStream= new FileInputStream(file);
+            int length= inputStream.available();
+            byte[] data= new byte[length];
+            inputStream.read(data);
+            finalInput= new String(data);
+        } catch (IOException e) {
+            log("Helpers: "+e.toString());
+        }
+
+        return finalInput;
+    }
+
+    public static boolean writeToFile(String path, String content){
+        File file= new File(path);
+        if (file.exists()){
+            if (!file.delete()){
+                log("Helper: File at "+path+" can't be overwritten");
+                return false;
+            }
+        }
+
+        try {
+            OutputStream outputStream= new FileOutputStream(file);
+            outputStream.write(content.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            log("Helpers: "+e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    public static List<String> listFilesInDir(String path){
+        File dir= new File(path);
+        List<String> results= new ArrayList<>();
+
+        if (!dir.exists()) {
+            log("Helper: Directory at "+path+" does not exist");
+            return results;
+        }
+        if (!dir.isDirectory()) {
+            log("Helper: "+path+" is not a directory");
+            return results;
+        }
+
+        File[] filesAndDirs= dir.listFiles();
+        for (File file : filesAndDirs) {
+            if (file.isFile()){
+                results.add(file.getName());
+            }
+        }
+
+        return results;
+    }
+
+    public static String getBackupDirectory(Context context){
+        File appStorageLocation = context.getFilesDir();
+        File backupDir= new File(appStorageLocation.getAbsolutePath()+ File.separator+ BACKUP_DIR);
+        if (!backupDir.exists()){
+            backupDir.mkdirs();
+        }
+        return backupDir.getAbsolutePath();
     }
 }

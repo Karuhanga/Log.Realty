@@ -51,7 +51,7 @@ public class AddPaymentController implements AddPayment.AddPaymentActivityExtern
         }
 
         Payment created= new Payment(Helper.getTodaysDate(), chosen, 1);
-        if (!created.onNewPaymentAdded(dashboard.requestContext())){
+        if (!created.onNewPaymentAdded()){
             dashboard.raise("Unable to add payment");
             return;
         }
@@ -70,7 +70,7 @@ public class AddPaymentController implements AddPayment.AddPaymentActivityExtern
         }
 
         Payment created= new Payment(Helper.getTodaysDate(), chosen, amount);
-        if (!created.onNewPaymentAdded(dashboard.requestContext())){
+        if (!created.onNewPaymentAdded()){
             dashboard.raise("Unable to add payment");
             return;
         }

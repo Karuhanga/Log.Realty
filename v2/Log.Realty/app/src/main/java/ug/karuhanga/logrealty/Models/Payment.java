@@ -1,7 +1,5 @@
 package ug.karuhanga.logrealty.Models;
 
-import android.content.Context;
-
 import java.util.Date;
 
 import static ug.karuhanga.logrealty.Helper.dateToString;
@@ -10,6 +8,7 @@ import static ug.karuhanga.logrealty.Helper.toCurrency;
 
 /**
  * Created by karuhanga on 8/25/17.
+ * Basic Data Type and POJO for Payment Data
  */
 
 public class Payment extends Record {
@@ -60,10 +59,6 @@ public class Payment extends Record {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
     public Tenant getTenant() {
         return Tenant.findById(Tenant.class, this.tenant);
     }
@@ -76,17 +71,12 @@ public class Payment extends Record {
         return rate;
     }
 
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
-    public boolean onNewPaymentAdded(Context context){
+    public boolean onNewPaymentAdded(){
         Tenant tenant= getTenant();
         if (!tenant.updateRentDue(this)){
             log("Payment Model: On new payment added update failed!");
             return false;
         }
-        Notification.schedule(context, tenant, true);
         return true;
     }
 

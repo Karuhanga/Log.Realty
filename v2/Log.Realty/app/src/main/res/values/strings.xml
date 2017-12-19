@@ -112,7 +112,7 @@
     <string name="date">Date</string>
     <string name="Rent_notif_1"><![CDATA[Hello <Tenant\'s Name Goes Here>, a reminder that next month\'s rent is due in a few. Cheers!]]></string>
     <string name="Rent_notif_2"><![CDATA[Hello <Tenant\'s Name Goes Here>, a reminder that this month\'s rent was due a few days ago. Cheers!]]></string>
-    <string name="email_default">user@domain.com</string>
+    <string name="user_name_default">user@domain.com</string>
     <string name="rent_paid">Rent paid</string>
     <string name="default_rent_paid_here">Default Rent Paid Here</string>
     <string name="add_one_month">Add one month</string>
@@ -147,4 +147,5 @@
     <string name="permission">Permission</string>
     <string name="allow_data_backup">Allow Data Backup</string>
     <string name="title_activity_details">Details</string>
+    <string name="load_more">Load More</string>
 </resources>

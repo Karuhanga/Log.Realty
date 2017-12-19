@@ -1,7 +1,5 @@
 package ug.karuhanga.logrealty.Models;
 
-import android.util.Log;
-
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.orm.util.NamingHelper;
@@ -10,11 +8,11 @@ import java.util.List;
 
 import ug.karuhanga.logrealty.Helper;
 
-import static ug.karuhanga.logrealty.Helper.APP_TAG;
 import static ug.karuhanga.logrealty.Helper.log;
 
 /**
  * Created by karuhanga on 8/25/17.
+ * Basic Data Type and POJO for house data
  */
 
 public class House extends Record {

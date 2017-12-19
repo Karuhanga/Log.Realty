@@ -29,6 +29,7 @@ import ug.karuhanga.logrealty.Models.Listable;
 import ug.karuhanga.logrealty.Models.Tenant;
 import ug.karuhanga.logrealty.R;
 
+import static ug.karuhanga.logrealty.Helper.EX;
 import static ug.karuhanga.logrealty.Helper.FALSE;
 import static ug.karuhanga.logrealty.Helper.FRAGMENT_DUE_PAYMENTS;
 import static ug.karuhanga.logrealty.Helper.getLaterDateByDays;
@@ -45,7 +46,6 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
     Button buttonLoadMore;
 
     private List<Listable> defaulters= new ArrayList<>();
-    private ListAdapter adapter;
     private Unbinder unbinder;
     private int displayNumber;
 
@@ -59,10 +59,8 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
      *
      * @return A new instance of fragment DuePayments.
      */
-    // TODO: Rename and change types and number of parameters
     public static DuePayments newInstance() {
-        DuePayments fragment = new DuePayments();
-        return fragment;
+        return new DuePayments();
     }
 
     @Override
@@ -115,16 +113,18 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
     }
 
     private void fetchData(int length){
-        Date date= getLaterDateByDays(Calendar.getInstance().getTime(), length);
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        Date date= getLaterDateByDays(calendar.getTime(), length);
         defaulters.clear();
-        List<Tenant> tenants= Select.from(Tenant.class).limit(String.valueOf(length)).where(Condition.prop(NamingHelper.toSQLNameDefault("ex")).eq(FALSE)).and(Condition.prop(NamingHelper.toSQLNameDefault("rentDue")).lt(date.getTime())).list();
+        List<Tenant> tenants= Select.from(Tenant.class).limit(String.valueOf(length)).where(Condition.prop(NamingHelper.toSQLNameDefault(EX)).eq(FALSE)).and(Condition.prop(NamingHelper.toSQLNameDefault("rentDue")).lt(date.getTime())).list();
         for (Tenant tenant : tenants) {
             defaulters.add(tenant);
         }
     }
 
     private void updateAdapter(){
-        adapter= new ArrayAdapter<>(getContext(), R.layout.entity_summary_list_item, R.id.textView_list_item_entity_interface, defaulters);
+        ListAdapter adapter = new ArrayAdapter<>(getContext(), R.layout.entity_summary_list_item, R.id.textView_list_item_entity_interface, defaulters);
         listView.setAdapter(adapter);
     }
 
@@ -140,7 +140,7 @@ public class DuePayments extends Fragment implements Interfaces.GistExternalInte
 
     private void setupLoadMoreButton() {
         buttonLoadMore= new Button(getContext());
-        buttonLoadMore.setText("Load More");
+        buttonLoadMore.setText(R.string.load_more);
         buttonLoadMore.setAllCaps(false);
         buttonLoadMore.setTypeface(buttonLoadMore.getTypeface(), Typeface.BOLD_ITALIC);
         buttonLoadMore.setOnClickListener(new View.OnClickListener() {

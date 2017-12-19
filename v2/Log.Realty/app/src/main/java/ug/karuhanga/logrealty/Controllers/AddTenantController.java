@@ -16,7 +16,6 @@ import ug.karuhanga.logrealty.Views.Confirmation;
 
 import static ug.karuhanga.logrealty.Helper.ERROR_REQUIRED;
 import static ug.karuhanga.logrealty.Helper.REQUEST_CODE_REPLACE;
-import static ug.karuhanga.logrealty.Models.Notification.schedule;
 
 /**
  * Created by karuhanga on 12/5/17.
@@ -68,7 +67,6 @@ public class AddTenantController implements AddTenant.AddTenantActivityExternalI
         }
         Tenant tenant= new Tenant(fName, oNames, email, contact, entered, startCount, idType, idNo, chosen);
         tenant.save();
-        schedule(dashboard.requestContext(), tenant, true);
         finish(tenant.getId(), tenant.toString());
     }
 

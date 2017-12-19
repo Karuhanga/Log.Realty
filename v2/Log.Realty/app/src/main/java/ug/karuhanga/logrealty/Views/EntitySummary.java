@@ -45,7 +45,7 @@ import static ug.karuhanga.logrealty.Helper.FRAGMENT_TENANTS;
  * Use the {@link EntitySummary#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EntitySummary extends Fragment implements ListView.OnItemClickListener, ListView.OnItemLongClickListener, Interfaces.GistExternalInterface, Runnable {
+public class EntitySummary extends Fragment implements ListView.OnItemClickListener, ListView.OnItemLongClickListener, Interfaces.GistExternalInterface {
     // TODO: Rename parameter arguments, choose names that match
     //TODO: BETTER FRGAMENT MANAGEMENT
 
@@ -98,7 +98,12 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
         displayNumber=10;
         fetchData(displayNumber);
         //Notify parent that data is ready
-        run();
+        new Runnable(){
+            @Override
+            public void run() {
+                onSearchDataReady();
+            }
+        }.run();
         int data_amount= data.size();
         if (displayNumber>data_amount){
             displayNumber= data_amount;
@@ -162,13 +167,6 @@ public class EntitySummary extends Fragment implements ListView.OnItemClickListe
             summarizables.add(new Summarizable(item.getId(), item.summarize(), item.toString()));
         }
         return summarizables;
-    }
-
-    @Override
-    public void run() {
-        //background
-        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        onSearchDataReady();
     }
 
     /**

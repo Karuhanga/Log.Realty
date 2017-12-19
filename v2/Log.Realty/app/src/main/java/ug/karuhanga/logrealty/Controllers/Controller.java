@@ -11,6 +11,7 @@ import ug.karuhanga.logrealty.Views.DetailedLocation.DetailedLocationActivityExt
 import ug.karuhanga.logrealty.Views.DetailedPayment.DetailedPaymentActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.DetailedTenant.DetailedTenantActivityExternalInterface;
 import ug.karuhanga.logrealty.Views.Details.DetailsActivityExternalInterface;
+import ug.karuhanga.logrealty.Views.Starter.StarterActivityExternalInterface;
 
 /**
  * Created by karuhanga on 12/5/17.
@@ -180,5 +181,18 @@ public class Controller {
 
     public static DetailedTenantActivityExternalInterface injectDetailedTenantActivityExternalInterface(DetailedTenantControllerExternalInterface dashboard){
         return new DetailedTenantController(dashboard);
+    }
+
+    public interface StarterControllerExternalInterface{
+
+        Context requestContext();
+
+        void onActionsCompleted();
+
+        void startFirstLaunchActions();
+    }
+
+    public static StarterActivityExternalInterface injectStarterActivityctivityExternalInterface(StarterControllerExternalInterface dashboard){
+        return new StarterController(dashboard);
     }
 }

@@ -14,6 +14,7 @@ import static ug.karuhanga.logrealty.Helper.toCurrency;
 
 /**
  * Created by karuhanga on 8/25/17.
+ * Core Data Type and POJO for the Tenant Data
  */
 
 public class Tenant extends Record {
@@ -47,7 +48,7 @@ public class Tenant extends Record {
         this.balance= 0;
     }
 
-    public boolean updateRentDue(final Payment payment){
+    boolean updateRentDue(final Payment payment){
         Date newDue = Helper.getLaterDateByMonths(this.rentDue, getPaidDuration(payment));
         if (newDue==null){
             return false;
@@ -72,11 +73,7 @@ public class Tenant extends Record {
             //TODO Add Error Checking
         }
 
-        List<Notification> notifs= Select.from(Notification.class).where(Condition.prop(NamingHelper.toSQLNameDefault("tenant")).eq(this)).list();
-        for (Notification notification : notifs) {
-            notification.delete();
-            //TODO Add Error Checking
-        }
+
         return true;
     }
 
@@ -167,19 +164,15 @@ public class Tenant extends Record {
         this.house = house.getId();
     }
 
-    public boolean isEx() {
-        return ex;
-    }
-
     public void setEx(boolean ex) {
         this.ex = ex;
     }
 
-    public long getBalance() {
+    private long getBalance() {
         return balance;
     }
 
-    public void setBalance(long balance) {
+    private void setBalance(long balance) {
         this.balance = balance;
     }
 }
