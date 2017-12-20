@@ -76,6 +76,7 @@ public class Gist extends AppCompatActivity implements NavigationView.OnNavigati
 
         setCurrentFragment(null);
         displayFragment(FRAGMENT_DUE_PAYMENTS);
+        hideSearchIcon();
     }
 
     @Override

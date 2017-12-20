@@ -7,7 +7,7 @@
     android:paddingRight="15dp"
     app:theme="@style/AppTheme"
     android:animateLayoutChanges="true"
-    tools:context="ug.karuhanga.logrealty.Fragments.DetailedLocation">
+    tools:context="ug.karuhanga.logrealty.Views.Details">
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView

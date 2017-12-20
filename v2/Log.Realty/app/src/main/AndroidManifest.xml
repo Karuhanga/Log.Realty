@@ -27,6 +27,12 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="ug.karuhanga.logrealty" />
 
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIQxzaUNXO4tJyItgCe9pLukZlI-WYIgESIq8uEA" />
+
+
+
         <activity
             android:name=".Views.Starter"
             android:label="@string/app_name"

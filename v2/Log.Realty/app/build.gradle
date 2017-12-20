@@ -33,10 +33,8 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:26.+'
     //Sugar ORM- Database Access and Manipulation Convenience
     compile 'com.github.satyan:sugar:1.5'
-    //GSON- Serialise objects to anf from JSON
+    //GSON- Serialise objects to and from JSON
     compile 'com.google.code.gson:gson:2.8.2'
-    //Android Storage- API for easy storage access and data encryption
-    compile 'com.snatik:storage:2.1.0'
     //JUnit- Unit Testing
     testCompile 'junit:junit:4.12'
     //Butter knife- Ease working with view access

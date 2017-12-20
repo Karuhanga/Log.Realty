@@ -10,7 +10,7 @@
     android:animateLayoutChanges="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:theme="@style/AppTheme"
-    tools:context="ug.karuhanga.logrealty.Fragments.DetailedPayment">
+    tools:context="ug.karuhanga.logrealty.Views.Details">
 
     <ScrollView
         android:layout_width="0dp"
